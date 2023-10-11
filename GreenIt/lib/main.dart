@@ -1,23 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/pages/profile.dart';
+import 'package:my_app/widgets/appbar_widget.dart';
+import 'package:my_app/widgets/bottom_widget.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  int currentIndex = 0;
+  final pages = [
+    Center(child: Text("NR 1", style: TextStyle(fontSize: 60))),
+    Center(child: Text("NR 2", style: TextStyle(fontSize: 60))),
+    Center(child: Text("NR 3", style: TextStyle(fontSize: 60))),
+    ProfilePage(),
+  ]; // Initialize the current index
+  void onTabTapped(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'Poppins',
         primaryColor: Colors.blue.shade300,
+        dividerColor: Colors.black,
       ),
-      home: ProfilePage(),
+      home: Scaffold(
+        appBar: buildAppBar(context),
+        body: pages[currentIndex],
+        bottomNavigationBar: bottomNavigationBar(currentIndex, onTabTapped),
+      ),
     );
   }
 }

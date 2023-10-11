@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-BottomNavigationBar bottomNavigationBar(int currentIndex, Function(int) onTap) {
-  int _currentIndex = 3;
+BottomNavigationBar bottomNavigationBar(
+    int currentIndex, Function(int) onTabTapped) {
   final iconHome = CupertinoIcons.home;
   final iconSearch = CupertinoIcons.search;
   final iconFavorites = CupertinoIcons.heart;
   final iconProfile = CupertinoIcons.profile_circled;
   return BottomNavigationBar(
-    currentIndex: _currentIndex,
+    currentIndex: currentIndex,
     type: BottomNavigationBarType.fixed,
     selectedItemColor: Colors.black,
+    showUnselectedLabels: false,
+    onTap: (index) => onTabTapped(index),
     items: [
       BottomNavigationBarItem(
         icon: Icon(iconHome),
