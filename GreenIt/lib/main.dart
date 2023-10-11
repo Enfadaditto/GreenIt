@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:ffi';
+import 'ServerConnect.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -5,8 +8,9 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  
   const MyApp({super.key});
-
+  
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -56,7 +60,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-
+  final serverUrl = "http://37.15.114.2:8080/user?email=hans@mail.com";
+  
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -67,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +111,17 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            FutureBuilder<String>(
+            future: ServerConnect(serverUrl).fetchData(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return Text('Fetched Data: ${snapshot.data}');
+              }
+            }),
             const Text(
               'You have pushed the button this many times:',
             ),
