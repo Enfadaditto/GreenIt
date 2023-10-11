@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 
 class Post extends StatelessWidget {
-  const Post({super.key});
+  final String author;
+  final String title;
+  //final List<Comments> comments;
+  //final List<String> steps; //Steps
+
+  const Post({
+    super.key,
+    required this.author,
+    required this.title,
+    /*required this.steps*/
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,33 +36,30 @@ class Post extends StatelessWidget {
               onPressed: _menuPressed,
               icon: const Icon(Icons.menu, color: Colors.white)),
         ],
-        title: const Text(
-          "Page Title",
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          title,
+          style: const TextStyle(color: Colors.white),
         ),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(15),
           child: Text(
-            "Subtitle",
+            "Subtitle", //remove const on preferredSize, add it to TextStyle and switch this line to subtitle if theres any
             style: TextStyle(color: Colors.white70),
           ),
         ),
         backgroundColor: const Color.fromARGB(255, 68, 68, 68),
       ),
-      body: const PostDetailed(),
+      body: PostDetailed(),
       backgroundColor: Colors.grey[900],
     ));
   }
 }
 
-class PostDetailed extends StatefulWidget {
-  const PostDetailed({super.key});
+class PostDetailed extends StatelessWidget {
+  //final List<String> steps;
 
-  @override
-  State<StatefulWidget> createState() => _PostDetailedState();
-}
+  //PostDetailed({required this.steps});
 
-class _PostDetailedState extends State<PostDetailed> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -66,6 +73,10 @@ class _PostDetailedState extends State<PostDetailed> {
             child: PageView(
               scrollDirection: Axis.horizontal,
               children: const <Widget>[
+                //steps.forEach((step) {
+                //  StepCard(step.description, step.image);
+                //})
+
                 StepCard('Description Red', Colors.red),
                 StepCard('Description Blue', Colors.blue),
                 StepCard('Description Green', Colors.green),
@@ -81,12 +92,13 @@ class _PostDetailedState extends State<PostDetailed> {
 class StepCard extends StatelessWidget {
   final String text;
   // final Image image;
-  final Color color;
+  final Color color; //remove
 
-  const StepCard(this.text, this.color, {super.key});
+  const StepCard(this.text, this.color /*image*/, {super.key});
 
   @override
   Widget build(BuildContext context) {
+    //TODO: once we can extract images from the server, we need to investigate how to display them here
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
