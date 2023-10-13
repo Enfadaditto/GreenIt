@@ -60,7 +60,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  final serverUrl = "http://37.15.114.2:8080/user?email=hans@mail.com";
+  final serverUrl = "http://localhost:8080/user?email=ida@mail.com";
   
   void _incrementCounter() {
     setState(() {
@@ -70,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+      
     });
   }
 
@@ -112,14 +113,25 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             FutureBuilder<String>(
-            future: ServerConnect(serverUrl).fetchData(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else if (snapshot.hasError) {
+            future: ServerConnect().fetchData(serverUrl),
+            // builder: (context, snapshot) {
+            //   if (snapshot.connectionState == ConnectionState.waiting) {
+            //     return CircularProgressIndicator();
+            //   } else if (snapshot.hasError) {
+            //     return Text('Error: ${snapshot.error}');
+            //   } else {
+            //     return Text('Fetched Data: ${snapshot.data}');
+            //   }
+            // }),
+            builder:(context, snapshot) {
+              if(snapshot.hasError){
                 return Text('Error: ${snapshot.error}');
-              } else {
+              }
+              else if (snapshot.hasData){
                 return Text('Fetched Data: ${snapshot.data}');
+              }
+              else {
+                return Text('Unknown error');
               }
             }),
             const Text(
