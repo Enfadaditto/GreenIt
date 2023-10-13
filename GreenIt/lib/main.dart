@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:ffi';
+import 'ServerConnect.dart';
 import 'package:flutter/material.dart';
 import 'post.dart';
 
@@ -10,8 +13,9 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  
   const MyApp({super.key});
-
+  
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -61,7 +65,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-
+  final serverUrl = "http://localhost:8080/user?email=ida@mail.com";
+  
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -70,8 +75,10 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+      
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +117,28 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            FutureBuilder<String>(
+            future: ServerConnect().fetchData(serverUrl),
+            // builder: (context, snapshot) {
+            //   if (snapshot.connectionState == ConnectionState.waiting) {
+            //     return CircularProgressIndicator();
+            //   } else if (snapshot.hasError) {
+            //     return Text('Error: ${snapshot.error}');
+            //   } else {
+            //     return Text('Fetched Data: ${snapshot.data}');
+            //   }
+            // }),
+            builder:(context, snapshot) {
+              if(snapshot.hasError){
+                return Text('Error: ${snapshot.error}');
+              }
+              else if (snapshot.hasData){
+                return Text('Fetched Data: ${snapshot.data}');
+              }
+              else {
+                return Text('Unknown error');
+              }
+            }),
             const Text(
               'You have pushed the button this many times:',
             ),
