@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'post.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const Post(
+    author: "YO MAMA",
+    title: "Dummy Post",
+  ));
 }
 
 class MyApp extends StatelessWidget {
