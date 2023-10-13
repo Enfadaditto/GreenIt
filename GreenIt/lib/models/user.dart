@@ -3,6 +3,7 @@ class User {
   final String name;
   final String email;
   final String password;
+  List<String> imagesList;
   List<User> following;
   List<User> followers;
 
@@ -11,6 +12,7 @@ class User {
     required this.name,
     required this.email,
     required this.password,
+    required this.imagesList,
     required this.following,
     required this.followers,
   });
