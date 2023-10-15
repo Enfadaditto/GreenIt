@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/pages/edit_profile_page.dart';
 import 'package:my_app/pages/profile.dart';
-import 'package:my_app/widgets/appbar_widget.dart';
-import 'package:my_app/widgets/bottom_widget.dart';
+import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,7 +37,6 @@ class _MyAppState extends State<MyApp> {
         dividerColor: Colors.black,
       ),
       home: Scaffold(
-        appBar: buildAppBar(context),
         body: pages[currentIndex],
         bottomNavigationBar: bottomNavigationBar(currentIndex, onTabTapped),
       ),
