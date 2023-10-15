@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:ffi';
-import 'ServerConnect.dart';
+import 'Persistance/ServerConnect.dart';
 import 'package:flutter/material.dart';
 import 'post.dart';
 
