@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/pages/edit_profile_page.dart';
 import 'package:my_app/pages/profile.dart';
 import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
 
