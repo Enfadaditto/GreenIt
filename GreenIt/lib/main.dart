@@ -6,9 +6,10 @@ import 'post.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const Post(
+  runApp(Post(
     author: "YO MAMA",
     title: "Dummy Post",
+    currentIndex: 0,
   ));
 }
 

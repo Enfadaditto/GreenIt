@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/post.dart';
+import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
 
 void main() {
   runApp(const ForYouPage());
@@ -30,11 +31,11 @@ class PostDetail extends StatefulWidget {
 }
 
 class _PostDetailState extends State<PostDetail> {
-  int _counter = 0;
+  int currentIndex = 0;
 
-  void _incrementCounter() {
+  void onTabTapped(int index) {
     setState(() {
-      _counter++;
+      currentIndex = index;
     });
   }
 
@@ -61,22 +62,29 @@ class _PostDetailState extends State<PostDetail> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: List.generate(
-                      46, (index) => PostWidget(title: 'Usuario $index'))),
+                      46,
+                      (index) => PostWidget(
+                            title: 'Usuario $index',
+                            currentIndex: currentIndex,
+                          ))),
             ),
           );
         },
       )),
+      bottomNavigationBar: bottomNavigationBar(currentIndex, onTabTapped),
     );
   }
 }
 
 class PostWidget extends StatelessWidget {
-  const PostWidget({
+  PostWidget({
     super.key,
     required this.title,
+    required this.currentIndex,
   });
 
   final String title;
+  int currentIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +96,11 @@ class PostWidget extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Post(author: 'Me', title: title)));
+                    builder: (context) => Post(
+                          author: 'Me',
+                          title: title,
+                          currentIndex: currentIndex,
+                        )));
           },
           child: Card(
               color: const Color.fromARGB(255, 0, 0, 175),

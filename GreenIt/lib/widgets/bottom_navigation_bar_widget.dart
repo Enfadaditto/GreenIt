@@ -8,9 +8,10 @@ BottomNavigationBar bottomNavigationBar(
   final iconFavorites = CupertinoIcons.heart;
   final iconProfile = CupertinoIcons.profile_circled;
   return BottomNavigationBar(
+    backgroundColor: const Color.fromARGB(255, 68, 68, 68),
     currentIndex: currentIndex,
     type: BottomNavigationBarType.fixed,
-    selectedItemColor: Colors.black,
+    selectedItemColor: Colors.white,
     showUnselectedLabels: false,
     onTap: (index) => onTabTapped(index),
     items: [
