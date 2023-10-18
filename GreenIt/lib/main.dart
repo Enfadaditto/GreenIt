@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/pages/profile.dart';
+import 'package:my_app/pages/for_you_page.dart';
+import 'package:my_app/pages/profile_page.dart';
 import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
 
 void main() {
@@ -15,11 +16,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int currentIndex = 0;
+  final serverUrl = "http://localhost:8080/user?email=ida@mail.com";
   final pages = [
-    Center(child: Text("NR 1", style: TextStyle(fontSize: 60))),
-    Center(child: Text("NR 2", style: TextStyle(fontSize: 60))),
-    Center(child: Text("NR 3", style: TextStyle(fontSize: 60))),
-    ProfilePage(),
+    const ForYouPage(),
+    const Center(child: Text("NR 2", style: TextStyle(fontSize: 60))),
+    const Center(child: Text("NR 3", style: TextStyle(fontSize: 60))),
+    const ProfilePage(),
   ]; // Initialize the current index
   void onTabTapped(int index) {
     setState(() {
