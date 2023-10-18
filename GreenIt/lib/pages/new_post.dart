@@ -1,8 +1,7 @@
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:my_app/utils/user_preferences.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
+import 'package:my_app/widgets/image_selector.dart';
 
 class NewPost extends StatefulWidget {
   const NewPost({super.key});
@@ -14,69 +13,6 @@ class NewPost extends StatefulWidget {
 class _NewPostState extends State<NewPost> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _stepDescriptionController = TextEditingController();
-
-  void _addStep(BuildContext context) {
-    File? _userSelectedImage;
-
-    Future<void> _selectImage() async {
-      final imagePicker = ImagePicker();
-      final pickedImage =
-          await imagePicker.pickImage(source: ImageSource.gallery);
-
-      if (pickedImage != null) {
-        setState(() {
-          _userSelectedImage = File(pickedImage.path);
-        });
-      }
-    }
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('New Step'),
-          content: SizedBox(
-            height: 210,
-            child: Column(
-              children: [
-                Text('Image:'),
-                SizedBox(height: 5),
-                Center(
-                  child: _userSelectedImage == null
-                      ? ElevatedButton(
-                          onPressed: _selectImage,
-                          child: Text('Select image'),
-                        )
-                      : Image.file(_userSelectedImage!,
-                          width: 150, height: 150),
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  controller: _stepDescriptionController,
-                  decoration: InputDecoration(labelText: "Your description"),
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Cierra el diálogo
-              },
-            ),
-            TextButton(
-              child: Text('Create'),
-              onPressed: () {
-                //Guarda el paso en steps[]
-                Navigator.of(context).pop(); // Cierra el diálogo
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   void _addImg() {}
 
@@ -91,7 +27,11 @@ class _NewPostState extends State<NewPost> {
       Container(
         child: ElevatedButton(
           onPressed: () {
-            _addStep(this.context);
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return PickImageDialog();
+                });
           },
           child: Icon(Icons.add, color: Colors.white),
           style: ElevatedButton.styleFrom(
