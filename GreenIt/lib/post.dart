@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
+import 'Models/User.dart';
+import 'Persistance/RepoUser.dart';
 
 class Post extends StatefulWidget {
   int currentIndex;
 
+
+
+class Post extends StatelessWidget {
   final String author;
   final String title;
   //final List<Comments> comments;
@@ -26,6 +31,8 @@ class PostState extends State<Post> {
   Widget build(BuildContext context) {
     void _searchPressed() {
       //TODO
+      User u = User(displayName: "displayName2", email: "email2" , password: "password2", serverName: "serverName");
+      RepoUser().create(u);
       print("SEARCH PRESSED");
     }
 
