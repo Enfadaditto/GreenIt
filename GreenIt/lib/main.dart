@@ -9,16 +9,16 @@ import 'post.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const Post(
+  runApp(Post(
     author: "YO MAMA",
     title: "Dummy Post",
+    currentIndex: 0,
   ));
 }
 
 class MyApp extends StatelessWidget {
-  
   const MyApp({super.key});
-  
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -68,8 +68,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  final serverUrl = "http://localhost:8080/user?email=ida@mail.com";
-  
   
   void _incrementCounter() {
     setState(() {
@@ -79,11 +77,8 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
-      
-      
     });
   }
-
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-
+import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
 import 'Models/User.dart';
 import 'Persistance/RepoUser.dart';
+
+class Post extends StatefulWidget {
+  int currentIndex;
+
+
 
 class Post extends StatelessWidget {
   final String author;
@@ -9,13 +14,19 @@ class Post extends StatelessWidget {
   //final List<Comments> comments;
   //final List<String> steps; //Steps
 
-  const Post({
+  Post({
     super.key,
     required this.author,
     required this.title,
     /*required this.steps*/
+    required this.currentIndex,
   });
 
+  @override
+  State<StatefulWidget> createState() => PostState();
+}
+
+class PostState extends State<Post> {
   @override
   Widget build(BuildContext context) {
     void _searchPressed() {
@@ -30,6 +41,12 @@ class Post extends StatelessWidget {
       print("MENU PRESSED");
     }
 
+    void onTabTapped(int index) {
+      setState(() {
+        widget.currentIndex = index;
+      });
+    }
+
     return MaterialApp(
         home: Scaffold(
       appBar: AppBar(
@@ -42,7 +59,7 @@ class Post extends StatelessWidget {
               icon: const Icon(Icons.menu, color: Colors.white)),
         ],
         title: Text(
-          title,
+          widget.title,
           style: const TextStyle(color: Colors.white),
         ),
         bottom: const PreferredSize(
@@ -56,6 +73,8 @@ class Post extends StatelessWidget {
       ),
       body: PostDetailed(),
       backgroundColor: Colors.grey[900],
+      bottomNavigationBar:
+          bottomNavigationBar(widget.currentIndex, onTabTapped),
     ));
   }
 }
