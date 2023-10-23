@@ -7,7 +7,7 @@ abstract class IRepoComment implements IGenericRepository<Comment>{
   void create(Comment t);
 
   @override
-  Comment read(String id);
+  Future<Comment> read(String id);
 
   @override
   void update(Comment t);

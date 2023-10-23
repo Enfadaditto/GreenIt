@@ -7,7 +7,7 @@ abstract class IRepoPost implements IGenericRepository<Post>{
   void create(Post t);
 
   @override
-  Post read(String id);
+  Future<Post> read(String id);
 
   @override
   void update(Post t);

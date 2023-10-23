@@ -10,7 +10,7 @@ class RepoPost implements IRepoPost{
   }
 
   @override
-  Post read(String id) {
+  Future<Post> read(String id) {
     // TODO: implement read
     throw UnimplementedError();
   }

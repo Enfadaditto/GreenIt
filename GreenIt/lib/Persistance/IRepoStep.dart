@@ -7,7 +7,7 @@ abstract class IRepoStep implements IGenericRepository<Step>{
   void create(Step t);
 
   @override
-  Step read(String id);
+  Future<Step> read(String id);
 
   @override
   void update(Step t);

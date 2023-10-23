@@ -4,7 +4,7 @@ class Step{
 
   late String id;
 
-  late Step previousStep;
+  late Step? previousStep;
 
   late String description;
 
@@ -19,7 +19,7 @@ class Step{
     required this.image
   });
 
-  Step getPreviousStep() {
+  Step? getPreviousStep() {
     return previousStep;
   }
 

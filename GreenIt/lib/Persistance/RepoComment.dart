@@ -10,7 +10,7 @@ class RepoComment implements IRepoComment{
   }
 
   @override
-  Comment read(String id) {
+  Future<Comment> read(String id) {
     // TODO: implement read
     throw UnimplementedError();
   }

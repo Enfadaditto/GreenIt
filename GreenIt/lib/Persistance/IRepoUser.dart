@@ -7,7 +7,7 @@ abstract class IRepoUser implements IGenericRepository<User>{
   void create(User t);
 
   @override
-  User read(String id);
+  Future<User> read(String id);
 
   @override
   void update(User t);

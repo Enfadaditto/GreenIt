@@ -6,19 +6,31 @@ class ServerConnect {
 
   ServerConnect(){}
 
-  Future<String> fetchData(String url) async {
+  Future<Map<String, dynamic>> fetchData(String url) async {
     try {
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         // Parse the JSON response and return it as a formatted string
         final data = jsonDecode(response.body);
-        print(data);
-        return jsonEncode(data);
+        return data;
       } else {
         throw Exception('Failed to connect to the server');
       }
     } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  void insertData(String url) async{
+    try{
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        print("All G");
+      } else {
+        throw Exception('Failed to connect to the server');
+      }
+    } catch (e){
       throw Exception('Error: $e');
     }
   }

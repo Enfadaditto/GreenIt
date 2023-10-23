@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'Models/User.dart';
+import 'Persistance/RepoUser.dart';
+
 class Post extends StatelessWidget {
   final String author;
   final String title;
@@ -17,6 +20,8 @@ class Post extends StatelessWidget {
   Widget build(BuildContext context) {
     void _searchPressed() {
       //TODO
+      User u = User(displayName: "displayName2", email: "email2" , password: "password2", serverName: "serverName");
+      RepoUser().create(u);
       print("SEARCH PRESSED");
     }
 

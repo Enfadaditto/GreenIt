@@ -2,7 +2,7 @@ abstract class IGenericRepository<T>{
 
   void create(T t);
 
-  T read(String id);
+  Future<T> read(String id);
 
   void update(T t);
 
