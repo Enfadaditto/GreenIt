@@ -9,7 +9,9 @@ import 'package:my_app/widgets/appbar_widget.dart';
 import '../widgets/profile_page/profile_widget.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final User user;
+
+  ProfilePage({required this.user});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -18,7 +20,11 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    final user = UserPreferences.myUser;
+    UserPreferences.initializeUsers();
+    debugPrint("HALO PROFILE PAGE followers ${widget.user.followers.length}");
+    debugPrint("HALO PROFILE PAGE following ${widget.user.following.length}");
+    debugPrint(
+        "HALO PROFILE PAGE images list ${widget.user.imagesList.length}");
 
     return Scaffold(
       appBar: buildAppBar(context),
@@ -27,24 +33,25 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           const SizedBox(height: 24),
           ProfileWidget(
-            imagePath: user.imagePath,
+            imagePath: widget.user.imagePath,
             onClicked: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => EditProfilePage()),
+                MaterialPageRoute(
+                    builder: (context) => EditProfilePage(user: widget.user)),
               );
             },
           ),
           const SizedBox(height: 24),
-          buildName(user),
+          buildName(widget.user),
           const SizedBox(height: 24),
           Center(child: buildUpgradeButton()),
           const SizedBox(height: 12),
-          Center(child: NumbersWidget()),
+          Center(child: NumbersWidget(widget.user)),
           const SizedBox(height: 12),
           Container(
             height: 900,
             padding: EdgeInsets.all(10),
-            child: buildProfileGallery(context, user),
+            child: buildProfileGallery(context, widget.user),
           ),
         ],
       ),
