@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/pages/post_page.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
-import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
 
 void main() {
   runApp(const ForYouPage());
@@ -83,14 +82,14 @@ class PostWidget extends StatelessWidget {
         const SizedBox(height: 16.0),
         GestureDetector(
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Post(
-                          author: 'Me',
-                          title: title,
-                          currentIndex: currentIndex,
-                        )));
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (context) => PostPage(
+                        author: 'Me',
+                        title: title,
+                        currentIndex: currentIndex,
+                      )),
+            );
           },
           child: Card(
               color: const Color.fromARGB(255, 0, 0, 175),

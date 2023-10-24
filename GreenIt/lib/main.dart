@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/pages/for_you_page.dart';
 import 'package:my_app/pages/new_post.dart';
 import 'package:my_app/pages/profile_page.dart';
+import 'package:my_app/utils/user_preferences.dart';
 import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
 
 void main() {
@@ -22,7 +23,7 @@ class _MyAppState extends State<MyApp> {
     const ForYouPage(),
     const Center(child: Text("NR 2", style: TextStyle(fontSize: 60))),
     const NewPost(),
-    const ProfilePage(),
+    ProfilePage(user: UserPreferences.myUser),
   ]; // Initialize the current index
   void onTabTapped(int index) {
     setState(() {

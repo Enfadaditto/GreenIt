@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
-import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
 
-class Post extends StatefulWidget {
+class PostPage extends StatefulWidget {
   int currentIndex;
 
   final String author;
@@ -10,7 +9,7 @@ class Post extends StatefulWidget {
   //final List<Comments> comments;
   //final List<String> steps; //Steps
 
-  Post({
+  PostPage({
     super.key,
     required this.author,
     required this.title,
@@ -22,7 +21,7 @@ class Post extends StatefulWidget {
   State<StatefulWidget> createState() => PostState();
 }
 
-class PostState extends State<Post> {
+class PostState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     void _searchPressed() {
