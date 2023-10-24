@@ -45,7 +45,41 @@ class UserPreferences {
       'https://pbs.twimg.com/media/FyW_3E4XsAAFWy0.jpg:large',
       'https://icdn.football-espana.net/wp-content/uploads/2022/09/Robert-Lewandowski-knee-slide-min.jpg',
     ],
-    following: List.empty(),
-    followers: List.empty(),
   );
+
+  static User user1 = User(
+    name: 'User 1 Name',
+    email: 'user1@example.com',
+    password: 'user1_password',
+    imagePath:
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Cristiano_Ronaldo_playing_for_Al_Nassr_FC_against_Persepolis%2C_September_2023_%28cropped%29.jpg/220px-Cristiano_Ronaldo_playing_for_Al_Nassr_FC_against_Persepolis%2C_September_2023_%28cropped%29.jpg',
+    imagesList: [
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Lion_waiting_in_Namibia.jpg/640px-Lion_waiting_in_Namibia.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Lion_waiting_in_Namibia.jpg/640px-Lion_waiting_in_Namibia.jpg',
+      'https://files.worldwildlife.org/wwfcmsprod/images/Tiger_resting_Bandhavgarh_National_Park_India/hero_small/6aofsvaglm_Medium_WW226365.jpg',
+      // Add more image URLs here
+    ],
+  );
+
+  static User user2 = User(
+    name: 'User 2 Name',
+    email: 'user2@example.com',
+    password: 'user2_password',
+    imagePath:
+        'https://media.cnn.com/api/v1/images/stellar/prod/230908103500-01-lionel-messi-argentina-ecuador.jpg?c=16x9&q=h_720,w_1280,c_fill',
+    imagesList: [
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Lion_waiting_in_Namibia.jpg/640px-Lion_waiting_in_Namibia.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Lion_waiting_in_Namibia.jpg/640px-Lion_waiting_in_Namibia.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Lion_waiting_in_Namibia.jpg/640px-Lion_waiting_in_Namibia.jpg',
+      // Add more image URLs here
+    ],
+  );
+
+  static void initializeUsers() {
+    if (myUser.followers.isNotEmpty) return;
+    myUser.addFollowedUser(user1);
+    myUser.addFollowedUser(user2);
+    user1.addFollowedUser(myUser);
+    // Add more initialization as needed
+  }
 }

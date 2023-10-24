@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 AppBar buildAppBar(BuildContext context) {
   final iconSearch = CupertinoIcons.search;
   final iconOptions = CupertinoIcons.ellipsis;
+  if (Navigator.of(context).canPop()) {
+    print("OK\n");
+  }
   return AppBar(
       leading: BackButton(),
       backgroundColor: Colors.black,
