@@ -2,8 +2,8 @@ import 'package:my_app/Models/Step.dart';
 import 'package:my_app/Models/User.dart';
 
 class Post{
-  User originalPoster;
-  Step firstStep;
+  User? originalPoster;
+  Step? firstStep;
   String id;
   String serverName; //server where post is stored
 
@@ -14,7 +14,7 @@ class Post{
     required this.serverName
   });
 
-  User getOriginalPoster() {
+  User? getOriginalPoster() {
     return originalPoster;
   }
 
@@ -22,7 +22,7 @@ class Post{
     originalPoster = user;
   }
 
-  Step getFirstStep() {
+  Step? getFirstStep() {
     return firstStep;
   }
 

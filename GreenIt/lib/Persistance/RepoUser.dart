@@ -16,7 +16,7 @@ class RepoUser implements IRepoUser {
   }
 
   @override
-  Future<User> read(String email) async{
+  Future<User> read(String email) async {
     User u;
     try {
       var data = await server.fetchData("http://13.49.72.206/user?email=" + email);
