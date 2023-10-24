@@ -22,29 +22,22 @@ class _PickImageState extends State<PickImageDialog> {
     }
   }
 
+  File? getUserSelectedImage() {
+    return _userSelectedImage;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('New Step'),
-      content: _userSelectedImage != null
-          ? Image.file(_userSelectedImage!, width: 150, height: 150)
-          : ElevatedButton(
-              onPressed: _selectImage, child: Text('Select image')),
-      actions: <Widget>[
-        TextButton(
-          child: Text('Close'),
-          onPressed: () {
-            Navigator.of(context).pop(); // Cierra el diálogo
-          },
-        ),
-        TextButton(
-          child: Text('Create'),
-          onPressed: () {
-            //Guarda el paso en steps[]
-            Navigator.of(context).pop(); // Cierra el diálogo
-          },
-        ),
-      ],
-    );
+    return _userSelectedImage != null
+        ? Image.file(_userSelectedImage!, width: 150, height: 150)
+        : SizedBox(
+            height: 150,
+            width: 150,
+            child: ElevatedButton(
+                onPressed: _selectImage,
+                child: Text('Select image'),
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0)))));
   }
 }

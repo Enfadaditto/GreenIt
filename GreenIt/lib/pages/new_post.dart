@@ -13,32 +13,62 @@ class NewPost extends StatefulWidget {
 class _NewPostState extends State<NewPost> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _stepDescriptionController = TextEditingController();
-
-  void _addImg() {}
+  final user = UserPreferences.myUser;
 
   void _createNewPost() {}
 
-  void _createNewStep() {}
-
   @override
   Widget build(BuildContext context) {
-    final user = UserPreferences.myUser;
+    void _createNewStep() {}
+
     var steps = [
-      Container(
-        child: ElevatedButton(
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return PickImageDialog();
-                });
-          },
-          child: Icon(Icons.add, color: Colors.white),
-          style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
-              backgroundColor: Colors.black54),
-        ),
+      ElevatedButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('New Step'),
+                  content: Container(
+                    height: 216,
+                    child: Column(children: [
+                      PickImageDialog(),
+                      SizedBox(height: 10),
+                      Container(
+                        alignment: Alignment.bottomCenter,
+                        child: TextField(
+                          controller: _stepDescriptionController,
+                          decoration:
+                              InputDecoration(labelText: 'Step description'),
+                        ),
+                      )
+                    ]),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('Close'),
+                      onPressed: () {
+                        _stepDescriptionController.clear();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: Text('New Step'),
+                      onPressed: () {
+                        _createNewStep();
+                        _stepDescriptionController.clear();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              });
+        },
+        child: Icon(Icons.add, color: Colors.white),
+        style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            backgroundColor: Colors.black54),
       ),
     ];
 
