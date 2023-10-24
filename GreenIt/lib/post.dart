@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/Models/Post.dart';
 import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
 import 'Models/User.dart';
@@ -28,8 +29,6 @@ class PostState extends State<Post> {
   Widget build(BuildContext context) {
     void _searchPressed() {
       //TODO
-      //Future<User> u = RepoUser().read('jrber23@gmail.com');
-      print(RepoPost().read("rizna"));
       print("SEARCH PRESSED");
     }
 
