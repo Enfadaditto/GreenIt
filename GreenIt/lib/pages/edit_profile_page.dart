@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/models/user.dart';
+import 'package:my_app/Models/notUser.dart';
 import 'package:my_app/utils/user_preferences.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
 import 'package:my_app/widgets/profile_page/profile_widget.dart';
@@ -11,7 +11,7 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  User user = UserPreferences.myUser;
+  notUser user = UserPreferences.myUser;
 
   @override
   Widget build(BuildContext context) => Scaffold(

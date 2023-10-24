@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/models/user.dart';
+import 'package:my_app/Models/notUser.dart';
 import 'package:my_app/pages/edit_profile_page.dart';
 import 'package:my_app/widgets/profile_page/button_widget.dart';
 import 'package:my_app/widgets/profile_page/numbers_widget.dart';
@@ -51,7 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget buildName(User user) => Column(
+  Widget buildName(notUser user) => Column(
         children: [
           Text(
             user.name,

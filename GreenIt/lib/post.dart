@@ -5,10 +5,6 @@ import 'Persistance/RepoUser.dart';
 
 class Post extends StatefulWidget {
   int currentIndex;
-
-
-
-class Post extends StatelessWidget {
   final String author;
   final String title;
   //final List<Comments> comments;
