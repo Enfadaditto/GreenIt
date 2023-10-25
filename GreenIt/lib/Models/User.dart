@@ -1,8 +1,12 @@
-class User{
+class User {
   late String displayName;
   late String email;
   late String password;
-  late String serverName; //server where user info is stored
+  late String serverName;
+  //int Id
+  //List<int> Post IDs
+  //List<int> Followers IDs //server where user info is stored
+  //List<intd> Following IDs
 
   User({
     required this.displayName,
@@ -11,38 +15,35 @@ class User{
     required this.serverName,
   });
 
-  String getDisplayName(){
+  String getDisplayName() {
     return displayName;
   }
 
-  void setDisplayName(String displayName){
+  void setDisplayName(String displayName) {
     this.displayName = displayName;
   }
 
-  String getEmail(){
+  String getEmail() {
     return email;
   }
-  
-  void setEmail(String email){
+
+  void setEmail(String email) {
     this.email = email;
   }
 
-  String getPassword(){
+  String getPassword() {
     return password;
   }
 
-  void setPassword(String password){
+  void setPassword(String password) {
     this.password = password;
   }
 
-  String getServerName(){
+  String getServerName() {
     return serverName;
   }
 
-  void setServerName(String serverName){
+  void setServerName(String serverName) {
     this.serverName = serverName;
   }
-
-  
-
 }

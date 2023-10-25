@@ -1,5 +1,3 @@
-
-
 import '../Models/notUser.dart';
 
 class UserPreferences {

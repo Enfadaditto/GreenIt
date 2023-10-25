@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/post.dart';
-import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
+import 'package:my_app/Decoding.dart';
+import 'package:my_app/pages/post_page.dart';
+import 'package:my_app/widgets/appbar_foryoupage.dart';
 
 void main() {
   runApp(const ForYouPage());
@@ -42,17 +43,7 @@ class _PostDetailState extends State<PostDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text(
-          "GreenIt",
-          style: TextStyle(color: Colors.white),
-        ),
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz))
-        ],
-      ),
+      appBar: buildForYouPageAppBar(context),
       body: Center(child: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
@@ -71,7 +62,6 @@ class _PostDetailState extends State<PostDetail> {
           );
         },
       )),
-      bottomNavigationBar: bottomNavigationBar(currentIndex, onTabTapped),
     );
   }
 }
@@ -93,14 +83,14 @@ class PostWidget extends StatelessWidget {
         const SizedBox(height: 16.0),
         GestureDetector(
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Post(
-                          author: 'Me',
-                          title: title,
-                          currentIndex: currentIndex,
-                        )));
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (context) => PostPage(
+                        author: 'Me',
+                        title: title,
+                        currentIndex: currentIndex,
+                      )),
+            );
           },
           child: Card(
               color: const Color.fromARGB(255, 0, 0, 175),

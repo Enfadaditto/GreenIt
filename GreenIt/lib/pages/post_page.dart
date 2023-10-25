@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/Models/Post.dart';
-import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
-import 'package:my_app/Persistance/RepoPost.dart';
-import 'Models/User.dart';
-import 'Persistance/RepoUser.dart';
+import 'package:my_app/widgets/appbar_widget.dart';
 
-class Post extends StatefulWidget {
+class PostPage extends StatefulWidget {
   int currentIndex;
+
   final String author;
   final String title;
   //final List<Comments> comments;
   //final List<String> steps; //Steps
 
-  Post({
+  PostPage({
     super.key,
     required this.author,
     required this.title,
@@ -24,7 +21,7 @@ class Post extends StatefulWidget {
   State<StatefulWidget> createState() => PostState();
 }
 
-class PostState extends State<Post> {
+class PostState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     void _searchPressed() {
@@ -45,37 +42,16 @@ class PostState extends State<Post> {
 
     return MaterialApp(
         home: Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          IconButton(
-              onPressed: _searchPressed,
-              icon: const Icon(Icons.search, color: Colors.white)),
-          IconButton(
-              onPressed: _menuPressed,
-              icon: const Icon(Icons.menu, color: Colors.white)),
-        ],
-        title: Text(
-          widget.title,
-          style: const TextStyle(color: Colors.white),
-        ),
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(15),
-          child: Text(
-            "Subtitle", //remove const on preferredSize, add it to TextStyle and switch this line to subtitle if theres any
-            style: TextStyle(color: Colors.white70),
-          ),
-        ),
-        backgroundColor: const Color.fromARGB(255, 68, 68, 68),
-      ),
+      appBar: buildAppBar(context),
       body: PostDetailed(),
       backgroundColor: Colors.grey[900],
-      bottomNavigationBar:
-          bottomNavigationBar(widget.currentIndex, onTabTapped),
     ));
   }
 }
 
 class PostDetailed extends StatelessWidget {
+  String placeholderIMG =
+      'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000';
   //final List<String> steps;
 
   //PostDetailed({required this.steps});
@@ -92,14 +68,14 @@ class PostDetailed extends StatelessWidget {
             height: 500,
             child: PageView(
               scrollDirection: Axis.horizontal,
-              children: const <Widget>[
+              children: <Widget>[
                 //steps.forEach((step) {
                 //  StepCard(step.description, step.image);
                 //})
 
-                StepCard('Description Red', Colors.red),
-                StepCard('Description Blue', Colors.blue),
-                StepCard('Description Green', Colors.green),
+                StepCard('Description Red', placeholderIMG),
+                StepCard('Description Blue', placeholderIMG),
+                StepCard('Description Green', placeholderIMG),
               ],
             ),
           )
@@ -110,11 +86,10 @@ class PostDetailed extends StatelessWidget {
 }
 
 class StepCard extends StatelessWidget {
-  final String text;
-  // final Image image;
-  final Color color; //remove
+  String text;
+  String imagen;
 
-  const StepCard(this.text, this.color /*image*/, {super.key});
+  StepCard(this.text, this.imagen, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -125,14 +100,19 @@ class StepCard extends StatelessWidget {
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 5.0),
           height: 500,
-          //child: Image(),
-          color: color,
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Text(
-            text,
-            style: const TextStyle(color: Colors.white, fontSize: 16),
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  text,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+              Image(
+                image: NetworkImage(imagen),
+              )
+            ],
           ),
         ),
       ],
