@@ -20,9 +20,10 @@ class RepoPost implements IRepoPost {
     try {
       var data =
           await server.fetchData("http://13.49.72.206/post?username=" + id);
+          print(data[0]['firstStep']['description']);
       p = Post(
           originalPoster: jsonToUser(data[0]['creator']),
-          firstStep: jsonToStep(data[0]['firstStep']),
+          firstStep: /* jsonToStep(data[0]['firstStep']) */ null,
           id: data[0]['id'].toString(),
           serverName: data[0]['serverName']);
     } catch (e) {
@@ -55,9 +56,10 @@ class RepoPost implements IRepoPost {
 
   Step jsonToStep(Map<String, dynamic> datad) {
     return Step(
-        id: datad['id'].toString(),
+        id: datad['id'] as String,
         previousStep: datad['previousStep'],
         description: datad['description'],
         image: datad['image']);
+    
   }
 }

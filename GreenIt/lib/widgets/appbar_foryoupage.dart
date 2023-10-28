@@ -9,8 +9,8 @@ AppBar buildForYouPageAppBar(BuildContext context) {
       style: TextStyle(color: Colors.white),
     ),
     actions: [
-      IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
-      IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz))
+      IconButton(onPressed: () {}, icon: const Icon(Icons.search), color: Colors.white),
+      IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz), color: Colors.white)
     ],
   );
 }

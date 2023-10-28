@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:my_app/Decoding.dart';
+import 'package:my_app/Models/Post.dart';
+import 'package:my_app/Persistance/IRepoPost.dart';
+import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/pages/post_page.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 
@@ -24,7 +28,6 @@ class ForYouPage extends StatelessWidget {
 
 class PostDetail extends StatefulWidget {
   const PostDetail({super.key, required this.title});
-
   final String title;
 
   @override
@@ -33,6 +36,23 @@ class PostDetail extends StatefulWidget {
 
 class _PostDetailState extends State<PostDetail> {
   int currentIndex = 0;
+  late Future<Post> postPetition;
+  final IRepoPost repoPost = RepoPost();
+
+  @override
+  void initState() {
+    super.initState();
+    postPetition = repoPost.read('jrber23').then((data) {
+      return Post(originalPoster: data.originalPoster, 
+                  firstStep: data.firstStep, 
+                  id: data.id, 
+                  serverName: data.serverName);
+    });
+  }
+
+  Future<void> initializePosts() async {
+      postPetition = repoPost.read('jrber23');
+  }
 
   void onTabTapped(int index) {
     setState(() {
@@ -42,27 +62,54 @@ class _PostDetailState extends State<PostDetail> {
 
   @override
   Widget build(BuildContext context) {
+    initializePosts();
     return Scaffold(
+      appBar: buildForYouPageAppBar(context),
+      body: Center(
+        child: FutureBuilder<Post>(
+          future: postPetition,
+          builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+              } else {
+                  return SingleChildScrollView(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: List.generate(
+                          26,
+                          (index) => PostWidget(
+                                title: '@${snapshot.data?.getOriginalPoster()?.getDisplayName()}',
+                                description: 'Usuario ${snapshot.data?.getFirstStep()?.getDescription()}',
+                                currentIndex: currentIndex,
+                              ))),
+                  );
+              }
+          }),
+        )
+    );
+    /* return Scaffold(
       appBar: buildForYouPageAppBar(context),
       body: Center(child: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
             child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: List.generate(
-                      46,
-                      (index) => PostWidget(
-                            title: 'Usuario $index',
-                            currentIndex: currentIndex,
-                          ))),
-            ),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: List.generate(
+                        1,
+                        (index) => PostWidget(
+                              title: 'Usuario $postPetition',
+                              currentIndex: currentIndex,
+                            )))),
           );
         },
       )),
-    );
+    ); */
   }
 }
 
@@ -70,10 +117,12 @@ class PostWidget extends StatelessWidget {
   PostWidget({
     super.key,
     required this.title,
+    required this.description,
     required this.currentIndex,
   });
 
   final String title;
+  final String description;
   int currentIndex;
 
   @override
@@ -122,12 +171,8 @@ class PostWidget extends StatelessWidget {
                   ),
                   Image.network(
                       'https://upload.wikimedia.org/wikipedia/commons/4/47/Cyanocitta_cristata_blue_jay.jpg'),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: Text(
-                      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                      style: TextStyle(color: Colors.white),
-                    ),
                   ),
                   // const SizedBox(height: 20.0),
                 ],
