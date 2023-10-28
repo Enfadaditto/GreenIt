@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
 
@@ -109,9 +111,10 @@ class StepCard extends StatelessWidget {
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
-              Image(
-                image: NetworkImage(imagen),
-              )
+              imagen ==
+                      'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000'
+                  ? Image(image: NetworkImage(imagen))
+                  : Image.file(File(imagen))
             ],
           ),
         ),

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:my_app/pages/post_preview.dart';
 import 'package:my_app/utils/user_pref.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
@@ -15,6 +18,8 @@ class NewPost extends StatefulWidget {
 class _NewPostState extends State<NewPost> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _stepDescriptionController = TextEditingController();
+  late String stepImage;
+
   final user = UserPref.myUser;
   List<mod.Step> steps = [];
 
@@ -29,10 +34,14 @@ class _NewPostState extends State<NewPost> {
       steps.add(mod.Step(
           id: 'asd',
           description: _stepDescriptionController.text,
-          image: 'asdf',
+          image: stepImage,
           previousStep: null));
 
       print(steps.length);
+    }
+
+    void handleImage(String img) {
+      stepImage = img;
     }
 
     return Scaffold(
@@ -63,7 +72,9 @@ class _NewPostState extends State<NewPost> {
                             height: 300,
                             width: 300,
                             child: Column(children: [
-                              PickImageDialog(),
+                              PickImageDialog(
+                                onImageSelected: handleImage,
+                              ),
                               SizedBox(height: 10),
                               Container(
                                 alignment: Alignment.bottomCenter,

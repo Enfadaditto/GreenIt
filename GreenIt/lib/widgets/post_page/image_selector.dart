@@ -3,6 +3,10 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 class PickImageDialog extends StatefulWidget {
+  final Function(String) onImageSelected;
+
+  PickImageDialog({required this.onImageSelected});
+
   @override
   _PickImageState createState() => _PickImageState();
 }
@@ -18,12 +22,9 @@ class _PickImageState extends State<PickImageDialog> {
     if (pickedImage != null) {
       setState(() {
         _userSelectedImage = File(pickedImage.path);
+        widget.onImageSelected(pickedImage.path);
       });
     }
-  }
-
-  File? getUserSelectedImage() {
-    return _userSelectedImage;
   }
 
   @override
