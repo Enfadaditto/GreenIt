@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/models/user.dart';
+import 'package:my_app/Models/user.dart';
 import 'package:my_app/pages/edit_profile_page.dart';
 import 'package:my_app/widgets/profile_page/button_widget.dart';
 import 'package:my_app/widgets/profile_page/numbers_widget.dart';
 import 'package:my_app/widgets/profile_page/profile_gallery_widget.dart';
-import '../utils/user_preferences.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
 import '../widgets/profile_page/profile_widget.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final User user;
+
+  ProfilePage({required this.user});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -18,8 +19,6 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    final user = UserPreferences.myUser;
-
     return Scaffold(
       appBar: buildAppBar(context),
       body: ListView(
@@ -27,25 +26,20 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           const SizedBox(height: 24),
           ProfileWidget(
-            imagePath: user.imagePath,
+            imagePath:
+                'https://assets.laliga.com/squad/2023/t178/p56764/2048x2225/p56764_t178_2023_1_001_000.png',
             onClicked: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => EditProfilePage()),
+                MaterialPageRoute(
+                    builder: (context) => EditProfilePage(user: widget.user)),
               );
             },
           ),
           const SizedBox(height: 24),
-          buildName(user),
+          buildName(widget.user),
           const SizedBox(height: 24),
           Center(child: buildUpgradeButton()),
           const SizedBox(height: 12),
-          Center(child: NumbersWidget()),
-          const SizedBox(height: 12),
-          Container(
-            height: 900,
-            padding: EdgeInsets.all(10),
-            child: buildProfileGallery(context, user),
-          ),
         ],
       ),
     );
@@ -54,7 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildName(User user) => Column(
         children: [
           Text(
-            user.name,
+            user.displayName,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
           ),
           const SizedBox(height: 4),

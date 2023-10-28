@@ -5,8 +5,9 @@ import 'package:http/http.dart' as http;
 class ServerConnect {
 
   ServerConnect(){}
-
-  Future<Map<String, dynamic>> fetchData(String url) async {
+  
+  //used to be Future<Map<String, dynamic>>
+  Future<dynamic> fetchData(String url) async {
     try {
       final response = await http.get(Uri.parse(url));
 

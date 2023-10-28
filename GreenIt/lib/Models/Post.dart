@@ -1,20 +1,19 @@
 import 'package:my_app/Models/Step.dart';
-import 'package:my_app/Models/User.dart';
+import 'package:my_app/Models/user.dart';
 
-class Post{
-  User originalPoster;
-  Step firstStep;
+class Post {
+  User? originalPoster;
+  Step? firstStep;
   String id;
   String serverName; //server where post is stored
 
-  Post({
-    required this.originalPoster,
-    required this.firstStep,
-    required this.id,
-    required this.serverName
-  });
+  Post(
+      {required this.originalPoster,
+      required this.firstStep,
+      required this.id,
+      required this.serverName});
 
-  User getOriginalPoster() {
+  User? getOriginalPoster() {
     return originalPoster;
   }
 
@@ -22,7 +21,7 @@ class Post{
     originalPoster = user;
   }
 
-  Step getFirstStep() {
+  Step? getFirstStep() {
     return firstStep;
   }
 

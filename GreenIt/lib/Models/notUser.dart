@@ -1,13 +1,13 @@
-class User {
+class notUser {
   final String imagePath;
   final String name;
   final String email;
   final String password;
   List<String> imagesList;
-  List<User> following;
-  List<User> followers;
+  List<notUser> following;
+  List<notUser> followers;
 
-  User({
+  notUser({
     required this.imagePath,
     required this.name,
     required this.email,

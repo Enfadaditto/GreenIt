@@ -8,7 +8,7 @@ class Step{
 
   late String description;
 
-  late String image; //path to img
+  late String? image; //path to img
 
   late List<Comment> comments;
 
@@ -35,7 +35,7 @@ class Step{
     description = desc;
   }
 
-  String getImage() {
+  String? getImage() {
     return image;
   }
 

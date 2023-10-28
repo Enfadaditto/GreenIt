@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/models/user.dart';
 
-GridView buildProfileGallery(BuildContext context, User user) =>
+import '../../Models/notUser.dart';
+
+
+GridView buildProfileGallery(BuildContext context, notUser user) =>
     GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
