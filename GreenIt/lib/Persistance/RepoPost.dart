@@ -10,7 +10,16 @@ class RepoPost implements IRepoPost {
 
   @override
   void create(Post t) {
-    // TODO: implement create
+    try {
+      server.insertData("http://13.49.72.206/publish?username" +
+          /*(t.originalPoster.displayName)*/ "placeholderUsername" +
+          "&description=" +
+          "placeholderDescription" +
+          "&image=" +
+          "placeholderImage");
+    } catch (e) {
+      print("An error occurred: $e");
+    }
   }
 
   //uses username (id). not ideal but good enough for now.
@@ -20,7 +29,7 @@ class RepoPost implements IRepoPost {
     try {
       var data =
           await server.fetchData("http://13.49.72.206/post?username=" + id);
-          print(data[0]['firstStep']['description']);
+      print(data[0]['firstStep']['description']);
       p = Post(
           originalPoster: jsonToUser(data[0]['creator']),
           firstStep: /* jsonToStep(data[0]['firstStep']) */ null,
@@ -60,6 +69,5 @@ class RepoPost implements IRepoPost {
         previousStep: datad['previousStep'],
         description: datad['description'],
         image: datad['image']);
-    
   }
 }
