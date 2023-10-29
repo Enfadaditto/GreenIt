@@ -1,19 +1,27 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'package:my_app/Persistance/IRepoUser.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/for_you_page.dart';
 import 'package:my_app/pages/new_post.dart';
 import 'package:my_app/pages/profile_page.dart';
-import 'package:my_app/utils/user_pref.dart';
 import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
-import 'package:my_app/Models/user.dart';
-
-import 'Persistance/RepoUser.dart';
-import 'Persistance/ServerConnect.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // // Create a new User object with the required data
+  // User newUser = User(
+  //   displayName: 'GreenIt enjoyer',
+  //   email: 'greenItIsGreat@gmail.com',
+  //   password: 'password123',
+  //   serverName: 'random',
+  // );
+
+  // IRepoUser userRepository = RepoUser();
+  // userRepository.create(newUser);
+
   runApp(const MyApp());
 }
 
@@ -28,12 +36,9 @@ class _MyAppState extends State<MyApp> {
   int currentIndex = 0;
   final serverUrl = "http://localhost:8080/user?email=ida@mail.com";
   final pages = [
-    // const ForYouPage(),
     const ForYouPage(),
     const NewPost(),
-    ProfilePage(user: UserPref.myUser),
-    // const NewPost(),
-    // ProfilePage(user: UserPreferences.myUser),
+    ProfilePage(email: 'greenItIsGreat@gmail.com'),
   ]; // Initialize the current index
   void onTabTapped(int index) {
     setState(() {
