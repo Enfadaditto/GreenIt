@@ -11,7 +11,7 @@ class RepoPost implements IRepoPost {
   @override
   void create(Post t) {
     try {
-      server.insertData("http://13.49.72.206/publish?username" +
+      server.insertData("http://16.170.159.93/publish?username" +
           /*(t.originalPoster.displayName)*/ "placeholderUsername" +
           "&description=" +
           "placeholderDescription" +
@@ -28,7 +28,7 @@ class RepoPost implements IRepoPost {
     Post p;
     try {
       var data =
-          await server.fetchData("http://13.49.72.206/post?username=" + id);
+          await server.fetchData("http://16.170.159.93/post?username=" + id);
       print(data[0]['firstStep']['description']);
       p = Post(
           originalPoster: jsonToUser(data[0]['creator']),
