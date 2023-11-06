@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:like_button/like_button.dart';
 import 'package:my_app/Decoding.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Persistance/IRepoPost.dart';
@@ -44,16 +43,15 @@ class _PostDetailState extends State<PostDetail> {
   void initState() {
     super.initState();
     postPetition = repoPost.read('jrber23').then((data) {
-      return Post(
-          originalPoster: data.originalPoster,
-          firstStep: data.firstStep,
-          id: data.id,
-          serverName: data.serverName);
+      return Post(originalPoster: data.originalPoster, 
+                  firstStep: data.firstStep, 
+                  id: data.id, 
+                  serverName: data.serverName);
     });
   }
 
   Future<void> initializePosts() async {
-    postPetition = repoPost.read('jrber23');
+      postPetition = repoPost.read('jrber23');
   }
 
   void onTabTapped(int index) {
@@ -66,33 +64,32 @@ class _PostDetailState extends State<PostDetail> {
   Widget build(BuildContext context) {
     initializePosts();
     return Scaffold(
-        appBar: buildForYouPageAppBar(context),
-        body: Center(
-          child: FutureBuilder<Post>(
-              future: postPetition,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+      appBar: buildForYouPageAppBar(context),
+      body: Center(
+        child: FutureBuilder<Post>(
+          future: postPetition,
+          builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
+              } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
-                } else {
+              } else {
                   return SingleChildScrollView(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: List.generate(
-                            26,
-                            (index) => PostWidget(
-                                  title:
-                                      '@${snapshot.data?.getOriginalPoster()?.getDisplayName()}',
-                                  description:
-                                      'Usuario ${snapshot.data?.getFirstStep()?.getDescription()}',
-                                  currentIndex: currentIndex,
-                                ))),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: List.generate(
+                          26,
+                          (index) => PostWidget(
+                                title: '@${snapshot.data?.getOriginalPoster()?.getDisplayName()}',
+                                description: 'Usuario ${snapshot.data?.getFirstStep()?.getDescription()}',
+                                currentIndex: currentIndex,
+                              ))),
                   );
-                }
-              }),
-        ));
+              }
+          }),
+        )
+    );
     /* return Scaffold(
       appBar: buildForYouPageAppBar(context),
       body: Center(child: LayoutBuilder(
@@ -175,21 +172,8 @@ class PostWidget extends StatelessWidget {
                   Image.network(
                       'https://upload.wikimedia.org/wikipedia/commons/4/47/Cyanocitta_cristata_blue_jay.jpg'),
                   Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          LikeButton(
-                              size: 32.0,
-                              isLiked: false,
-                              likeCount: 0,
-                              likeBuilder: (isLiked) {
-                                return Icon(Icons.favorite,
-                                    color: isLiked ? Colors.red : Colors.grey,
-                                    size: 32.0);
-                              })
-                        ],
-                      )),
+                    padding: EdgeInsets.all(16.0),
+                  ),
                   // const SizedBox(height: 20.0),
                 ],
               )),
