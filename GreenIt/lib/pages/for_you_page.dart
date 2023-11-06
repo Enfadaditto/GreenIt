@@ -4,8 +4,10 @@ import 'package:my_app/Decoding.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Persistance/IRepoPost.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
+import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/post_page.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
+
 
 void main() {
   runApp(const ForYouPage());
@@ -40,7 +42,7 @@ class _PostDetailState extends State<PostDetail> {
   final IRepoPost repoPost = RepoPost();
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
     postPetition = repoPost.read('jrber23').then((data) {
       return Post(originalPoster: data.originalPoster, 

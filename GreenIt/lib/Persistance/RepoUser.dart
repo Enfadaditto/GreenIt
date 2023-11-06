@@ -9,7 +9,7 @@ class RepoUser implements IRepoUser {
   @override
   void create(User t) {
     try {
-      server.insertData("http://13.49.72.206/register?email=" +
+      server.insertData("http://16.170.159.93/register?email=" +
           t.email +
           "&password=" +
           t.password +
@@ -25,7 +25,7 @@ class RepoUser implements IRepoUser {
     User u;
     try {
       var data =
-          await server.fetchData("http://13.49.72.206/user?email=" + email);
+          await server.fetchData("http://16.170.159.93/user?email=" + email);
       u = User(
           displayName: data['displayName'],
           email: data['email'],
