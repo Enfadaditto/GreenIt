@@ -22,7 +22,7 @@ class RepoPost implements IRepoPost {
     }
   }
 
-  //uses username (id). not ideal but good enough for now.
+  //gets all post from userId
   @override
   Future<Post> read(String id) async {
     Post p;
@@ -33,14 +33,14 @@ class RepoPost implements IRepoPost {
       p = Post(
           originalPoster: jsonToUser(data[0]['creator']),
           firstStep: /* jsonToStep(data[0]['firstStep']) */ null,
-          id: data[0]['id'].toString(),
+          id: data[0]['id'],
           serverName: data[0]['serverName']);
     } catch (e) {
       print("An error occurred: $e");
       p = Post(
           originalPoster: null,
           firstStep: null,
-          id: 'id',
+          id: 6969696,
           serverName: "serverName");
     }
     return p;
@@ -69,9 +69,44 @@ class RepoPost implements IRepoPost {
 
   Step jsonToStep(Map<String, dynamic> datad) {
     return Step(
-        id: datad['id'] as String,
-        previousStep: datad['previousStep'],
+        id: datad['id'],
+        previousStep: jsonToStep2(datad['previousStep']),
         description: datad['description'],
         image: datad['image']);
+  }
+
+  Step? jsonToStep2(Map<String, dynamic>? datad) {
+    if(datad == null){return null;}
+    return Step(
+        id: datad?['id'],
+        previousStep: jsonToStep2(datad?['previousStep']),
+        description: datad?['description'],
+        image: datad?['image']);
+  }
+
+  Future<List<Post>> getAllPostsUser(String displayName) async {
+    List<Post> posts = [];
+    try {
+      var response = await server
+          .fetchData("http://16.170.159.93/post?username=" + displayName);
+
+      List<dynamic> list = response as List;
+      posts = list.map((map) {
+        // Ensure that each element in the list is actually a Map.
+        if (map is Map<String, dynamic>) {
+          var p = Post.fromJson(map);
+          p.setOriginalPoster(jsonToUser(map['creator']));
+          //if(map['firstStep'][0]==null){}
+          p.setFirstStep(jsonToStep2(map['firstStep']));
+          return p;
+        } else {
+          throw Exception(
+              'Expected each element in list to be a Map<String, dynamic>');
+        }
+      }).toList();
+    } catch (e) {
+      print('Error fetching posts: $e');
+    }
+    return posts;
   }
 }
