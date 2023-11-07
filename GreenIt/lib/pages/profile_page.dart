@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/Models/user.dart';
+import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/IRepoUser.dart';
 import 'package:my_app/pages/edit_profile_page.dart';
 import 'package:my_app/utils/notuser_preferences.dart';
@@ -32,12 +32,16 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       userPetition = repoUser.read(widget.email);
     } catch (e) {
-      userPetition = Future.value(User(
+      userPetition = User(
         displayName: 'MISTAKE',
         email: 'MISTAKE',
         password: 'MISTAKE',
         serverName: 'MISTAKE',
-      ));
+        description: '',
+        id: 69696969,
+        image: '',
+        imagefield: '',
+      ) as Future<User>;
     }
   }
 

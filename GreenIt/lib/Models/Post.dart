@@ -1,5 +1,5 @@
 import 'package:my_app/Models/Step.dart';
-import 'package:my_app/Models/user.dart';
+import 'package:my_app/Models/User.dart';
 
 class Post {
   User? originalPoster;

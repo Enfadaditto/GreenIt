@@ -1,6 +1,6 @@
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Models/Step.dart';
-import 'package:my_app/Models/user.dart';
+import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/IGenericRepository.dart';
 import 'package:my_app/Persistance/IRepoPost.dart';
 import 'package:my_app/Persistance/ServerConnect.dart';
@@ -57,10 +57,14 @@ class RepoPost implements IRepoPost {
 
   User jsonToUser(Map<String, dynamic> datad) {
     return User(
+        id: datad['id'],
         displayName: datad['displayName'],
         email: datad['email'],
         password: datad['password'],
-        serverName: datad['serverName']);
+        serverName: datad['serverName'],
+        description: datad['description'],
+        image: datad['image'],
+        imagefield: '');
   }
 
   Step jsonToStep(Map<String, dynamic> datad) {
