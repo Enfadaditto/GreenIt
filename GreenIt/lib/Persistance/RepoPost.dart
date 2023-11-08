@@ -19,20 +19,21 @@ class RepoPost implements IRepoPost {
     Post p;
     try {
       var data =
-          await server.fetchData("http://13.49.72.206/post?username=" + id);
-          print(data[0]['firstStep']['description']);
+          await server.fetchData("http://16.170.159.93/post?username=" + id);
       p = Post(
           originalPoster: jsonToUser(data[0]['creator']),
           firstStep: /* jsonToStep(data[0]['firstStep']) */ null,
           id: data[0]['id'].toString(),
-          serverName: data[0]['serverName']);
+          serverName: data[0]['serverName'],
+          description: data[0]['description']);
     } catch (e) {
       print("An error occurred: $e");
       p = Post(
           originalPoster: null,
           firstStep: null,
           id: 'id',
-          serverName: "serverName");
+          serverName: "serverName",
+          description: "description");
     }
     return p;
   }
