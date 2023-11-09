@@ -22,7 +22,7 @@ class RepoStep implements IRepoStep{
       return s;
     } catch (e) {
       print("An error occurred: $e");
-      return Step(id: 'id', previousStep: null, description: 'description', image: 'image');
+      return Step(id: 6969696, previousStep: null, description: 'description', image: 'image');
     }
   }
 

@@ -54,6 +54,8 @@ class _PostDetailState extends State<PostDetail> {
 
   Future<void> initializePosts() async {
       postPetition = repoPost.read('jrber23');
+      var a = await RepoUser().getFollowed(6);
+      print(a[0].getDisplayName + "ajhjsdghb");
   }
 
   void onTabTapped(int index) {

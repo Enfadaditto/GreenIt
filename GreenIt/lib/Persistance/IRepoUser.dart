@@ -1,4 +1,4 @@
-import 'package:my_app/Models/user.dart';
+import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/IGenericRepository.dart';
 
 abstract class IRepoUser implements IGenericRepository<User> {
