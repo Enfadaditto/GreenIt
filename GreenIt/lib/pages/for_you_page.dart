@@ -153,20 +153,7 @@ class _PostDetailState extends State<PostDetail> {
     super.initState();
     _firstLoad();
     _controller = ScrollController()..addListener(_loadMore);
-
-    /* postPetition = repoPost.read('jrber23').then((data) {
-      return Post(
-          originalPoster: data.originalPoster,
-          firstStep: data.firstStep,
-          id: data.id,
-          serverName: data.serverName,
-          description: data.description);
-    }); */
   }
-
-  /* Future<void> initializePosts() async {
-    postPetition = repoPost.read('jrber23');
-  } */
 
   void onTabTapped(int index) {
     setState(() {
@@ -206,7 +193,6 @@ class _PostDetailState extends State<PostDetail> {
 
   @override
   Widget build(BuildContext context) {
-    // initializePosts();
     return Scaffold(
         appBar: buildForYouPageAppBar(context),
         body: _isFirstLoadRunning
@@ -357,158 +343,6 @@ class _PostDetailState extends State<PostDetail> {
                     )
                 ],
               )
-
-        /* Center(
-          child: 
-          
-          FutureBuilder<Post>(
-              future: ,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  return SingleChildScrollView(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: List.generate(
-                            1,
-                            (index) => PostWidget(
-                                  title:
-                                      '@${snapshot.data?.getOriginalPoster()?.getDisplayName()}',
-                                  description:
-                                      '${snapshot.data?.getDescription()}',
-                                  currentIndex: currentIndex,
-                                ))),
-                  );
-                }
-              }), */
         );
   }
 }
-
-/* class PostWidget extends StatelessWidget {
-  PostWidget(
-      {super.key,
-      required this.title,
-      required this.description,
-      required this.currentIndex});
-
-  final String title;
-  final String description;
-  int currentIndex;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: 16.0),
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                  builder: (context) => PostPage(
-                        author: 'Me',
-                        title: title,
-                        currentIndex: currentIndex,
-                      )),
-            );
-          },
-          child: Card(
-              color: const Color.fromARGB(255, 0, 0, 175),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Row(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000'),
-                        ),
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            title,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                                color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Image.network(
-                      'https://upload.wikimedia.org/wikipedia/commons/4/47/Cyanocitta_cristata_blue_jay.jpg'),
-                  Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          FutureBuilder(
-                            future: Future.wait([getNumLikes(), postIsLiked()]),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              } else if (snapshot.hasError) {
-                                return Center(
-                                    child: Text('Error: ${snapshot.error}'));
-                              } else {
-                                int numLikes = snapshot.data![0] as int;
-                                String isLiked = snapshot.data![1] as String;
-
-                                return LikeButton(
-                                    size: 32.0,
-                                    isLiked:
-                                        isLiked.contains("true") ? true : false,
-                                    likeCount: numLikes,
-                                    likeBuilder: (isLiked) {
-                                      return Icon(Icons.favorite,
-                                          color: isLiked
-                                              ? Colors.red
-                                              : Colors.white,
-                                          size: 32.0);
-                                    },
-                                    countBuilder: (likeCount, isLiked, text) {
-                                      return Text(
-                                        text,
-                                        style: const TextStyle(
-                                            color: Colors.white),
-                                      );
-                                    },
-                                    onTap: (isLiked) {
-                                      if (isLiked) {
-                                        return onUnlikeButtonTapped(isLiked);
-                                      } else {
-                                        return onLikeButtonTapped(isLiked);
-                                      }
-                                    });
-                              }
-                            },
-                          )
-                        ],
-                      )),
-                  Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: Expanded(
-                        child: Text(description,
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.left)),
-                  ),
-                ],
-              )),
-        )
-      ],
-    );
-  }
-
-  
-} */
