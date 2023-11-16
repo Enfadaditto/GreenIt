@@ -56,6 +56,37 @@ class RepoUser implements IRepoUser {
   }
 
   @override
+  Future<User> readName(String name) async {
+    User u;
+    try {
+      var data = await server
+          .fetchData("http://16.170.159.93/getUserByName?username=" + name);
+      u = User(
+          id: data['id'],
+          displayName: data['displayName'],
+          email: data['email'],
+          password: data['password'],
+          serverName: data['serverName'],
+          description: data['description'],
+          image: data['image'],
+          imagefield: '');
+    } catch (e) {
+      print("An error occurred: $e");
+      u = User(
+          displayName: name,
+          email: "email",
+          password: "password",
+          serverName: "serverName",
+          imagefield: '',
+          description: '',
+          id: 6969696969,
+          image: '');
+    }
+
+    return u;
+  }
+
+  @override
   void update(User t) {
     // TODO: implement update
   }
@@ -68,22 +99,25 @@ class RepoUser implements IRepoUser {
   Future<List<ReducedUser>> getFollowers(int userId) async {
     List<ReducedUser> followers = [];
     try {
-      var response = await server
-          .fetchData("http://16.170.159.93/followersUser?userId=" + userId.toString());
-      
+      var response = await server.fetchData(
+          "http://16.170.159.93/followersUser?userId=" + userId.toString());
+
       List<dynamic> list = response as List;
 
-    // Map each element in the list to a ReducedUser using the fromJson constructor.
-    followers = list.map((map) {
-      // Ensure that each element in the list is actually a Map.
-      if (map is Map<String, dynamic>) {
-        return ReducedUser.fromJson(map);
-      } else {
-        throw Exception('Expected each element in list to be a Map<String, dynamic>');
-      }
-    }).toList();
-    } catch (e) {print('Error fetching followers: $e');}
-    
+      // Map each element in the list to a ReducedUser using the fromJson constructor.
+      followers = list.map((map) {
+        // Ensure that each element in the list is actually a Map.
+        if (map is Map<String, dynamic>) {
+          return ReducedUser.fromJson(map);
+        } else {
+          throw Exception(
+              'Expected each element in list to be a Map<String, dynamic>');
+        }
+      }).toList();
+    } catch (e) {
+      print('Error fetching followers: $e');
+    }
+
     return followers;
   }
 
@@ -91,22 +125,25 @@ class RepoUser implements IRepoUser {
   Future<List<ReducedUser>> getFollowed(int userId) async {
     List<ReducedUser> followed = [];
     try {
-      var response = await server
-          .fetchData("http://16.170.159.93/followedByUser?userId=" + userId.toString());
-      
+      var response = await server.fetchData(
+          "http://16.170.159.93/followedByUser?userId=" + userId.toString());
+
       List<dynamic> list = response as List;
 
-    // Map each element in the list to a ReducedUser using the fromJson constructor.
-    followed = list.map((map) {
-      // Ensure that each element in the list is actually a Map.
-      if (map is Map<String, dynamic>) {
-        return ReducedUser.fromJson(map);
-      } else {
-        throw Exception('Expected each element in list to be a Map<String, dynamic>');
-      }
-    }).toList();
-    } catch (e) {print('Error fetching followers: $e');}
-    
+      // Map each element in the list to a ReducedUser using the fromJson constructor.
+      followed = list.map((map) {
+        // Ensure that each element in the list is actually a Map.
+        if (map is Map<String, dynamic>) {
+          return ReducedUser.fromJson(map);
+        } else {
+          throw Exception(
+              'Expected each element in list to be a Map<String, dynamic>');
+        }
+      }).toList();
+    } catch (e) {
+      print('Error fetching followers: $e');
+    }
+
     return followed;
   }
 }

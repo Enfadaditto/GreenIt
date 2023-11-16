@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_app/pages/post_preview.dart';
-import 'package:my_app/utils/user_pref.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:my_app/widgets/post_page/image_selector.dart';
 import 'package:my_app/models/Step.dart' as mod;
@@ -20,7 +19,6 @@ class _NewPostState extends State<NewPost> {
   TextEditingController _stepDescriptionController = TextEditingController();
   late String stepImage;
 
-  final user = UserPref.myUser;
   List<mod.Step> steps = [];
 
   void _createNewPost() {
@@ -32,7 +30,7 @@ class _NewPostState extends State<NewPost> {
   Widget build(BuildContext context) {
     void _createNewStep() {
       steps.add(mod.Step(
-          id: 'asd',
+          id: 1,
           description: _stepDescriptionController.text,
           image: stepImage,
           previousStep: null));
