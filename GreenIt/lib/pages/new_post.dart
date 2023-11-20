@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:my_app/pages/post_preview.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:my_app/widgets/post_page/image_selector.dart';
-import 'package:my_app/models/Step.dart' as mod;
+import 'package:my_app/Models/Step.dart' as mod;
 
 class NewPost extends StatefulWidget {
   const NewPost({super.key});
