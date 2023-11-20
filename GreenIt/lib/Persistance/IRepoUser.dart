@@ -6,6 +6,8 @@ abstract class IRepoUser implements IGenericRepository<User> {
   @override
   void create(User t);
 
+  Future<void> follow(int follower, int following);
+
   @override
   Future<User> read(String id);
 

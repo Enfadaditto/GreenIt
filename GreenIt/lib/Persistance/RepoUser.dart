@@ -25,6 +25,18 @@ class RepoUser implements IRepoUser {
   }
 
   @override
+  Future<void> follow(int follower, int following) async {
+    try {
+      server.insertData("http://16.170.159.93/addNewFollower?userId=" +
+          follower.toString() +
+          "&followedUserId=" +
+          following.toString());
+    } catch (e) {
+      print("An error occured while following a user: $e");
+    }
+  }
+
+  @override
   Future<User> read(String email) async {
     User u;
     try {
