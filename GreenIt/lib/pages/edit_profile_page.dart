@@ -30,11 +30,11 @@ class EditProfilePage extends StatelessWidget {
               physics: BouncingScrollPhysics(),
               children: [
                 const SizedBox(height: 24),
-                // ProfileWidget(
-                //   imagePath: user.imagePath,
-                //   isEdit: true,
-                //   onClicked: () async {},
-                // ),
+                ProfileWidget(
+                  imagePath: userData.image,
+                  isEdit: true,
+                  onClicked: () async {},
+                ),
                 const SizedBox(height: 24),
                 TextFieldWidget(
                   label: 'Full Name',
