@@ -1,64 +1,192 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/Models/user.dart';
+import 'package:my_app/Models/Post.dart';
+import 'package:my_app/Models/ReducedUser.dart';
+import 'package:my_app/Models/User.dart';
+import 'package:my_app/Persistance/IRepoPost.dart';
+import 'package:my_app/Persistance/IRepoUser.dart';
+import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/pages/edit_profile_page.dart';
 import 'package:my_app/widgets/profile_page/button_widget.dart';
 import 'package:my_app/widgets/profile_page/numbers_widget.dart';
 import 'package:my_app/widgets/profile_page/profile_gallery_widget.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
 import '../widgets/profile_page/profile_widget.dart';
+import 'package:my_app/Persistance/RepoUser.dart'; // Import your user repository
 
 class ProfilePage extends StatefulWidget {
-  final User user;
-
-  ProfilePage({required this.user});
+  final String data;
+  final String type;
+  ProfilePage({required this.data, required this.type});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  late Future<User> userPetition;
+  late Future<List<ReducedUser>> followers = Future.value([]);
+  late Future<List<ReducedUser>> followed = Future.value([]);
+  late Future<List<Post>> posts = Future.value([]);
+  final IRepoUser repoUser = RepoUser();
+  final IRepoPost repoPost = RepoPost();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+    _loadNumberFollowers();
+    _loadUserPosts();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      if (widget.type == "email") {
+        userPetition = repoUser.read(widget.data);
+      } else if (widget.type == "name") {
+        userPetition = repoUser.readName(widget.data);
+      } else {
+        userPetition = repoUser.read(widget.data);
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+      userPetition = User(
+        displayName: 'MISTAKE',
+        email: 'MISTAKE',
+        password: 'MISTAKE',
+        serverName: 'MISTAKE',
+        description: '',
+        id: 69696969,
+        image: '',
+        imagefield: '',
+      ) as Future<User>;
+    }
+  }
+
+  Future<void> _loadNumberFollowers() async {
+    User user;
+    if (widget.type == "email") {
+      user = await repoUser.read(widget.data);
+    } else if (widget.type == "name") {
+      user = await repoUser.readName(widget.data);
+    } else {
+      user = await repoUser.read(widget.data);
+    }
+    int userId = user.id;
+
+    try {
+      followers = repoUser.getFollowers(userId);
+      followed = repoUser.getFollowed(userId);
+    } catch (e) {
+      print('Error fetching followers: $e');
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+  // getAllPostsUser
+
+  Future<void> _loadUserPosts() async {
+    User user;
+    if (widget.type == "email") {
+      user = await repoUser.read(widget.data);
+    } else if (widget.type == "name") {
+      user = await repoUser.readName(widget.data);
+    } else {
+      user = await repoUser.read(widget.data);
+    }
+
+    try {
+      posts = repoPost.getAllPostsUser(user.displayName);
+    } catch (e) {
+      print('Error fetching followers: $e');
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context),
       body: ListView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         children: [
           const SizedBox(height: 24),
-          ProfileWidget(
-            imagePath:
-                'https://assets.laliga.com/squad/2023/t178/p56764/2048x2225/p56764_t178_2023_1_001_000.png',
-            onClicked: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                    builder: (context) => EditProfilePage(user: widget.user)),
-              );
-            },
-          ),
-          const SizedBox(height: 24),
-          buildName(widget.user),
+          buildProfileData(
+              userPetition), // Display user data if available// Show a loading indicator while fetching data
           const SizedBox(height: 24),
           Center(child: buildUpgradeButton()),
           const SizedBox(height: 12),
+          FutureBuilder(
+            // Wrap NumbersWidget in FutureBuilder
+            future: Future.wait([userPetition, followers, followed, posts]),
+            builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else {
+                final followers = snapshot.data![1] as List<ReducedUser>;
+                final followed = snapshot.data![2] as List<ReducedUser>;
+                final posts = snapshot.data![3] as List<Post>;
+
+                return Column(
+                  children: [
+                    NumbersWidget(userPetition, followers.length,
+                        followed.length, repoUser, posts.length),
+                    const SizedBox(height: 12),
+                    Container(
+                      height: 900,
+                      padding: const EdgeInsets.all(10),
+                      child: buildProfileGallery(context, posts),
+                    ),
+                  ],
+                );
+              }
+            },
+          ),
         ],
       ),
     );
   }
 
-  Widget buildName(User user) => Column(
-        children: [
-          Text(
-            user.displayName,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            user.email,
-            style: TextStyle(color: Colors.grey),
-          ),
-        ],
+  Widget buildProfileData(Future<User> user) => FutureBuilder<User>(
+        future: user,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Display a loading indicator while waiting for data
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            final user = snapshot.data;
+            return Column(
+              children: [
+                ProfileWidget(
+                  imagePath: user!.image,
+                  onClicked: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EditProfilePage(user: userPetition),
+                      ),
+                    );
+                  },
+                ),
+                Text(
+                  user.displayName,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 22),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  user.email,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+              ],
+            );
+          }
+        },
       );
-}
 
-Widget buildUpgradeButton() =>
-    ButtonWidget(text: 'Upgrade to PRO', onClicked: () {});
+  Widget buildUpgradeButton() =>
+      ButtonWidget(text: 'Upgrade to PRO', onClicked: () {});
+}

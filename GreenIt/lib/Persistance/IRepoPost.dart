@@ -1,8 +1,7 @@
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Persistance/IGenericRepository.dart';
 
-abstract class IRepoPost implements IGenericRepository<Post>{
-  
+abstract class IRepoPost implements IGenericRepository<Post> {
   @override
   void create(Post t);
 
@@ -13,4 +12,6 @@ abstract class IRepoPost implements IGenericRepository<Post>{
   void update(Post t);
 
   void delete(Post t);
+
+  Future<List<Post>> getAllPostsUser(String displayName);
 }

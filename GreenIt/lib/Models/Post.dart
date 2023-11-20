@@ -1,10 +1,10 @@
 import 'package:my_app/Models/Step.dart';
-import 'package:my_app/Models/user.dart';
+import 'package:my_app/Models/User.dart';
 
 class Post {
   User? originalPoster;
   Step? firstStep;
-  String id;
+  int id;
   String serverName; //server where post is stored
   String description;
 
@@ -27,15 +27,15 @@ class Post {
     return firstStep;
   }
 
-  void setFirstStep(Step step) {
+  void setFirstStep(Step? step) {
     firstStep = step;
   }
 
-  String getId() {
+  int getId() {
     return id;
   }
 
-  void setId(String newId) {
+  void setId(int newId) {
     id = newId;
   }
 
@@ -46,12 +46,45 @@ class Post {
   void setServerName(String newServerName) {
     serverName = newServerName;
   }
-
   String getDescription() {
     return description;
   }
 
   void setDescription(String newDescription) {
     description = newDescription;
+    
+   factory Post.fromJson(Map<String, dynamic> data) {
+    return Post(
+        originalPoster: null,
+        firstStep: null,
+        id: data['id'],
+        serverName: data['serverName']);
+  }
+  
+  static User jsonToUser(Map<String, dynamic> datad) {
+    return User(
+        id: datad['id'],
+        displayName: datad['displayName'],
+        email: datad['email'],
+        password: datad['password'],
+        serverName: datad['serverName'],
+        description: datad['description'],
+        image: datad['image'],
+        imagefield: '');
+  }
+
+  static Step jsonToStep(Map<String, dynamic> datad) {
+    return Step(
+        id: datad['id'],
+        previousStep: datad['previousStep'],
+        description: datad['description'],
+        image: datad['image']);
+  }
+
+  static Post cosa(Map<String, dynamic> data){
+    var p = Post.fromJson(data);
+    p.setFirstStep(jsonToStep(data['firstStep']));
+    p.setOriginalPoster(jsonToUser(data['creator']));
+    return p;
   }
 }

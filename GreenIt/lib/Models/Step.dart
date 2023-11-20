@@ -2,7 +2,7 @@ import 'package:my_app/Models/Comment.dart';
 
 class Step{
 
-  late String id;
+  late int id;
 
   late Step? previousStep;
 

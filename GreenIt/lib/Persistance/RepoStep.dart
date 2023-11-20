@@ -17,12 +17,12 @@ class RepoStep implements IRepoStep{
   Future<Step> read(String id) async{
     Step s;
     try {
-      var data = await server.fetchData("http://13.49.72.206/step?id" + id);
+      var data = await server.fetchData("http://16.170.159.93/step?id" + id);
       s = Step(id: data['id'], previousStep: data['previousStep'], description: data['description'], image: data['image']);
       return s;
     } catch (e) {
       print("An error occurred: $e");
-      return Step(id: 'id', previousStep: null, description: 'description', image: 'image');
+      return Step(id: 6969696, previousStep: null, description: 'description', image: 'image');
     }
   }
 
