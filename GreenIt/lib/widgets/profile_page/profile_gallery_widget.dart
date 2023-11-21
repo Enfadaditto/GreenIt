@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/Models/Comment.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/pages/post_page.dart';
 
@@ -23,7 +24,10 @@ GridView buildProfileGallery(BuildContext context, List<Post> posts) =>
                   author: 'Me', // Replace with the actual author
                   title:
                       'TITLE', // Replace with the actual title from the Post object
-                  comments: ["ASDF", "GHKJ", "QWER"],
+                  comments: [
+                    Comment(comment: "ASDF", author: "your"),
+                    Comment(comment: "QWER", author: "mama")
+                  ],
                   currentIndex: index,
                 ),
               ),

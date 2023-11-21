@@ -1,6 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:my_app/Models/Comment.dart';
+import 'package:my_app/Models/User.dart';
+import 'package:my_app/Persistance/RepoComment.dart';
+import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/for_you_page.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
 
@@ -9,7 +13,7 @@ class PostPage extends StatefulWidget {
 
   final String author;
   final String title;
-  final List<String> comments;
+  final List<Comment> comments;
   //final List<String> steps; //Steps
 
   PostPage({
@@ -26,6 +30,17 @@ class PostPage extends StatefulWidget {
 }
 
 class PostDetailed extends State<PostPage> {
+  late Future<User> registeredUser;
+  @override
+  void initState() {
+    // TODO: implement initState
+    try {
+      registeredUser = RepoUser().read("jrber23");
+    } catch (e) {
+      print("error");
+    }
+  }
+
   String placeholderIMG =
       'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000';
   //final List<String> steps;
@@ -39,6 +54,15 @@ class PostDetailed extends State<PostPage> {
       setState(() {
         widget.currentIndex = index;
       });
+    }
+
+    void _respondComment(Comment respondedComment) {
+      Comment answerToComment = Comment(
+          comment: _commentController.text,
+          author: "me",
+          responseTo: respondedComment);
+
+      //RepoComment().create(answerToComment);
     }
 
     return MaterialApp(
@@ -58,10 +82,6 @@ class PostDetailed extends State<PostPage> {
                     child: PageView(
                       scrollDirection: Axis.horizontal,
                       children: <Widget>[
-                        //steps.forEach((step) {
-                        //  StepCard(step.description, step.image);
-                        //})
-
                         StepCard('Description Red', placeholderIMG),
                         StepCard('Description Blue', placeholderIMG),
                         StepCard('Description Green', placeholderIMG),
@@ -85,7 +105,29 @@ class PostDetailed extends State<PostPage> {
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: widget.comments.length,
                       itemBuilder: (context, index) {
-                        return ListTile(title: Text(widget.comments[index]));
+                        return Row(
+                          children: [
+                            Column(
+                              children: [
+                                Text(widget.comments[index].author,
+                                    style: const TextStyle(
+                                        color: Colors.black12, fontSize: 12)),
+                                const SizedBox(height: 3),
+                                Text(widget.comments[index].comment,
+                                    style: const TextStyle(fontSize: 18)),
+                              ],
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                  onPressed: () {
+                                    _respondComment(widget.comments[index]);
+                                  },
+                                  icon: Icon(
+                                      Icons.subdirectory_arrow_left_rounded)),
+                            )
+                          ],
+                        );
                       },
                     ),
                     TextFormField(
@@ -96,7 +138,9 @@ class PostDetailed extends State<PostPage> {
                             icon: Icon(Icons.send),
                             onPressed: () {
                               setState(() {
-                                widget.comments.add(_commentController.text);
+                                widget.comments.add(Comment(
+                                    comment: _commentController.text,
+                                    author: "Comment's Author"));
                                 _commentController.clear();
                               });
                             },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:my_app/Decoding.dart';
+import 'package:my_app/Models/Comment.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Persistance/IRepoPost.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
@@ -142,7 +143,10 @@ class PostWidget extends StatelessWidget {
                   builder: (context) => PostPage(
                         author: 'Me',
                         title: title,
-                        comments: ["ASDF", "GHKJ", "QWER"],
+                        comments: [
+                          Comment(comment: "ASDF", author: "your"),
+                          Comment(comment: "QWER", author: "mama")
+                        ],
                         currentIndex: currentIndex,
                       )),
             );
