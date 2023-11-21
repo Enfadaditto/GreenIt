@@ -32,7 +32,7 @@ class RepoPost implements IRepoPost {
       p = Post(
           originalPoster: jsonToUser(data[0]['creator']),
           firstStep: /* jsonToStep(data[0]['firstStep']) */ null,
-          id: data[0]['id'].toString(),
+          id: data[0]['id'],
           serverName: data[0]['serverName'],
           description: data[0]['description']);
     } catch (e) {
@@ -40,7 +40,7 @@ class RepoPost implements IRepoPost {
       p = Post(
           originalPoster: null,
           firstStep: null,
-          id: 'id',
+          id: 0,
           serverName: "serverName",
           description: "description");
     }

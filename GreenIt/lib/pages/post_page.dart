@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:my_app/pages/stepper.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
 
 class PostPage extends StatefulWidget {
@@ -61,11 +62,19 @@ class PostDetailed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      // width: double.infinity,
+      height: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          const SizedBox(height: 25),
+          Expanded(
+              child: Center(
+            child: Container(
+              child: MyStepper(),
+            ),
+          )),
+          //const SizedBox(height: 25),
           SizedBox(
             height: 500,
             child: PageView(

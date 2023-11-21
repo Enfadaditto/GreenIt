@@ -52,13 +52,15 @@ class Post {
 
   void setDescription(String newDescription) {
     description = newDescription;
+  }
     
    factory Post.fromJson(Map<String, dynamic> data) {
     return Post(
         originalPoster: null,
         firstStep: null,
         id: data['id'],
-        serverName: data['serverName']);
+        serverName: data['serverName'],
+        description: data['description']);
   }
   
   static User jsonToUser(Map<String, dynamic> datad) {

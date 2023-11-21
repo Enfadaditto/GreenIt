@@ -12,6 +12,7 @@ import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/Persistance/ServerConnect.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/post_page.dart';
+import 'package:my_app/pages/stepper.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:http/http.dart' as http;
 
@@ -81,7 +82,7 @@ class _PostDetailState extends State<PostDetail> {
           Post p = Post(
               originalPoster: RepoPost().jsonToUser(_posts[i]['creator']),
               firstStep: null,
-              id: fetchedPosts[i]['id'].toString(),
+              id: fetchedPosts[i]['id'],
               serverName: fetchedPosts[i]['serverName'],
               description: fetchedPosts[i]['description']);
 
@@ -126,7 +127,7 @@ class _PostDetailState extends State<PostDetail> {
           Post p = Post(
               originalPoster: RepoPost().jsonToUser(_posts[i]['creator']),
               firstStep: null,
-              id: _posts[i]['id'].toString(),
+              id: _posts[i]['id'],
               serverName: _posts[i]['serverName'],
               description: _posts[i]['description']);
 
@@ -236,8 +237,14 @@ class _PostDetailState extends State<PostDetail> {
                                       ),
                                     ],
                                   ),
-                                  Image.network(
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => PostPage(author: "author", title: "title", currentIndex: currentIndex)));
+                                    },
+                                    child: Image.network(
                                       'https://upload.wikimedia.org/wikipedia/commons/4/47/Cyanocitta_cristata_blue_jay.jpg'),
+                                  ),
+                                  
                                   Padding(
                                       padding: const EdgeInsets.all(16.0),
                                       child: Row(
@@ -247,9 +254,9 @@ class _PostDetailState extends State<PostDetail> {
                                           FutureBuilder(
                                             future: Future.wait([
                                               getNumLikes(
-                                                  postsObjects[index].getId()),
+                                                  postsObjects[index].getId().toString()),
                                               postIsLiked(
-                                                  postsObjects[index].getId())
+                                                  postsObjects[index].getId().toString())
                                             ]),
                                             builder: (context, snapshot) {
                                               if (snapshot.connectionState ==
@@ -299,7 +306,7 @@ class _PostDetailState extends State<PostDetail> {
                                                                 .getOriginalPoster()!
                                                                 .getDisplayName(),
                                                             postsObjects[index]
-                                                                .getId());
+                                                                .getId().toString());
                                                       } else {
                                                         return onLikeButtonTapped(
                                                             isLiked,
@@ -307,7 +314,7 @@ class _PostDetailState extends State<PostDetail> {
                                                                 .getOriginalPoster()!
                                                                 .getDisplayName(),
                                                             postsObjects[index]
-                                                                .getId());
+                                                                .getId().toString());
                                                       }
                                                     });
                                               }
