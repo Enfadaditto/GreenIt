@@ -23,6 +23,7 @@ GridView buildProfileGallery(BuildContext context, List<Post> posts) =>
                   author: 'Me', // Replace with the actual author
                   title:
                       'TITLE', // Replace with the actual title from the Post object
+                  comments: ["ASDF", "GHKJ", "QWER"],
                   currentIndex: index,
                 ),
               ),
