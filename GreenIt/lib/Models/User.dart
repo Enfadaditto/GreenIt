@@ -66,4 +66,9 @@ class User {
   get getImagefield => this.imagefield;
 
   set setImagefield(imagefield) => this.imagefield = imagefield;
+
+  get getId => this.id;
+
+  set setId(id) => this.id = id;
+
 }
