@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:my_app/Models/ReducedUser.dart';
 import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/IGenericRepository.dart';
@@ -88,7 +89,20 @@ class RepoUser implements IRepoUser {
 
   @override
   void update(User t) {
-    // TODO: implement update
+    try{
+      //http://16.170.159.93/updateUser?id=6&email=rizna@gmail.com&password=yourPassword&username=rizna&image=imageURL&description=adre
+      server.insertData("http://16.170.159.93/updateUser?id=" +
+        t.getId.toString() +
+        "&email=" + t.email +
+        "&password=" + t.password +
+        "&username=" + t.displayName +
+        "&image=" + t.getImage +
+        "&description=" + t.getDescription
+        );
+    } catch(e){
+      print("$e - Error updating user");
+    }
+    
   }
 
   void delete(User t) {
@@ -145,5 +159,53 @@ class RepoUser implements IRepoUser {
     }
 
     return followed;
+  }
+
+  //userId= user that stops following
+  Future<void> unfollow(int userId, int unfollowedUserId) async {
+    try{
+        var response = await server.fetchData(
+          "http://16.170.159.93/unfollow?userId=" + userId.toString() + "&unfollowedUserId=" + unfollowedUserId.toString());
+
+        print("OK - user unfollowed");
+    } catch(e){
+      print(e.toString() + " - Operation failed");
+    }
+  }
+
+  Future<int> getCountFollowers(int userId) async {
+    var data = 0;
+
+    try {
+      data =
+          await server.fetchData("http://16.170.159.93/getFollowersCount?userId=" + userId.toString());
+    } catch(e){
+      print(" Error - $e");
+    }
+    return data;
+  }
+
+  Future<int>  getCountFollowed(int userId) async {
+    var data = 0;
+
+    try {
+      data =
+          await server.fetchData("http://16.170.159.93/getFollowedCount?userId=" + userId.toString());
+    } catch(e){
+      print(" Error - $e");
+    }
+    return data;
+  }
+  //getCountOfUserPosts
+  Future<int>  getCountPosts(String username) async{
+    var data = 0;
+
+    try {
+      data =
+          await server.fetchData("http://16.170.159.93/getCountOfUserPosts?username=" + username);
+    } catch(e){
+      print(" Error - $e");
+    }
+    return data;
   }
 }
