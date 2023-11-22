@@ -208,4 +208,19 @@ class RepoUser implements IRepoUser {
     }
     return data;
   }
+
+  //checks if userId follows followedId
+  Future<bool> checkFollows(int userId, int followedId) async {
+  bool follows = false;
+  try {
+    var response = await server.fetchData("http://16.170.159.93/checkFollows?userId=${userId}&followedId=${followedId}");
+    // Assuming the response is a String. If it's not, you need to parse it accordingly.
+    if (response) {
+      follows = true;
+    }
+  } catch (e) {
+    print("Error - $e");
+  }
+  return follows;
+}
 }
