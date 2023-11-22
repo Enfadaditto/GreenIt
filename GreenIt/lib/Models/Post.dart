@@ -4,12 +4,16 @@ import 'package:my_app/Models/User.dart';
 class Post {
   User? originalPoster;
   Step? firstStep;
+  String description;
+  String imagenPreview;
   int id;
   String serverName; //server where post is stored
 
   Post(
       {required this.originalPoster,
       required this.firstStep,
+      required this.description,
+      required this.imagenPreview,
       required this.id,
       required this.serverName});
 
@@ -45,14 +49,16 @@ class Post {
     serverName = newServerName;
   }
 
-   factory Post.fromJson(Map<String, dynamic> data) {
+  factory Post.fromJson(Map<String, dynamic> data) {
     return Post(
         originalPoster: null,
         firstStep: null,
+        description: data['description'],
+        imagenPreview: data['image'],
         id: data['id'],
         serverName: data['serverName']);
   }
-  
+
   static User jsonToUser(Map<String, dynamic> datad) {
     return User(
         id: datad['id'],
@@ -69,11 +75,12 @@ class Post {
     return Step(
         id: datad['id'],
         previousStep: datad['previousStep'],
+        postId: datad['postid'],
         description: datad['description'],
         image: datad['image']);
   }
 
-  static Post cosa(Map<String, dynamic> data){
+  static Post cosa(Map<String, dynamic> data) {
     var p = Post.fromJson(data);
     p.setFirstStep(jsonToStep(data['firstStep']));
     p.setOriginalPoster(jsonToUser(data['creator']));

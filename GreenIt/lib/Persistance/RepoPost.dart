@@ -11,12 +11,12 @@ class RepoPost implements IRepoPost {
   @override
   void create(Post t) {
     try {
-      server.insertData("http://16.170.159.93/publish?username" +
-          /*(t.originalPoster.displayName)*/ "placeholderUsername" +
+      server.insertData("http://16.170.159.93/publish?username=" +
+          "rizna" +
           "&description=" +
-          "placeholderDescription" +
+          t.description +
           "&image=" +
-          "placeholderImage");
+          t.imagenPreview);
     } catch (e) {
       print("An error occurred: $e");
     }
@@ -33,6 +33,8 @@ class RepoPost implements IRepoPost {
       p = Post(
           originalPoster: jsonToUser(data[0]['creator']),
           firstStep: /* jsonToStep(data[0]['firstStep']) */ null,
+          description: '',
+          imagenPreview: '',
           id: data[0]['id'],
           serverName: data[0]['serverName']);
     } catch (e) {
@@ -40,6 +42,8 @@ class RepoPost implements IRepoPost {
       p = Post(
           originalPoster: null,
           firstStep: null,
+          description: '',
+          imagenPreview: '',
           id: 6969696,
           serverName: "serverName");
     }
@@ -71,15 +75,19 @@ class RepoPost implements IRepoPost {
     return Step(
         id: datad['id'],
         previousStep: jsonToStep2(datad['previousStep']),
+        postId: datad['postid'],
         description: datad['description'],
         image: datad['image']);
   }
 
   Step? jsonToStep2(Map<String, dynamic>? datad) {
-    if(datad == null){return null;}
+    if (datad == null) {
+      return null;
+    }
     return Step(
         id: datad?['id'],
         previousStep: jsonToStep2(datad?['previousStep']),
+        postId: datad['postid'],
         description: datad?['description'],
         image: datad?['image']);
   }

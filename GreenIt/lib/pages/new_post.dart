@@ -22,8 +22,11 @@ class _NewPostState extends State<NewPost> {
   List<mod.Step> steps = [];
 
   void _createNewPost() {
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => PostPreview(steps: steps)));
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => PostPreview(
+              steps: steps,
+              postDescription: _titleController.text,
+            )));
   }
 
   @override
@@ -33,6 +36,7 @@ class _NewPostState extends State<NewPost> {
           id: 1,
           description: _stepDescriptionController.text,
           image: stepImage,
+          postId: -1,
           previousStep: null));
 
       print(steps.length);
@@ -52,7 +56,8 @@ class _NewPostState extends State<NewPost> {
             Text('TITLE:', style: TextStyle(fontSize: 18)),
             TextField(
                 controller: _titleController,
-                decoration: InputDecoration(labelText: "Your diary title")),
+                decoration:
+                    InputDecoration(labelText: "Your diary description")),
             SizedBox(height: 30),
             Text("STEPS:", style: TextStyle(fontSize: 18)),
             SizedBox(height: 30),

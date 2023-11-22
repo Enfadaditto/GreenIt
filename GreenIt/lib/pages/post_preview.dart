@@ -3,15 +3,23 @@ import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/Persistance/RepoStep.dart';
+import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/post_page.dart';
 import 'package:my_app/Models/Step.dart' as mod;
 import 'package:my_app/pages/users_list.dart';
 import 'package:my_app/utils/notuser_preferences.dart';
 
 class PostPreview extends StatefulWidget {
-  PostPreview({required this.steps});
+  PostPreview({required this.steps, required this.postDescription});
+
+  late User registeredUser;
+
+  void getUser() async {
+    registeredUser = await RepoUser().read("rizna");
+  }
 
   List<mod.Step> steps;
+  String postDescription;
 
   @override
   State<StatefulWidget> createState() => _PostPreviewState();
@@ -19,6 +27,8 @@ class PostPreview extends StatefulWidget {
 
 class _PostPreviewState extends State<PostPreview> {
   void _uSure(BuildContext context) {
+    widget.getUser();
+
     showDialog(
         context: context,
         builder: (context) {
@@ -38,15 +48,26 @@ class _PostPreviewState extends State<PostPreview> {
 
   void _publishPost() {
     RepoPost repoPost = RepoPost();
-    repoPost.create(Post(
-        firstStep: widget.steps.first,
-        id: 123456789,
-        originalPoster: null,
-        serverName: "serverName"));
-
     RepoStep repoStep = RepoStep();
-    for (int i = 0; i < widget.steps.length; i++) {
-      repoStep.create(widget.steps[i]);
+
+    Post postDummy = Post(
+        firstStep: null,
+        id: -1,
+        description: widget.postDescription,
+        originalPoster: widget.registeredUser,
+        serverName: "",
+        imagenPreview: "");
+
+    postDummy.setFirstStep(widget.steps.first);
+
+    repoPost.create(postDummy);
+    repoStep.create(widget.steps[0]);
+
+    for (int i = 1; i < widget.steps.length; i++) {
+      mod.Step stepDummy = widget.steps[i];
+      stepDummy.setPreviousStep(widget.steps[i - 1]);
+      stepDummy.setPostId(postDummy.id);
+      repoStep.create(stepDummy);
     }
   }
 

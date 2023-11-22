@@ -48,6 +48,8 @@ class _PostDetailState extends State<PostDetail> {
       return Post(
           originalPoster: data.originalPoster,
           firstStep: data.firstStep,
+          description: data.description,
+          imagenPreview: data.imagenPreview,
           id: data.id,
           serverName: data.serverName);
     });
