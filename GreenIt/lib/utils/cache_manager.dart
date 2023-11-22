@@ -7,9 +7,9 @@ class CacheManager {
   static const String userIdKey = 'userId';
 
   // Odczytuje preferencje użytkownika: nazwę użytkownika
-  static Future<String?> getUsername() async {
+  static Future<String> getUsername() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(usernameKey);
+    return prefs.getString(usernameKey) ?? "";
   }
 
   // Zapisuje preferencje użytkownika: nazwę użytkownika

@@ -90,18 +90,7 @@ class RepoUser implements IRepoUser {
   @override
   void update(User t) {
     try {
-      print(("http://16.170.159.93/updateUser?id=" +
-          t.getId.toString() +
-          "&email=" +
-          t.email +
-          "&password=" +
-          t.password +
-          "&username=" +
-          t.displayName +
-          "&image=" +
-          t.getImage +
-          "&description=" +
-          t.getDescription)); //http://16.170.159.93/updateUser?id=6&email=rizna@gmail.com&password=yourPassword&username=rizna&image=imageURL&description=adre
+//16.170.159.93/updateUser?id=6&email=rizna@gmail.com&password=yourPassword&username=rizna&image=imageURL&description=adre
       server.insertData("http://16.170.159.93/updateUser?id=" +
           t.getId.toString() +
           "&email=" +

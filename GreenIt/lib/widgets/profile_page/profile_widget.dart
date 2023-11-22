@@ -16,7 +16,8 @@ class ProfileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.primary;
+    // final color = Theme.of(context).colorScheme.primary;
+    // TODO : themes in the projects
 
     return Center(
       child: Stack(
@@ -24,7 +25,7 @@ class ProfileWidget extends StatelessWidget {
           buildImage(),
           if (ownProfile) // build if user is on his own profile page
             Positioned(
-              child: buildEditIcon(color),
+              child: buildEditIcon(Colors.green),
               bottom: 0,
               right: 4,
             ),

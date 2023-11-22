@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/widgets/appbar_widget.dart';
 import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/IRepoUser.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
-import 'package:my_app/widgets/appbar_widget.dart';
+import 'package:my_app/pages/profile_page.dart';
 import 'package:my_app/widgets/profile_page/profile_widget.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -92,6 +93,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () {
                     // Collect data from text fields
                     final updatedUser = userData;
@@ -102,11 +105,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     try {
                       updatedUser.printUser();
                       repoUser.update(updatedUser);
+                      showUpdateSuccessDialog(context);
                     } catch (e) {
                       print(
                           "Error while updating an update of user with Edit Profile Page $e");
                     }
-
+                    // Navigator.pop(context);
+                    // Navigator.pushReplacement(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => ProfilePage(
+                    //             data: updatedUser.displayName, type: 'name')));
                     // TODO: Handle success or error after updating
                   },
                   child: Text('Save Changes'),
@@ -118,4 +127,48 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ),
     );
   }
+}
+
+void showUpdateSuccessDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Update Successful!',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Your profile information has been updated successfully.',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green, // Green color
+                  foregroundColor: Colors.white, // White text color
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: const Text('Okay!'),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }

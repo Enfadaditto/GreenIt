@@ -11,7 +11,7 @@ void main() async {
   // Ustawienia wartości przed uruchomieniem strony
   await CacheManager.setUsername('jrber23');
   await CacheManager.setEmail('');
-  await CacheManager.setDarkMode(false);
+  // await CacheManager.setDarkMode(false);
   await CacheManager.setUserId(9);
 
   runApp(const MyApp());
