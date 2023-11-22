@@ -6,12 +6,14 @@ class Post {
   Step? firstStep;
   int id;
   String serverName; //server where post is stored
+  String description;
 
   Post(
       {required this.originalPoster,
       required this.firstStep,
       required this.id,
-      required this.serverName});
+      required this.serverName,
+      required this.description});
 
   User? getOriginalPoster() {
     return originalPoster;
@@ -44,13 +46,21 @@ class Post {
   void setServerName(String newServerName) {
     serverName = newServerName;
   }
+  String getDescription() {
+    return description;
+  }
 
+  void setDescription(String newDescription) {
+    description = newDescription;
+  }
+    
    factory Post.fromJson(Map<String, dynamic> data) {
     return Post(
         originalPoster: null,
         firstStep: null,
         id: data['id'],
-        serverName: data['serverName']);
+        serverName: data['serverName'],
+        description: data['description']);
   }
   
   static User jsonToUser(Map<String, dynamic> datad) {
