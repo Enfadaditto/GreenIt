@@ -19,4 +19,14 @@ abstract class IRepoUser implements IGenericRepository<User> {
   Future<List<ReducedUser>> getFollowers(int userId);
 
   Future<List<ReducedUser>> getFollowed(int userId);
+
+  Future<void> follow(int follower, int following);
+
+  Future<void> unfollow(int userId, int unfollowedUserId);
+
+  Future<int> getCountFollowers(int userId);
+
+  Future<int> getCountFollowed(int userId);
+
+  Future<int> getCountPosts(String username);
 }

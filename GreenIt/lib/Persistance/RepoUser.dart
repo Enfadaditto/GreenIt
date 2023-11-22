@@ -102,7 +102,7 @@ class RepoUser implements IRepoUser {
     } catch(e){
       print("$e - Error updating user");
     }
-    
+   
   }
 
   void delete(User t) {
@@ -161,18 +161,36 @@ class RepoUser implements IRepoUser {
     return followed;
   }
 
-  //userId= user that stops following
-  Future<void> unfollow(int userId, int unfollowedUserId) async {
-    try{
-        var response = await server.fetchData(
-          "http://16.170.159.93/unfollow?userId=" + userId.toString() + "&unfollowedUserId=" + unfollowedUserId.toString());
 
-        print("OK - user unfollowed");
-    } catch(e){
+  @override
+  Future<void> follow(int follower, int following) async {
+    try {
+      server.insertData("http://16.170.159.93/addNewFollower?userId=" +
+          follower.toString() +
+          "&followedUserId=" +
+          following.toString());
+    } catch (e) {
+      print("An error occured while following a user: $e");
+    }
+  }
+
+  //userId= user that stops following
+  @override
+  Future<void> unfollow(int userId, int unfollowedUserId) async {
+    try {
+      var response = await server.fetchData(
+          "http://16.170.159.93/unfollow?userId=" +
+              userId.toString() +
+              "&unfollowedUserId=" +
+              unfollowedUserId.toString());
+
+      print("OK - user unfollowed");
+    } catch (e) {
       print(e.toString() + " - Operation failed");
     }
   }
 
+  @override
   Future<int> getCountFollowers(int userId) async {
     var data = 0;
 
@@ -185,30 +203,33 @@ class RepoUser implements IRepoUser {
     return data;
   }
 
-  Future<int>  getCountFollowed(int userId) async {
+  @override
+  Future<int> getCountFollowed(int userId) async {
     var data = 0;
 
     try {
-      data =
-          await server.fetchData("http://16.170.159.93/getFollowedCount?userId=" + userId.toString());
-    } catch(e){
+      data = await server.fetchData(
+          "http://16.170.159.93/getFollowedCount?userId=" + userId.toString());
+    } catch (e) {
       print(" Error - $e");
     }
     return data;
   }
+  
   //getCountOfUserPosts
-  Future<int>  getCountPosts(String username) async{
+  @override
+  Future<int> getCountPosts(String username) async {
     var data = 0;
 
     try {
-      data =
-          await server.fetchData("http://16.170.159.93/getCountOfUserPosts?username=" + username);
-    } catch(e){
+      data = await server.fetchData(
+          "http://16.170.159.93/getCountOfUserPosts?username=" + username);
+    } catch (e) {
       print(" Error - $e");
     }
     return data;
   }
-
+  
   //checks if userId follows followedId
   Future<bool> checkFollows(int userId, int followedId) async {
   bool follows = false;
@@ -223,4 +244,5 @@ class RepoUser implements IRepoUser {
   }
   return follows;
 }
+
 }

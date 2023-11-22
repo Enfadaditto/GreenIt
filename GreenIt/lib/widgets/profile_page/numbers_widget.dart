@@ -64,12 +64,12 @@ Widget buildButton(BuildContext context, int value, String text, User user,
           children: <Widget>[
             Text(
               value.toString(),
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
             ),
             const SizedBox(height: 2),
             Text(
               text,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
             ),
           ],
         ));

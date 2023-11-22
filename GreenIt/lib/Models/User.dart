@@ -13,8 +13,7 @@ class User {
   late String imagefield;
 
   User(
-      {
-      required this.id,
+      {required this.id,
       required this.displayName,
       required this.email,
       required this.password,
@@ -55,6 +54,18 @@ class User {
     this.serverName = serverName;
   }
 
+  void printUser() {
+    print('User Details:');
+    print('ID: $id');
+    print('Display Name: $displayName');
+    print('Email: $email');
+    print('Password: $password');
+    print('Server Name: $serverName');
+    print('Description: $description');
+    print('Image: $image');
+    print('Image Field: $imagefield');
+  }
+
   get getDescription => this.description;
 
   set setDescription(description) => this.description = description;
@@ -70,5 +81,4 @@ class User {
   get getId => this.id;
 
   set setId(id) => this.id = id;
-
 }
