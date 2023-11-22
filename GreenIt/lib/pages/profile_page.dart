@@ -10,7 +10,6 @@ import 'package:my_app/widgets/profile_page/button_widget.dart';
 import 'package:my_app/widgets/profile_page/numbers_widget.dart';
 import 'package:my_app/widgets/profile_page/profile_gallery_widget.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
-import 'package:my_app/widgets/profile_page/upgrade_widget.dart';
 import '../utils/cache_manager.dart';
 import '../widgets/profile_page/profile_widget.dart';
 import 'package:my_app/Persistance/RepoUser.dart'; // Import your user repository
@@ -181,11 +180,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   return CircularProgressIndicator();
                 } else {
                   final followerId = userIdSnapshot.data;
-
+                  String d2 = user!.description;
+                  for (int i = 0; i < 20; i++) d2 += user.description;
                   return Column(
                     children: [
                       ProfileWidget(
                         imagePath: user!.image,
+                        ownProfile: isCurrentUser!,
                         onClicked: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -194,7 +195,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           );
                         },
+                        isEdit: false,
                       ),
+                      const SizedBox(height: 16),
                       Text(
                         user.displayName,
                         style: const TextStyle(
@@ -202,18 +205,21 @@ class _ProfilePageState extends State<ProfilePage> {
                           fontSize: 22,
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        user.email,
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                      const SizedBox(height: 24),
+                      // const SizedBox(height: 4),
+                      // Text(
+                      //   user.email,
+                      //   style: const TextStyle(color: Colors.grey),
+                      // ),
+                      const SizedBox(height: 16),
+                      if (user.description.isNotEmpty)
+                        buildAbout(user.description),
+                      const SizedBox(height: 16),
                       Center(
                         child: followerId != null
                             ? followerId == user.id
                                 ? buildUpgradeButton(context)
                                 : buildFollowButton(followerId, user.id)
-                            : CircularProgressIndicator(),
+                            : const CircularProgressIndicator(),
                       ),
                     ],
                   );
@@ -222,6 +228,30 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           }
         },
+      );
+
+  Widget buildAbout(String description) => Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: 5, vertical: 5), // Adjusted horizontal padding
+        color: Colors.grey[200], // Light grey background color
+        height: 5 * 16.0, // 5 lines of text, each with a height of 16.0
+        width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
+        child: SingleChildScrollView(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    description,
+                    softWrap: true,
+                    style: TextStyle(fontSize: 16, height: 1.4),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
       );
 
   Widget buildUpgradeButton(BuildContext context) => ElevatedButton(

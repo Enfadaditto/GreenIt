@@ -1,23 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/Models/User.dart';
+import 'package:my_app/Persistance/IRepoUser.dart';
+import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
 import 'package:my_app/widgets/profile_page/profile_widget.dart';
-import 'package:my_app/widgets/profile_page/textfield_widget.dart';
 
-class EditProfilePage extends StatelessWidget {
+class EditProfilePage extends StatefulWidget {
   final Future<User?> user;
 
   EditProfilePage({required this.user});
+
+  @override
+  _EditProfilePageState createState() => _EditProfilePageState();
+}
+
+class _EditProfilePageState extends State<EditProfilePage> {
+  TextEditingController displayNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController aboutController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Set initial values in the text controllers when the user data is available
+    widget.user.then((user) {
+      if (user != null) {
+        displayNameController.text = user.displayName;
+        emailController.text = user.email;
+        aboutController.text = user.description;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context),
       body: FutureBuilder<User?>(
-        future: user,
+        future: widget.user,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator(); // Show a loading indicator while data is being fetched.
+            return const CircularProgressIndicator();
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else if (!snapshot.hasData || snapshot.data == null) {
@@ -26,59 +49,73 @@ class EditProfilePage extends StatelessWidget {
             final User userData = snapshot.data!;
 
             return ListView(
-              padding: EdgeInsets.symmetric(horizontal: 32),
-              physics: BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              physics: const BouncingScrollPhysics(),
               children: [
                 const SizedBox(height: 24),
                 ProfileWidget(
                   imagePath: userData.image,
+                  ownProfile: true,
                   isEdit: true,
                   onClicked: () async {},
                 ),
                 const SizedBox(height: 24),
-                TextFieldWidget(
-                  label: 'Full Name',
-                  text: userData.displayName,
-                  onChanged: (displayName) {
+                TextFormField(
+                  controller: displayNameController,
+                  decoration: InputDecoration(
+                    labelText: 'Full Name',
+                  ),
+                  onChanged: (value) {
                     // Handle changes to display name.
                   },
                 ),
                 const SizedBox(height: 24),
-                TextFieldWidget(
-                  label: 'Email',
-                  text: userData.email,
-                  onChanged: (email) {
+                TextFormField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                  ),
+                  onChanged: (value) {
                     // Handle changes to email.
                   },
+                ),
+                const SizedBox(height: 24),
+                TextFormField(
+                  controller: aboutController,
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    labelText: 'About',
+                  ),
+                  onChanged: (value) {
+                    // Handle changes to about.
+                  },
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    // Collect data from text fields
+                    final updatedUser = userData;
+                    updatedUser.description = aboutController.text;
+
+                    // Update user data
+                    final IRepoUser repoUser = RepoUser();
+                    try {
+                      updatedUser.printUser();
+                      repoUser.update(updatedUser);
+                    } catch (e) {
+                      print(
+                          "Error while updating an update of user with Edit Profile Page $e");
+                    }
+
+                    // TODO: Handle success or error after updating
+                  },
+                  child: Text('Save Changes'),
                 ),
               ],
             );
           }
         },
       ),
-    );
-  }
-}
-
-class ProfileDataWidget extends StatelessWidget {
-  final User userData;
-
-  ProfileDataWidget({required this.userData});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          userData.displayName,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          userData.email,
-          style: TextStyle(color: Colors.grey),
-        ),
-      ],
     );
   }
 }

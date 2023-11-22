@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 
 class ProfileWidget extends StatelessWidget {
   final String imagePath;
+  final bool ownProfile;
   final bool isEdit;
   final VoidCallback onClicked;
 
   const ProfileWidget({
     Key? key,
     required this.imagePath,
-    this.isEdit = false,
+    required this.ownProfile,
+    required this.isEdit,
     required this.onClicked,
   }) : super(key: key);
 
@@ -20,11 +22,12 @@ class ProfileWidget extends StatelessWidget {
       child: Stack(
         children: [
           buildImage(),
-          Positioned(
-            child: buildEditIcon(color),
-            bottom: 0,
-            right: 4,
-          ),
+          if (ownProfile) // build if user is on his own profile page
+            Positioned(
+              child: buildEditIcon(color),
+              bottom: 0,
+              right: 4,
+            ),
         ],
       ),
     );
