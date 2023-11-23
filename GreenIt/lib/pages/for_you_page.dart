@@ -16,7 +16,6 @@ import 'package:my_app/pages/stepper.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:http/http.dart' as http;
 
-
 void main() {
   runApp(const ForYouPage());
 }
@@ -84,8 +83,9 @@ class _PostDetailState extends State<PostDetail> {
               firstStep: null,
               id: fetchedPosts[i]['id'],
               serverName: fetchedPosts[i]['serverName'],
-              description: fetchedPosts[i]['description']);
-
+              description: fetchedPosts[i]['description'],
+              image: fetchedPosts[i]['image']);
+          print(p.image);
           setState(() {
             postsObjects.add(p);
           });
@@ -129,7 +129,8 @@ class _PostDetailState extends State<PostDetail> {
               firstStep: null,
               id: _posts[i]['id'],
               serverName: _posts[i]['serverName'],
-              description: _posts[i]['description']);
+              description: _posts[i]['description'],
+              image: _posts[i]['image']);
 
           setState(() {
             postsObjects.add(p);
@@ -216,13 +217,15 @@ class _PostDetailState extends State<PostDetail> {
                                 children: [
                                   Row(
                                     children: [
-                                      const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000'),
-                                        ),
-                                      ),
+                                      Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: CircleAvatar(
+                                              backgroundImage: NetworkImage(
+                                                  postsObjects[index]
+                                                      .getOriginalPoster()!
+                                                      .image))
+                                          // "https://upload.wikimedia.org/wikipedia/commons/4/47/Cyanocitta_cristata_blue_jay.jpg")),
+                                          ),
                                       Expanded(
                                         child: Center(
                                           child: Text(
@@ -238,13 +241,19 @@ class _PostDetailState extends State<PostDetail> {
                                     ],
                                   ),
                                   GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => PostPage(author: "author", title: "title", currentIndex: currentIndex)));
-                                    },
-                                    child: Image.network(
-                                      'https://upload.wikimedia.org/wikipedia/commons/4/47/Cyanocitta_cristata_blue_jay.jpg'),
-                                  ),
-                                  
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => PostPage(
+                                                    author: "author",
+                                                    title: "title",
+                                                    currentIndex:
+                                                        currentIndex)));
+                                      },
+                                      child: Image.network(postsObjects[index]
+                                          .image) // "https://upload.wikimedia.org/wikipedia/commons/4/47/Cyanocitta_cristata_blue_jay.jpg"),
+                                      ),
                                   Padding(
                                       padding: const EdgeInsets.all(16.0),
                                       child: Row(
@@ -253,10 +262,12 @@ class _PostDetailState extends State<PostDetail> {
                                         children: [
                                           FutureBuilder(
                                             future: Future.wait([
-                                              getNumLikes(
-                                                  postsObjects[index].getId().toString()),
-                                              postIsLiked(
-                                                  postsObjects[index].getId().toString())
+                                              getNumLikes(postsObjects[index]
+                                                  .getId()
+                                                  .toString()),
+                                              postIsLiked(postsObjects[index]
+                                                  .getId()
+                                                  .toString())
                                             ]),
                                             builder: (context, snapshot) {
                                               if (snapshot.connectionState ==
@@ -306,7 +317,8 @@ class _PostDetailState extends State<PostDetail> {
                                                                 .getOriginalPoster()!
                                                                 .getDisplayName(),
                                                             postsObjects[index]
-                                                                .getId().toString());
+                                                                .getId()
+                                                                .toString());
                                                       } else {
                                                         return onLikeButtonTapped(
                                                             isLiked,
@@ -314,7 +326,8 @@ class _PostDetailState extends State<PostDetail> {
                                                                 .getOriginalPoster()!
                                                                 .getDisplayName(),
                                                             postsObjects[index]
-                                                                .getId().toString());
+                                                                .getId()
+                                                                .toString());
                                                       }
                                                     });
                                               }
@@ -322,15 +335,11 @@ class _PostDetailState extends State<PostDetail> {
                                           )
                                         ],
                                       )),
-                                  Padding(
-                                    padding: EdgeInsets.all(12.0),
-                                    child: Expanded(
-                                        child: Text(
-                                            postsObjects[index]
-                                                .getDescription(),
-                                            style: const TextStyle(
-                                                color: Colors.white))),
-                                  ),
+                                  Expanded(
+                                      child: Text(
+                                          postsObjects[index].getDescription(),
+                                          style: const TextStyle(
+                                              color: Colors.white))),
                                 ],
                               ));
                         }),
@@ -351,7 +360,6 @@ class _PostDetailState extends State<PostDetail> {
                       ),
                     )
                 ],
-              )
-        );
+              ));
   }
 }

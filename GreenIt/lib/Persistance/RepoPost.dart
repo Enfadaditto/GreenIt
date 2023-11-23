@@ -34,7 +34,8 @@ class RepoPost implements IRepoPost {
           firstStep: /* jsonToStep(data[0]['firstStep']) */ null,
           id: data[0]['id'],
           serverName: data[0]['serverName'],
-          description: data[0]['description']);
+          description: data[0]['description'],
+          image: data[0]['image']);
     } catch (e) {
       print("An error occurred: $e");
       p = Post(
@@ -42,7 +43,8 @@ class RepoPost implements IRepoPost {
           firstStep: null,
           id: 0,
           serverName: "serverName",
-          description: "description");
+          description: "description",
+          image: "image");
     }
     return p;
   }
@@ -77,7 +79,9 @@ class RepoPost implements IRepoPost {
   }
 
   Step? jsonToStep2(Map<String, dynamic>? datad) {
-    if(datad == null){return null;}
+    if (datad == null) {
+      return null;
+    }
     return Step(
         id: datad?['id'],
         previousStep: jsonToStep2(datad?['previousStep']),

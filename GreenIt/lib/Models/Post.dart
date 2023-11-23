@@ -7,13 +7,15 @@ class Post {
   int id;
   String serverName; //server where post is stored
   String description;
+  String image;
 
   Post(
       {required this.originalPoster,
       required this.firstStep,
       required this.id,
       required this.serverName,
-      required this.description});
+      required this.description,
+      required this.image});
 
   User? getOriginalPoster() {
     return originalPoster;
@@ -46,6 +48,7 @@ class Post {
   void setServerName(String newServerName) {
     serverName = newServerName;
   }
+
   String getDescription() {
     return description;
   }
@@ -53,16 +56,25 @@ class Post {
   void setDescription(String newDescription) {
     description = newDescription;
   }
-    
-   factory Post.fromJson(Map<String, dynamic> data) {
+
+  String getImage() {
+    return image;
+  }
+
+  void setImage(String newImage) {
+    image = newImage;
+  }
+
+  factory Post.fromJson(Map<String, dynamic> data) {
     return Post(
         originalPoster: null,
         firstStep: null,
         id: data['id'],
         serverName: data['serverName'],
-        description: data['description']);
+        description: data['description'],
+        image: data['image']);
   }
-  
+
   static User jsonToUser(Map<String, dynamic> datad) {
     return User(
         id: datad['id'],
@@ -83,7 +95,7 @@ class Post {
         image: datad['image']);
   }
 
-  static Post cosa(Map<String, dynamic> data){
+  static Post cosa(Map<String, dynamic> data) {
     var p = Post.fromJson(data);
     p.setFirstStep(jsonToStep(data['firstStep']));
     p.setOriginalPoster(jsonToUser(data['creator']));
