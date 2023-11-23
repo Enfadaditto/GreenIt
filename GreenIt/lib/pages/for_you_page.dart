@@ -1,18 +1,13 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:like_button/like_button.dart';
-import 'package:my_app/Decoding.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Persistance/IRepoPost.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/Persistance/ServerConnect.dart';
-import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/post_page.dart';
-import 'package:my_app/pages/stepper.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:http/http.dart' as http;
 
@@ -210,10 +205,11 @@ class _PostDetailState extends State<PostDetail> {
                         itemCount: postsObjects.length,
                         controller: _controller,
                         itemBuilder: (context, index) {
-                          return Card(
+                          return Container(
+                              child: IntrinsicHeight(
+                            child: Card(
                               color: const Color.fromARGB(255, 0, 0, 175),
                               child: Column(
-                                mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Row(
                                     children: [
@@ -223,9 +219,7 @@ class _PostDetailState extends State<PostDetail> {
                                               backgroundImage: NetworkImage(
                                                   postsObjects[index]
                                                       .getOriginalPoster()!
-                                                      .image))
-                                          // "https://upload.wikimedia.org/wikipedia/commons/4/47/Cyanocitta_cristata_blue_jay.jpg")),
-                                          ),
+                                                      .image))),
                                       Expanded(
                                         child: Center(
                                           child: Text(
@@ -251,97 +245,98 @@ class _PostDetailState extends State<PostDetail> {
                                                     currentIndex:
                                                         currentIndex)));
                                       },
-                                      child: Image.network(postsObjects[index]
-                                          .image) // "https://upload.wikimedia.org/wikipedia/commons/4/47/Cyanocitta_cristata_blue_jay.jpg"),
-                                      ),
+                                      child: Image.network(
+                                          postsObjects[index].image)),
                                   Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          FutureBuilder(
-                                            future: Future.wait([
-                                              getNumLikes(postsObjects[index]
-                                                  .getId()
-                                                  .toString()),
-                                              postIsLiked(postsObjects[index]
-                                                  .getId()
-                                                  .toString())
-                                            ]),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.waiting) {
-                                                return const Center(
-                                                    child:
-                                                        CircularProgressIndicator());
-                                              } else if (snapshot.hasError) {
-                                                return Center(
-                                                    child: Text(
-                                                        'Error: ${snapshot.error}'));
-                                              } else {
-                                                int numLikes =
-                                                    snapshot.data![0] as int;
-                                                String isLiked =
-                                                    snapshot.data![1] as String;
-
-                                                return LikeButton(
-                                                    size: 32.0,
-                                                    isLiked:
-                                                        isLiked.contains("true")
-                                                            ? true
-                                                            : false,
-                                                    likeCount: numLikes,
-                                                    likeBuilder: (isLiked) {
-                                                      return Icon(
-                                                          Icons.favorite,
-                                                          color: isLiked
-                                                              ? Colors.red
-                                                              : Colors.white,
-                                                          size: 32.0);
-                                                    },
-                                                    countBuilder: (likeCount,
-                                                        isLiked, text) {
-                                                      return Text(
-                                                        text,
-                                                        style: const TextStyle(
-                                                            color:
-                                                                Colors.white),
-                                                      );
-                                                    },
-                                                    onTap: (isLiked) {
-                                                      if (isLiked) {
-                                                        return onUnlikeButtonTapped(
-                                                            isLiked,
-                                                            postsObjects[index]
-                                                                .getOriginalPoster()!
-                                                                .getDisplayName(),
-                                                            postsObjects[index]
-                                                                .getId()
-                                                                .toString());
-                                                      } else {
-                                                        return onLikeButtonTapped(
-                                                            isLiked,
-                                                            postsObjects[index]
-                                                                .getOriginalPoster()!
-                                                                .getDisplayName(),
-                                                            postsObjects[index]
-                                                                .getId()
-                                                                .toString());
-                                                      }
-                                                    });
-                                              }
-                                            },
-                                          )
-                                        ],
-                                      )),
-                                  Expanded(
-                                      child: Text(
-                                          postsObjects[index].getDescription(),
-                                          style: const TextStyle(
-                                              color: Colors.white))),
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        FutureBuilder(
+                                          future: Future.wait([
+                                            getNumLikes(postsObjects[index]
+                                                .getId()
+                                                .toString()),
+                                            postIsLiked(postsObjects[index]
+                                                .getId()
+                                                .toString())
+                                          ]),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return const Center(
+                                                  child:
+                                                      CircularProgressIndicator());
+                                            } else if (snapshot.hasError) {
+                                              return Center(
+                                                  child: Text(
+                                                      'Error: ${snapshot.error}'));
+                                            } else {
+                                              int numLikes =
+                                                  snapshot.data![0] as int;
+                                              String isLiked =
+                                                  snapshot.data![1] as String;
+                                              return LikeButton(
+                                                  size: 32.0,
+                                                  isLiked:
+                                                      isLiked.contains("true")
+                                                          ? true
+                                                          : false,
+                                                  likeCount: numLikes,
+                                                  likeBuilder: (isLiked) {
+                                                    return Icon(Icons.favorite,
+                                                        color: isLiked
+                                                            ? Colors.red
+                                                            : Colors.white,
+                                                        size: 32.0);
+                                                  },
+                                                  countBuilder: (likeCount,
+                                                      isLiked, text) {
+                                                    return Text(
+                                                      text,
+                                                      style: const TextStyle(
+                                                          color: Colors.white),
+                                                    );
+                                                  },
+                                                  onTap: (isLiked) {
+                                                    if (isLiked) {
+                                                      return onUnlikeButtonTapped(
+                                                          isLiked,
+                                                          postsObjects[index]
+                                                              .getOriginalPoster()!
+                                                              .getDisplayName(),
+                                                          postsObjects[index]
+                                                              .getId()
+                                                              .toString());
+                                                    } else {
+                                                      return onLikeButtonTapped(
+                                                          isLiked,
+                                                          postsObjects[index]
+                                                              .getOriginalPoster()!
+                                                              .getDisplayName(),
+                                                          postsObjects[index]
+                                                              .getId()
+                                                              .toString());
+                                                    }
+                                                  });
+                                            }
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(bottom: 24.0),
+                                    child: Text(
+                                        postsObjects[index].getDescription(),
+                                        style: const TextStyle(
+                                            color: Colors.white)),
+                                  )
                                 ],
-                              ));
+                              ),
+                            ),
+                          ));
                         }),
                   ),
                   if (_isLoadMoreRunning == true)
