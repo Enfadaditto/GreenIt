@@ -3,7 +3,6 @@ import 'package:my_app/widgets/appbar_widget.dart';
 import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/IRepoUser.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
-import 'package:my_app/pages/profile_page.dart';
 import 'package:my_app/widgets/profile_page/profile_widget.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -19,6 +18,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController displayNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController aboutController = TextEditingController();
+  TextEditingController imageURLController = TextEditingController();
 
   @override
   void initState() {
@@ -54,11 +54,44 @@ class _EditProfilePageState extends State<EditProfilePage> {
               physics: const BouncingScrollPhysics(),
               children: [
                 const SizedBox(height: 24),
-                ProfileWidget(
-                  imagePath: userData.image,
-                  ownProfile: true,
-                  isEdit: true,
-                  onClicked: () async {},
+                InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Change photo'),
+                          content: TextField(
+                            controller: imageURLController,
+                            decoration: InputDecoration(
+                              hintText: 'Add a URL of a photo you want to add',
+                            ),
+                          ),
+                          actions: [
+                            ElevatedButton(
+                              onPressed: () {
+                                // TODO: No difference between save and cancel
+                                Navigator.of(context).pop(); // Close the dialog
+                              },
+                              child: Text('Save'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close the dialog
+                              },
+                              child: Text('Cancel'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: ProfileWidget(
+                    imagePath: userData.image,
+                    ownProfile: true,
+                    isEdit: true,
+                    onClicked: () async {},
+                  ),
                 ),
                 const SizedBox(height: 24),
                 TextFormField(
@@ -96,27 +129,37 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   style:
                       ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () {
-                    // Collect data from text fields
                     final updatedUser = userData;
-                    updatedUser.description = aboutController.text;
 
-                    // Update user data
-                    final IRepoUser repoUser = RepoUser();
-                    try {
-                      updatedUser.printUser();
-                      repoUser.update(updatedUser);
-                      showUpdateSuccessDialog(context);
-                    } catch (e) {
-                      print(
-                          "Error while updating an update of user with Edit Profile Page $e");
+                    bool dataEdited = false;
+
+                    if (updatedUser.description != aboutController.text) {
+                      updatedUser.description = aboutController.text;
+                      dataEdited = true;
                     }
-                    // Navigator.pop(context);
-                    // Navigator.pushReplacement(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => ProfilePage(
-                    //             data: updatedUser.displayName, type: 'name')));
-                    // TODO: Handle success or error after updating
+
+                    if (updatedUser.image != imageURLController.text &&
+                        imageURLController.text.isNotEmpty) {
+                      updatedUser.image = imageURLController.text;
+                      dataEdited = true;
+                    }
+
+                    // Update user data only if edited
+                    if (dataEdited) {
+                      final IRepoUser repoUser = RepoUser();
+                      try {
+                        updatedUser.printUser();
+                        repoUser.update(updatedUser);
+                        showUpdateSuccessDialog(context);
+
+                        Navigator.pop(context);
+                      } catch (e) {
+                        print(
+                            "Error while updating an update of user with Edit Profile Page $e");
+                      }
+                    } else {
+                      Navigator.pop(context);
+                    }
                   },
                   child: Text('Save Changes'),
                 ),

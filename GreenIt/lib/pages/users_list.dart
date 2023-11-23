@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/Models/ReducedUser.dart';
-import 'package:my_app/models/user.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
 import 'package:my_app/pages/profile_page.dart'; // Import the user profile page
 

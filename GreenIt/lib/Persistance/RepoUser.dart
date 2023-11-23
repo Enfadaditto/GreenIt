@@ -89,20 +89,23 @@ class RepoUser implements IRepoUser {
 
   @override
   void update(User t) {
-    try{
+    try {
       //http://16.170.159.93/updateUser?id=6&email=rizna@gmail.com&password=yourPassword&username=rizna&image=imageURL&description=adre
       server.insertData("http://16.170.159.93/updateUser?id=" +
-        t.getId.toString() +
-        "&email=" + t.email +
-        "&password=" + t.password +
-        "&username=" + t.displayName +
-        "&image=" + t.getImage +
-        "&description=" + t.getDescription
-        );
-    } catch(e){
+          t.getId.toString() +
+          "&email=" +
+          t.email +
+          "&password=" +
+          t.password +
+          "&username=" +
+          t.displayName +
+          "&image=" +
+          t.getImage +
+          "&description=" +
+          t.getDescription);
+    } catch (e) {
       print("$e - Error updating user");
     }
-   
   }
 
   void delete(User t) {
@@ -161,7 +164,6 @@ class RepoUser implements IRepoUser {
     return followed;
   }
 
-
   @override
   Future<void> follow(int follower, int following) async {
     try {
@@ -195,9 +197,9 @@ class RepoUser implements IRepoUser {
     var data = 0;
 
     try {
-      data =
-          await server.fetchData("http://16.170.159.93/getFollowersCount?userId=" + userId.toString());
-    } catch(e){
+      data = await server.fetchData(
+          "http://16.170.159.93/getFollowersCount?userId=" + userId.toString());
+    } catch (e) {
       print(" Error - $e");
     }
     return data;
@@ -215,7 +217,7 @@ class RepoUser implements IRepoUser {
     }
     return data;
   }
-  
+
   //getCountOfUserPosts
   @override
   Future<int> getCountPosts(String username) async {
@@ -229,20 +231,21 @@ class RepoUser implements IRepoUser {
     }
     return data;
   }
-  
-  //checks if userId follows followedId
-  Future<bool> checkFollows(int userId, int followedId) async {
-  bool follows = false;
-  try {
-    var response = await server.fetchData("http://16.170.159.93/checkFollows?userId=${userId}&followedId=${followedId}");
-    // Assuming the response is a String. If it's not, you need to parse it accordingly.
-    if (response) {
-      follows = true;
-    }
-  } catch (e) {
-    print("Error - $e");
-  }
-  return follows;
-}
 
+  //checks if userId follows followedId
+  @override
+  Future<bool> checkFollows(int userId, int followedId) async {
+    bool follows = false;
+    try {
+      var response = await server.fetchData(
+          "http://16.170.159.93/checkFollows?userId=${userId}&followedId=${followedId}");
+      // Assuming the response is a String. If it's not, you need to parse it accordingly.
+      if (response) {
+        follows = true;
+      }
+    } catch (e) {
+      print("Error - $e");
+    }
+    return follows;
+  }
 }

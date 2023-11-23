@@ -1,5 +1,4 @@
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Models/ReducedUser.dart';
@@ -9,13 +8,15 @@ import 'package:my_app/Persistance/IRepoUser.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/pages/edit_profile_page.dart';
 import 'package:my_app/pages/users_list.dart';
-import 'package:my_app/widgets/profile_page/button_widget.dart';
+import 'package:my_app/widgets/followers/follow_button.dart';
+import 'package:my_app/widgets/followers/unfollow_button.dart';
+import 'package:my_app/widgets/profile_page/about_widget.dart';
 import 'package:my_app/widgets/profile_page/numbers_widget.dart';
 import 'package:my_app/widgets/profile_page/profile_gallery_widget.dart';
+import 'package:my_app/widgets/profile_page/share_profile_widget.dart';
 import '../utils/cache_manager.dart';
 import '../widgets/profile_page/profile_widget.dart';
-import 'package:my_app/Persistance/RepoUser.dart'; // Import your user repository
-import 'package:flutter/services.dart';
+import 'package:my_app/Persistance/RepoUser.dart';
 
 class ProfilePage extends StatefulWidget {
   final String
@@ -33,6 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late Future<int> followersSize = Future.value(-1); // TODO
   // sometimes the value -1 appears before it is fetched from server
   late Future<int> followedSize = Future.value(-1);
+  late Future<bool> alreadyFollowed = Future.value(false);
   late Future<User> userPetition;
   late Future<List<Post>> posts = Future.value([]);
   final IRepoUser repoUser = RepoUser();
@@ -41,9 +43,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
+    _loadCacheMemory();
     _loadUserData();
     _loadUserPosts();
-    _loadCacheMemory();
   }
 
   Future<void> _loadCacheMemory() async {
@@ -70,21 +72,12 @@ class _ProfilePageState extends State<ProfilePage> {
         userPetition = repoUser.read(widget.data);
       }
       User temp = await userPetition;
-
+      int currentUserId = await CacheManager.getUserId() as int;
+      alreadyFollowed = repoUser.checkFollows(currentUserId, temp.id);
       followersSize = repoUser.getCountFollowers(temp.id);
       followedSize = repoUser.getCountFollowed(temp.id);
     } catch (e) {
       print('Error fetching user data: $e');
-      userPetition = User(
-        displayName: 'MISTAKE',
-        email: 'MISTAKE',
-        password: 'MISTAKE',
-        serverName: 'MISTAKE',
-        description: '',
-        id: 69696969,
-        image: '',
-        imagefield: '',
-      ) as Future<User>;
     }
   }
 
@@ -131,37 +124,7 @@ class _ProfilePageState extends State<ProfilePage> {
             future:
                 Future.wait([userPetition, followersSize, followedSize, posts]),
             builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else {
-                final followersSizeToInt = snapshot.data![1];
-                // Check if followersSize is not equal to -1
-                if (followersSizeToInt == -1) {
-                  print("DELAY");
-                  return FutureBuilder(
-                    future: Future.delayed(Duration(milliseconds: 200)),
-                    builder: (context, snapshot) {
-                      // Now you can handle the case where followersSize is -1
-                      return const Text('Error: Followers size is -1');
-                    },
-                  );
-                }
-                final followedSizeToInt = snapshot.data![2];
-                final posts = snapshot.data![3] as List<Post>;
-
-                return Column(
-                  children: [
-                    NumbersWidget(userPetition, followersSizeToInt,
-                        followedSizeToInt, repoUser, posts.length),
-                    const SizedBox(height: 12),
-                    Container(
-                      height: 900,
-                      padding: const EdgeInsets.all(10),
-                      child: buildProfileGallery(context, posts),
-                    ),
-                  ],
-                );
-              }
+              return buildUserContent(context, snapshot);
             },
           ),
         ],
@@ -180,13 +143,14 @@ class _ProfilePageState extends State<ProfilePage> {
             final user = snapshot.data;
 
             // Retrieve the followerId from cache memory
-            return FutureBuilder<int?>(
-              future: CacheManager.getUserId(),
-              builder: (context, userIdSnapshot) {
-                if (userIdSnapshot.connectionState == ConnectionState.waiting) {
+            return FutureBuilder(
+              future: Future.wait([CacheManager.getUserId(), alreadyFollowed]),
+              builder: (context, AsyncSnapshot<List<dynamic>> snapshot2) {
+                if (snapshot2.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else {
-                  final followerId = userIdSnapshot.data;
+                  final followerId = snapshot2.data![0];
+                  final alreadyFollowedBool = snapshot2.data![1];
                   return Column(
                     children: [
                       ProfileWidget(
@@ -210,14 +174,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           fontSize: 22,
                         ),
                       ),
-                      // const SizedBox(height: 4),
-                      // Text(
-                      //   user.email,
-                      //   style: const TextStyle(color: Colors.grey),
-                      // ),
                       const SizedBox(height: 16),
                       if (user.description.isNotEmpty)
-                        buildAbout(user.description),
+                        buildAbout(context, user.description),
                       const SizedBox(height: 16),
                       Center(
                         child: followerId != null
@@ -231,13 +190,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                           foregroundColor: Colors.white,
                                         ),
                                         onPressed: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditProfilePage(
-                                                      user: userPetition),
-                                            ),
-                                          );
+                                          Navigator.of(context)
+                                              .push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditProfilePage(
+                                                            user:
+                                                                userPetition)),
+                                              )
+                                              .then((value) => setState(() {}));
                                         },
                                         child: const Text('Edit Profile'),
                                       ),
@@ -250,7 +211,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                       buildSearchForNewUsers(context, user.id),
                                     ],
                                   )
-                                : buildFollowButton(followerId, user.id)
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      alreadyFollowedBool
+                                          ? buildUnfollowButton(
+                                              repoUser, followerId, user.id)
+                                          : buildFollowButton(
+                                              repoUser, followerId, user.id),
+                                      const SizedBox(width: 8),
+                                    ],
+                                  )
                             : const CircularProgressIndicator(),
                       ),
                     ],
@@ -262,106 +233,41 @@ class _ProfilePageState extends State<ProfilePage> {
         },
       );
 
-  Widget buildAbout(String description) => Container(
-        padding: const EdgeInsets.symmetric(
-            horizontal: 5, vertical: 5), // Adjusted horizontal padding
-        color: Colors.grey[200], // Light grey background color
-        height: 5 * 16.0, // 5 lines of text, each with a height of 16.0
-        width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
-        child: SingleChildScrollView(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    description,
-                    softWrap: true,
-                    style: const TextStyle(fontSize: 16, height: 1.4),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-      );
+  Widget buildUserContent(
+      BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const CircularProgressIndicator();
+    } else {
+      final followersSizeToInt = snapshot.data![1];
+      final followedSizeToInt = snapshot.data![2];
 
-  Widget buildShareButton(BuildContext context, String username) =>
-      ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green, // Green color
-          foregroundColor: Colors.white, // White text color
-        ),
-        onPressed: () => showShareDialog(context, username),
-        child: const Text(
-          'Share profile',
-          style: TextStyle(color: Colors.white),
-        ),
-      );
-
-  void showShareDialog(BuildContext context, String username) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Link Saved Successfully!',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'The link to the profile has been saved to your device. You can use it by pasting.',
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // Green color
-                    foregroundColor: Colors.white, // White text color
-                  ),
-                  onPressed: () {
-                    // TODO: Copy the link to the clipboard
-                    Clipboard.setData(ClipboardData(
-                        text: 'http://16.170.159.93/getUserByName?username=' +
-                            username));
-
-                    // Close the dialog
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Okay!'),
-                ),
-              ],
-            ),
-          ),
+      // Check if followersSize is not equal to -1 -> delay with fetching data
+      if (followersSizeToInt == -1) {
+        print("DELAY");
+        return FutureBuilder(
+          future: Future.delayed(const Duration(milliseconds: 200)),
+          builder: (context, snapshot) {
+            return const Text('Error: Followers size is -1');
+          },
         );
-      },
-    );
-  }
+      }
 
-  Widget buildFollowButton(int follower, int following) => ButtonWidget(
-        text: 'Follow',
-        onClicked: () async {
-          try {
-            await repoUser.follow(follower, following);
-            print('User followed successfully');
-            // You might want to update your UI or show a message here
-          } catch (e) {
-            print('Error following user: $e');
-            // Handle the error, show a message, or take any other appropriate action
-          }
-        },
+      final posts = snapshot.data![3] as List<Post>;
+
+      return Column(
+        children: [
+          NumbersWidget(userPetition, followersSizeToInt, followedSizeToInt,
+              repoUser, posts.length),
+          const SizedBox(height: 12),
+          Container(
+            height: 900,
+            padding: const EdgeInsets.all(10),
+            child: buildProfileGallery(context, posts),
+          ),
+        ],
       );
+    }
+  }
 }
 
 Widget buildSearchForNewUsers(BuildContext context, int userId) {
