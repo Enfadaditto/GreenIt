@@ -25,8 +25,8 @@ GridView buildProfileGallery(BuildContext context, List<Post> posts) =>
                   title:
                       'TITLE', // Replace with the actual title from the Post object
                   comments: [
-                    Comment(comment: "ASDF", author: "your"),
-                    Comment(comment: "QWER", author: "mama")
+                    Comment(comment: "ASDF", author: "your", replies: []),
+                    Comment(comment: "QWER", author: "mama", replies: [])
                   ],
                   currentIndex: index,
                 ),

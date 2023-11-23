@@ -146,8 +146,11 @@ class PostWidget extends StatelessWidget {
                         author: 'Me',
                         title: title,
                         comments: [
-                          Comment(comment: "ASDF", author: "your"),
-                          Comment(comment: "QWER", author: "mama")
+                          Comment(comment: "ASDF", author: "your", replies: [
+                            Comment(
+                                comment: "GHKJ", author: "mama", replies: [])
+                          ]),
+                          Comment(comment: "QWER", author: "mama", replies: [])
                         ],
                         currentIndex: currentIndex,
                       )),

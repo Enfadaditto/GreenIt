@@ -13,6 +13,7 @@ class RepoStep implements IRepoStep {
     if (t.previousStep != null) {
       isFirst = false;
     }
+
     try {
       server.insertData("http://16.170.159.93/commit?prevStepId=" +
           "${t.previousStep?.id}" +

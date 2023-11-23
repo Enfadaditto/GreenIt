@@ -4,8 +4,13 @@ class Comment {
   String comment;
   Comment? responseTo;
   String author;
+  List<Comment> replies;
 
-  Comment({required this.comment, this.responseTo, required this.author});
+  Comment(
+      {required this.comment,
+      this.responseTo,
+      required this.author,
+      required this.replies});
 
   String getCommentText() {
     return this.comment;

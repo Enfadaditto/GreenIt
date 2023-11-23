@@ -7,6 +7,7 @@ import 'package:my_app/Persistance/RepoComment.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/for_you_page.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
+import 'package:my_app/widgets/comment_widget.dart';
 
 class PostPage extends StatefulWidget {
   int currentIndex;
@@ -57,12 +58,44 @@ class PostDetailed extends State<PostPage> {
     }
 
     void _respondComment(Comment respondedComment) {
-      Comment answerToComment = Comment(
-          comment: _commentController.text,
-          author: "me",
-          responseTo: respondedComment);
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Text your response'),
+              content: TextField(
+                controller: _commentController,
+              ),
+              actions: [
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Comment answerToComment = Comment(
+                        comment: _commentController.text,
+                        author: "me",
+                        responseTo: respondedComment,
+                        replies: []);
 
-      //RepoComment().create(answerToComment);
+                    setState(() {
+                      respondedComment.replies.add(answerToComment);
+                      print("ASDFASDFSDFASDFASFDDSAFASFDSD" +
+                          respondedComment.replies.toString());
+                    });
+
+                    _commentController.clear();
+                    Navigator.of(context).pop();
+                    //RepoComment().create(answerToComment);
+                  },
+                ),
+                TextButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
     }
 
     return MaterialApp(
@@ -100,52 +133,38 @@ class PostDetailed extends State<PostPage> {
                 child: ExpansionTile(
                   title: Text("Comments"),
                   children: [
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: widget.comments.length,
-                      itemBuilder: (context, index) {
-                        return Row(
-                          children: [
-                            Column(
-                              children: [
-                                Text(widget.comments[index].author,
-                                    style: const TextStyle(
-                                        color: Colors.black12, fontSize: 12)),
-                                const SizedBox(height: 3),
-                                Text(widget.comments[index].comment,
-                                    style: const TextStyle(fontSize: 18)),
-                              ],
-                            ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: IconButton(
-                                  onPressed: () {
-                                    _respondComment(widget.comments[index]);
-                                  },
-                                  icon: Icon(
-                                      Icons.subdirectory_arrow_left_rounded)),
-                            )
-                          ],
-                        );
-                      },
+                    Container(
+                      constraints: BoxConstraints(maxHeight: 300),
+                      child: Scaffold(
+                        body: CommentsWidget(
+                          comments: widget.comments,
+                          onReply: _respondComment,
+                        ),
+                      ),
                     ),
-                    TextFormField(
-                      controller: _commentController,
-                      decoration: InputDecoration(
-                          hintText: "Write new comment...",
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.send),
-                            onPressed: () {
-                              setState(() {
-                                widget.comments.add(Comment(
-                                    comment: _commentController.text,
-                                    author: "Comment's Author"));
-                                _commentController.clear();
-                              });
-                            },
-                          )),
-                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 7.5),
+                      child: TextFormField(
+                        controller: _commentController,
+                        decoration: InputDecoration(
+                            hintText: "Write new comment...",
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.send),
+                              onPressed: () {
+                                setState(() {
+                                  if (_commentController.text.isEmpty) return;
+                                  widget.comments.add(
+                                    Comment(
+                                        comment: _commentController.text,
+                                        author: "Comment's Author",
+                                        replies: []),
+                                  );
+                                  _commentController.clear();
+                                });
+                              },
+                            )),
+                      ),
+                    )
                   ],
                 ),
               )
