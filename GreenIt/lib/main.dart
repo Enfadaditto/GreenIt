@@ -3,9 +3,16 @@ import 'package:my_app/pages/new_post.dart';
 import 'package:my_app/pages/profile_page.dart';
 import 'package:my_app/widgets/bottom_navigation_bar_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:my_app/utils/cache_manager.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Ustawienia wartości przed uruchomieniem strony
+  await CacheManager.setUsername('jrber23');
+  await CacheManager.setEmail('');
+  // await CacheManager.setDarkMode(false);
+  await CacheManager.setUserId(9);
 
   runApp(const MyApp());
 }
