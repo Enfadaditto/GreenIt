@@ -1,21 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/Persistance/IRepoUser.dart';
 
-Widget buildFollowButton(IRepoUser repoUser, int follower, int following) =>
-    ElevatedButton(
+class FollowButton extends StatefulWidget {
+  final IRepoUser repoUser;
+  final int follower;
+  final int following;
+  final bool alreadyFollowed;
+
+  const FollowButton({
+    Key? key,
+    required this.repoUser,
+    required this.follower,
+    required this.following,
+    required this.alreadyFollowed,
+  }) : super(key: key);
+
+  @override
+  _FollowButtonState createState() => _FollowButtonState();
+}
+
+class _FollowButtonState extends State<FollowButton> {
+  late bool isFollowed;
+
+  @override
+  void initState() {
+    super.initState();
+    isFollowed = widget.alreadyFollowed;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green, // Green color
-        foregroundColor: Colors.white, // White text color
+        backgroundColor: isFollowed ? Colors.red[100] : Colors.green,
+        foregroundColor: Colors.white,
       ),
       onPressed: () async {
         try {
-          await repoUser.follow(follower, following);
-          print('User followed successfully');
-          // You might want to update your UI or show a message here
+          if (isFollowed) {
+            await widget.repoUser.unfollow(widget.follower, widget.following);
+            print('User unfollowed successfully');
+          } else {
+            await widget.repoUser.follow(widget.follower, widget.following);
+            print('User followed successfully');
+          }
+
+          // Toggle the follow status
+          setState(() {
+            isFollowed = !isFollowed;
+          });
         } catch (e) {
-          print('Error following user: $e');
+          if (isFollowed) {
+            print('Error unfollowing user: $e');
+          } else {
+            print('Error following user: $e');
+          }
           // Handle the error, show a message, or take any other appropriate action
         }
       },
-      child: const Text('Follow'),
+      child: Text(isFollowed ? 'Unfollow' : 'Follow'),
     );
+  }
+}

@@ -148,11 +148,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     if (dataEdited) {
                       final IRepoUser repoUser = RepoUser();
                       try {
-                        updatedUser.printUser();
                         repoUser.update(updatedUser);
                         showUpdateSuccessDialog(context);
 
-                        Navigator.pop(context);
+                        //Navigator.pop(context);
                       } catch (e) {
                         print(
                             "Error while updating an update of user with Edit Profile Page $e");

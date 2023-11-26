@@ -9,7 +9,6 @@ import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/pages/edit_profile_page.dart';
 import 'package:my_app/pages/users_list.dart';
 import 'package:my_app/widgets/followers/follow_button.dart';
-import 'package:my_app/widgets/followers/unfollow_button.dart';
 import 'package:my_app/widgets/profile_page/about_widget.dart';
 import 'package:my_app/widgets/profile_page/numbers_widget.dart';
 import 'package:my_app/widgets/profile_page/profile_gallery_widget.dart';
@@ -46,6 +45,16 @@ class _ProfilePageState extends State<ProfilePage> {
     _loadCacheMemory();
     _loadUserData();
     _loadUserPosts();
+  }
+
+  void _handleFollowersChanged() {
+    _loadUserData().then((_) {
+      setState(() {
+        print("Callback function executed after data retrieval");
+        build(context);
+        // Additional logic if needed
+      });
+    });
   }
 
   Future<void> _loadCacheMemory() async {
@@ -179,50 +188,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         buildAbout(context, user.description),
                       const SizedBox(height: 16),
                       Center(
-                        child: followerId != null
-                            ? followerId == user.id
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.green,
-                                          foregroundColor: Colors.white,
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context)
-                                              .push(
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        EditProfilePage(
-                                                            user:
-                                                                userPetition)),
-                                              )
-                                              .then((value) => setState(() {}));
-                                        },
-                                        child: const Text('Edit Profile'),
-                                      ),
-                                      const SizedBox(
-                                          width:
-                                              8), // Adjust the spacing between buttons
-                                      buildShareButton(
-                                          context, user.displayName),
-                                      const SizedBox(width: 8),
-                                      buildSearchForNewUsers(context, user.id),
-                                    ],
-                                  )
-                                : Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      alreadyFollowedBool
-                                          ? buildUnfollowButton(
-                                              repoUser, followerId, user.id)
-                                          : buildFollowButton(
-                                              repoUser, followerId, user.id),
-                                      const SizedBox(width: 8),
-                                    ],
-                                  )
-                            : const CircularProgressIndicator(),
+                        child: buildProfileButtons(
+                            context, followerId, alreadyFollowedBool, user),
                       ),
                     ],
                   );
@@ -257,7 +224,7 @@ class _ProfilePageState extends State<ProfilePage> {
       return Column(
         children: [
           NumbersWidget(userPetition, followersSizeToInt, followedSizeToInt,
-              repoUser, posts.length),
+              repoUser, posts.length, _handleFollowersChanged),
           const SizedBox(height: 12),
           Container(
             height: 900,
@@ -268,57 +235,112 @@ class _ProfilePageState extends State<ProfilePage> {
       );
     }
   }
-}
 
-Widget buildSearchForNewUsers(BuildContext context, int userId) {
-  return ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.green, // Green color
-      foregroundColor: Colors.white, // White text color
-    ), // White text color
-    onPressed: () {
-      _getList(context, userId);
-    },
-    child: const Text('Follow new users'),
-  );
-}
-
-// get list of users that are followed by users that are followed by current user
-// aka mutual friends - we want max 20 users overally
-// and max 5 users from one user (differentiation of propositions)
-Future<void> _getList(BuildContext context, int userId) async {
-  try {
-    final IRepoUser repoUser = RepoUser();
-    List<ReducedUser> userFollowers = [];
-    List<ReducedUser> propositions = [];
-    final Map<int, bool> added = HashMap();
-    userFollowers = await repoUser.getFollowed(userId);
-    for (int i = 0; i < userFollowers.length; i++) {
-      added[userFollowers[i].id] = true;
+  Widget buildProfileButtons(
+    BuildContext context,
+    int? followerId,
+    bool alreadyFollowedBool,
+    User user,
+  ) {
+    if (followerId != null) {
+      if (followerId == user.id) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.of(context)
+                    .push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EditProfilePage(user: userPetition),
+                      ),
+                    )
+                    .then((value) => setState(() {}));
+              },
+              child: const Text('Edit Profile'),
+            ),
+            const SizedBox(width: 8),
+            buildShareButton(context, user.displayName),
+            const SizedBox(width: 8),
+            buildSearchForNewUsers(context, user.id, _handleFollowersChanged),
+          ],
+        );
+      } else {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FollowButton(
+              repoUser: repoUser,
+              follower: followerId,
+              following: user.id,
+              alreadyFollowed: alreadyFollowedBool,
+            ),
+            const SizedBox(width: 8),
+          ],
+        );
+      }
+    } else {
+      return const CircularProgressIndicator();
     }
-    added[userId] = true;
-    int propositionsSize = 0;
+  }
 
-    for (int i = 0; i < userFollowers.length && propositionsSize < 20; i++) {
-      List<ReducedUser> mutualAccounts =
-          await repoUser.getFollowed(userFollowers[i].id);
-      for (int j = 0;
-          j < mutualAccounts.length && propositionsSize < 20 && j < 5;
-          j++) {
-        if (!added.containsKey(mutualAccounts[j].getId)) {
-          propositions.add(mutualAccounts[j]);
-          added[mutualAccounts[j].getId] = true;
-          propositionsSize++;
+  Widget buildSearchForNewUsers(
+      BuildContext context, int userId, VoidCallback onFollowersChanged) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green, // Green color
+        foregroundColor: Colors.white, // White text color
+      ), // White text color
+      onPressed: () {
+        _getList(context, userId, onFollowersChanged);
+      },
+      child: const Text('Follow new users'),
+    );
+  }
+
+  // get list of users that are followed by users that are followed by current user
+// aka mutual friends - we want max 20 users overally
+// and max 10 users from one user (differentiation of propositions)
+  Future<void> _getList(
+      BuildContext context, int userId, VoidCallback onFollowersChanged) async {
+    try {
+      final IRepoUser repoUser = RepoUser();
+      List<ReducedUser> userFollowers = [];
+      List<ReducedUser> propositions = [];
+      final Map<int, bool> added = HashMap();
+      userFollowers = await repoUser.getFollowed(userId);
+      for (int i = 0; i < userFollowers.length; i++) {
+        added[userFollowers[i].id] = true;
+      }
+      added[userId] = true;
+      int propositionsSize = 0;
+
+      for (int i = 0; i < userFollowers.length && propositionsSize < 20; i++) {
+        List<ReducedUser> mutualAccounts =
+            await repoUser.getFollowed(userFollowers[i].id);
+        for (int j = 0;
+            j < mutualAccounts.length && propositionsSize < 20 && j < 10;
+            j++) {
+          if (!added.containsKey(mutualAccounts[j].getId)) {
+            propositions.add(mutualAccounts[j]);
+            added[mutualAccounts[j].getId] = true;
+            propositionsSize++;
+          }
         }
       }
+      Navigator.of(context)
+          .push(MaterialPageRoute(
+            builder: (context) => UsersList(users: propositions),
+          ))
+          .then((value) => _handleFollowersChanged());
+    } catch (e) {
+      print('Error fetching users list for : $e');
+      // Handle the error, show a message, or take any other appropriate action
     }
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => UsersList(users: propositions),
-      ),
-    );
-  } catch (e) {
-    print('Error fetching users list for : $e');
-    // Handle the error, show a message, or take any other appropriate action
   }
 }

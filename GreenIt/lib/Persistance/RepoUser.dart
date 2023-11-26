@@ -242,9 +242,10 @@ class RepoUser implements IRepoUser {
       // Assuming the response is a String. If it's not, you need to parse it accordingly.
       if (response) {
         follows = true;
+        print("Check follows: ${follows.toString()}");
       }
     } catch (e) {
-      print("Error - $e");
+      print("Error while checking followers - $e");
     }
     return follows;
   }
