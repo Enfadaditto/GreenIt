@@ -21,13 +21,11 @@ GridView buildProfileGallery(BuildContext context, List<Post> posts) =>
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => PostPage(
+                  postId: -1, //Replace with the post ID
                   author: 'Me', // Replace with the actual author
                   title:
                       'TITLE', // Replace with the actual title from the Post object
-                  comments: [
-                    Comment(comment: "ASDF", author: "your", replies: []),
-                    Comment(comment: "QWER", author: "mama", replies: [])
-                  ],
+                  comments: [],
                   currentIndex: index,
                 ),
               ),

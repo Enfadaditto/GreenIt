@@ -6,6 +6,7 @@ import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/RepoComment.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/for_you_page.dart';
+import 'package:my_app/utils/notuser_preferences.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
 import 'package:my_app/widgets/comment_widget.dart';
 
@@ -15,10 +16,12 @@ class PostPage extends StatefulWidget {
   final String author;
   final String title;
   final List<Comment> comments;
+  final int postId;
   //final List<String> steps; //Steps
 
   PostPage({
     super.key,
+    required this.postId,
     required this.author,
     required this.title,
     required this.comments,
@@ -32,11 +35,13 @@ class PostPage extends StatefulWidget {
 
 class PostDetailed extends State<PostPage> {
   late Future<User> registeredUser;
+  late Future<List<Comment>> comments;
   @override
   void initState() {
     // TODO: implement initState
     try {
       registeredUser = RepoUser().read("jrber23");
+      comments = RepoComment().getAllCommentsPost(widget.postId);
     } catch (e) {
       print("error");
     }
@@ -71,20 +76,20 @@ class PostDetailed extends State<PostPage> {
                   child: Text('OK'),
                   onPressed: () {
                     Comment answerToComment = Comment(
+                        id: -1,
+                        postId: widget.postId,
                         comment: _commentController.text,
-                        author: "me",
+                        author: UserPreferences.myUser.name,
                         responseTo: respondedComment,
                         replies: []);
 
                     setState(() {
                       respondedComment.replies.add(answerToComment);
-                      print("ASDFASDFSDFASDFASFDDSAFASFDSD" +
-                          respondedComment.replies.toString());
                     });
 
                     _commentController.clear();
                     Navigator.of(context).pop();
-                    //RepoComment().create(answerToComment);
+                    RepoComment().create(answerToComment);
                   },
                 ),
                 TextButton(
@@ -153,12 +158,20 @@ class PostDetailed extends State<PostPage> {
                               onPressed: () {
                                 setState(() {
                                   if (_commentController.text.isEmpty) return;
-                                  widget.comments.add(
-                                    Comment(
-                                        comment: _commentController.text,
-                                        author: "Comment's Author",
-                                        replies: []),
-                                  );
+
+                                  Comment newComment = Comment(
+                                      id: -1,
+                                      responseTo: Comment(
+                                          id: 0,
+                                          comment: "",
+                                          author: "",
+                                          replies: []),
+                                      postId: widget.postId,
+                                      comment: _commentController.text,
+                                      author: UserPreferences.myUser.name,
+                                      replies: []);
+                                  widget.comments.add(newComment);
+                                  RepoComment().create(newComment);
                                   _commentController.clear();
                                 });
                               },

@@ -4,6 +4,7 @@ import 'package:my_app/Decoding.dart';
 import 'package:my_app/Models/Comment.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Persistance/IRepoPost.dart';
+import 'package:my_app/Persistance/RepoComment.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/post_page.dart';
@@ -88,6 +89,7 @@ class _PostDetailState extends State<PostDetail> {
                         children: List.generate(
                             26,
                             (index) => PostWidget(
+                                  postId: snapshot.data!.getId(),
                                   title:
                                       '@${snapshot.data?.getOriginalPoster()?.getDisplayName()}',
                                   description:
@@ -127,11 +129,23 @@ class PostWidget extends StatelessWidget {
     required this.title,
     required this.description,
     required this.currentIndex,
+    required this.postId,
   });
 
   final String title;
+  final int postId;
   final String description;
   int currentIndex;
+  List<Comment> comments = [];
+
+  void waitComments() async {
+    print(
+        "//////////////////////////////////////////////////////////////////////////////////////////////////////////");
+    print("Aqui esta el fallo");
+    print(
+        "//////////////////////////////////////////////////////////////////////////////////////////////////////////");
+    comments = await RepoComment().getAllCommentsPost(postId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,15 +157,10 @@ class PostWidget extends StatelessWidget {
             Navigator.of(context).push(
               MaterialPageRoute(
                   builder: (context) => PostPage(
+                        postId: postId,
                         author: 'Me',
                         title: title,
-                        comments: [
-                          Comment(comment: "ASDF", author: "your", replies: [
-                            Comment(
-                                comment: "GHKJ", author: "mama", replies: [])
-                          ]),
-                          Comment(comment: "QWER", author: "mama", replies: [])
-                        ],
+                        comments: comments,
                         currentIndex: currentIndex,
                       )),
             );
