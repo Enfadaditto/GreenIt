@@ -32,7 +32,6 @@ class RepoPost implements IRepoPost {
       p = Post(
           originalPoster: jsonToUser(data[0]['creator']),
           firstStep: /* jsonToStep(data[0]['firstStep']) */ null,
-          description: '',
           imagenPreview: '',
           id: data[0]['id'],
           serverName: data[0]['serverName'],
@@ -40,6 +39,7 @@ class RepoPost implements IRepoPost {
     } catch (e) {
       print("An error occurred: $e");
       p = Post(
+          imagenPreview: '',
           originalPoster: null,
           firstStep: null,
           id: 0,
