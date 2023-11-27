@@ -80,12 +80,10 @@ class _PostDetailState extends State<PostDetail> {
               serverName: fetchedPosts[i]['serverName'],
               description: fetchedPosts[i]['description'],
               image: fetchedPosts[i]['image']);
-          print(p.image);
           setState(() {
             postsObjects.add(p);
           });
         }
-        print(postsObjects.length);
 
         if (fetchedPosts.isNotEmpty) {
           setState(() {
@@ -130,8 +128,6 @@ class _PostDetailState extends State<PostDetail> {
           setState(() {
             postsObjects.add(p);
           });
-
-          print(postsObjects.length);
         }
       });
     } catch (err) {
@@ -242,6 +238,7 @@ class _PostDetailState extends State<PostDetail> {
                                                 builder: (context) => PostPage(
                                                     author: "author",
                                                     title: "title",
+                                                    id: postsObjects[index].getId().toString(),
                                                     currentIndex:
                                                         currentIndex)));
                                       },
