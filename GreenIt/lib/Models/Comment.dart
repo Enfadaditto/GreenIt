@@ -5,7 +5,7 @@ class Comment {
   int? postId;
   String comment;
   Comment? responseTo;
-  String? author; //User author - Set to String to do testing
+  String? author;
   List<Comment> replies;
 
   Comment(
