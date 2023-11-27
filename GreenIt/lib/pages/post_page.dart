@@ -107,110 +107,94 @@ class PostDetailed extends State<PostPage> {
     return MaterialApp(
         home: Scaffold(
       appBar: buildAppBar(context),
-      body: PostDetailed(),
-      backgroundColor: Colors.grey[900],
-    ));
-  }
-}
+      body: Container(
+          // width: double.infinity,
+          height: double.infinity,
+          margin: const EdgeInsets.symmetric(horizontal: 5.0),
+          child: Stack(children: [
+            Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                      child: Center(
+                    child: Container(
+                      child: MyStepper(),
+                    ),
+                  )),
+                  //const SizedBox(height: 25),
+                  SizedBox(
+                    height: 500,
+                    child: PageView(
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        //steps.forEach((step) {
+                        //  StepCard(step.description, step.image);
+                        //})
 
-class PostDetailed extends StatelessWidget {
-  String placeholderIMG =
-      'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000';
-  //final List<String> steps;
-
-  //PostDetailed({required this.steps});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      // width: double.infinity,
-      height: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 5.0),
-      child: Stack(children[
-      Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-              child: Center(
-            child: Container(
-              child: MyStepper(),
-            ),
-          )),
-          //const SizedBox(height: 25),
-          SizedBox(
-            height: 500,
-            child: PageView(
-              scrollDirection: Axis.horizontal,
-              children: <Widget>[
-                //steps.forEach((step) {
-                //  StepCard(step.description, step.image);
-                //})
-
-                StepCard('Description Red', placeholderIMG),
-                StepCard('Description Blue', placeholderIMG),
-                StepCard('Description Green', placeholderIMG),
-              ],
-            ),
-          )
-        ]),
-        Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                color: Colors.white,
-                child: ExpansionTile(
-                  title: Text("Comments"),
-                  children: [
-                    Container(
-                      constraints: BoxConstraints(maxHeight: 300),
-                      child: Scaffold(
-                        body: CommentsWidget(
-                          comments: widget.comments,
-                          onReply: _respondComment,
+                        StepCard('Description Red', placeholderIMG),
+                        StepCard('Description Blue', placeholderIMG),
+                        StepCard('Description Green', placeholderIMG),
+                      ],
+                    ),
+                  )
+                ]),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  color: Colors.white,
+                  child: ExpansionTile(
+                    title: Text("Comments"),
+                    children: [
+                      Container(
+                        constraints: BoxConstraints(maxHeight: 300),
+                        child: Scaffold(
+                          body: CommentsWidget(
+                            comments: widget.comments,
+                            onReply: _respondComment,
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 7.5),
-                      child: TextFormField(
-                        controller: _commentController,
-                        decoration: InputDecoration(
-                            hintText: "Write new comment...",
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.send),
-                              onPressed: () {
-                                setState(() {
-                                  if (_commentController.text.isEmpty) return;
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 7.5),
+                        child: TextFormField(
+                          controller: _commentController,
+                          decoration: InputDecoration(
+                              hintText: "Write new comment...",
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.send),
+                                onPressed: () {
+                                  setState(() {
+                                    if (_commentController.text.isEmpty) return;
 
-                                  Comment newComment = Comment(
-                                      id: -1,
-                                      responseTo: Comment(
-                                          id: 0,
-                                          comment: "",
-                                          author: "",
-                                          replies: []),
-                                      postId: widget.postId,
-                                      comment: _commentController.text,
-                                      author: UserPreferences.myUser.name,
-                                      replies: []);
-                                  widget.comments.add(newComment);
-                                  RepoComment().create(newComment);
-                                  _commentController.clear();
-                                });
-                              },
-                            )),
-                      ),
-                    )
-                  ],
-                  onExpansionChanged: (bool) {
-                    setState(() {});
-                  },
-                ),
-              )
-            ],
-          )
-      ])
-      ),
+                                    Comment newComment = Comment(
+                                        id: -1,
+                                        responseTo: Comment(
+                                            id: 0,
+                                            comment: "",
+                                            author: "",
+                                            replies: []),
+                                        postId: widget.postId,
+                                        comment: _commentController.text,
+                                        author: UserPreferences.myUser.name,
+                                        replies: []);
+                                    widget.comments.add(newComment);
+                                    RepoComment().create(newComment);
+                                    _commentController.clear();
+                                  });
+                                },
+                              )),
+                        ),
+                      )
+                    ],
+                    onExpansionChanged: (bool) {
+                      setState(() {});
+                    },
+                  ),
+                )
+              ],
+            )
+          ])),
       backgroundColor: Colors.grey[900],
     ));
   }

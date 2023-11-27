@@ -81,6 +81,7 @@ class _PostDetailState extends State<PostDetail> {
 
         for (int i = 0; i < fetchedPosts.length; i++) {
           Post p = Post(
+              imagenPreview: '',
               originalPoster: RepoPost().jsonToUser(_posts[i]['creator']),
               firstStep: null,
               id: fetchedPosts[i]['id'],
@@ -126,6 +127,7 @@ class _PostDetailState extends State<PostDetail> {
         _posts = json.decode(res.body);
         for (int i = 0; i < _posts.length; i++) {
           Post p = Post(
+              imagenPreview: '',
               originalPoster: RepoPost().jsonToUser(_posts[i]['creator']),
               firstStep: null,
               id: _posts[i]['id'],
@@ -164,7 +166,7 @@ class _PostDetailState extends State<PostDetail> {
       currentIndex = index;
     });
   }
-    
+
   Future<bool?> onLikeButtonTapped(
       bool isLiked, String username, String postId) async {
     Future.delayed(const Duration(milliseconds: 2000));
@@ -240,12 +242,19 @@ class _PostDetailState extends State<PostDetail> {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => PostPage(author: "author", title: "title", currentIndex: currentIndex)));
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => PostPage(
+                                                  comments: [], //TODO
+                                                  postId: 10, //TODO
+                                                  author: "author",
+                                                  title: "title",
+                                                  currentIndex: currentIndex)));
                                     },
                                     child: Image.network(
-                                      'https://upload.wikimedia.org/wikipedia/commons/4/47/Cyanocitta_cristata_blue_jay.jpg'),
+                                        'https://upload.wikimedia.org/wikipedia/commons/4/47/Cyanocitta_cristata_blue_jay.jpg'),
                                   ),
-                                  
                                   Padding(
                                       padding: const EdgeInsets.all(16.0),
                                       child: Row(
@@ -254,10 +263,12 @@ class _PostDetailState extends State<PostDetail> {
                                         children: [
                                           FutureBuilder(
                                             future: Future.wait([
-                                              getNumLikes(
-                                                  postsObjects[index].getId().toString()),
-                                              postIsLiked(
-                                                  postsObjects[index].getId().toString())
+                                              getNumLikes(postsObjects[index]
+                                                  .getId()
+                                                  .toString()),
+                                              postIsLiked(postsObjects[index]
+                                                  .getId()
+                                                  .toString())
                                             ]),
                                             builder: (context, snapshot) {
                                               if (snapshot.connectionState ==
@@ -307,7 +318,8 @@ class _PostDetailState extends State<PostDetail> {
                                                                 .getOriginalPoster()!
                                                                 .getDisplayName(),
                                                             postsObjects[index]
-                                                                .getId().toString());
+                                                                .getId()
+                                                                .toString());
                                                       } else {
                                                         return onLikeButtonTapped(
                                                             isLiked,
@@ -315,7 +327,8 @@ class _PostDetailState extends State<PostDetail> {
                                                                 .getOriginalPoster()!
                                                                 .getDisplayName(),
                                                             postsObjects[index]
-                                                                .getId().toString());
+                                                                .getId()
+                                                                .toString());
                                                       }
                                                     });
                                               }
@@ -352,7 +365,6 @@ class _PostDetailState extends State<PostDetail> {
                       ),
                     )
                 ],
-              )
-        );
+              ));
   }
 }

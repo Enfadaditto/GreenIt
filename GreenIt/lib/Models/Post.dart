@@ -8,12 +8,10 @@ class Post {
   String imagenPreview;
   int id;
   String serverName; //server where post is stored
-  String description;
 
   Post(
       {required this.originalPoster,
       required this.firstStep,
-      required this.description,
       required this.imagenPreview,
       required this.id,
       required this.serverName,
@@ -50,6 +48,7 @@ class Post {
   void setServerName(String newServerName) {
     serverName = newServerName;
   }
+
   String getDescription() {
     return description;
   }
@@ -57,12 +56,11 @@ class Post {
   void setDescription(String newDescription) {
     description = newDescription;
   }
-    
-   factory Post.fromJson(Map<String, dynamic> data) {
+
+  factory Post.fromJson(Map<String, dynamic> data) {
     return Post(
         originalPoster: null,
         firstStep: null,
-        description: data['description'],
         imagenPreview: data['image'],
         id: data['id'],
         serverName: data['serverName'],
