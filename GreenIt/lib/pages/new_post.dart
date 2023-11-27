@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:my_app/pages/post_preview.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:my_app/widgets/post_page/image_selector.dart';
-import 'package:my_app/Models/Step.dart' as mod;
+import 'package:my_app/models/Step.dart' as mod;
 
 class NewPost extends StatefulWidget {
   const NewPost({super.key});
@@ -22,11 +22,8 @@ class _NewPostState extends State<NewPost> {
   List<mod.Step> steps = [];
 
   void _createNewPost() {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => PostPreview(
-              steps: steps,
-              postDescription: _titleController.text,
-            )));
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => PostPreview(steps: steps)));
   }
 
   @override
@@ -36,7 +33,6 @@ class _NewPostState extends State<NewPost> {
           id: 1,
           description: _stepDescriptionController.text,
           image: stepImage,
-          postId: -1,
           previousStep: null));
 
       print(steps.length);
@@ -56,8 +52,7 @@ class _NewPostState extends State<NewPost> {
             Text('TITLE:', style: TextStyle(fontSize: 18)),
             TextField(
                 controller: _titleController,
-                decoration:
-                    InputDecoration(labelText: "Your diary description")),
+                decoration: InputDecoration(labelText: "Your diary title")),
             SizedBox(height: 30),
             Text("STEPS:", style: TextStyle(fontSize: 18)),
             SizedBox(height: 30),

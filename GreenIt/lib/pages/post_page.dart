@@ -1,107 +1,46 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:my_app/Models/Comment.dart';
-import 'package:my_app/Models/User.dart';
-import 'package:my_app/Persistance/RepoComment.dart';
-import 'package:my_app/Persistance/RepoUser.dart';
-import 'package:my_app/pages/for_you_page.dart';
-import 'package:my_app/utils/notuser_preferences.dart';
 import 'package:my_app/pages/stepper.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
-import 'package:my_app/widgets/comment_widget.dart';
 
 class PostPage extends StatefulWidget {
   int currentIndex;
 
   final String author;
   final String title;
-  List<Comment> comments;
-  final int postId;
+  //final List<Comments> comments;
   //final List<String> steps; //Steps
 
   PostPage({
     super.key,
-    required this.postId,
     required this.author,
     required this.title,
-    required this.comments,
     /*required this.steps*/
     required this.currentIndex,
   });
 
   @override
-  State<StatefulWidget> createState() => PostDetailed();
+  State<StatefulWidget> createState() => PostState();
 }
 
-class PostDetailed extends State<PostPage> {
-  String placeholderIMG =
-      'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000';
-  //final List<String> steps;
-  final _commentController = TextEditingController();
-
-  //PostDetailed({required this.steps});
-
-  void getCommentList() async {
-    print(widget.postId);
-    print(
-        "//////////////////////////////////////////////////////////////////////////");
-    widget.comments = await RepoComment().getAllCommentsPost(widget.postId);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getCommentList();
-  }
-
+class PostState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
+    void _searchPressed() {
+      //TODO
+      print("SEARCH PRESSED");
+    }
+
+    void _menuPressed() {
+      //TODO
+      print("MENU PRESSED");
+    }
+
     void onTabTapped(int index) {
       setState(() {
         widget.currentIndex = index;
       });
-    }
-
-    void _respondComment(Comment respondedComment) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Text your response'),
-              content: TextField(
-                controller: _commentController,
-              ),
-              actions: [
-                TextButton(
-                  child: Text('OK'),
-                  onPressed: () {
-                    Comment answerToComment = Comment(
-                        id: -1,
-                        postId: widget.postId,
-                        comment: _commentController.text,
-                        author: UserPreferences.myUser.name,
-                        responseTo: respondedComment,
-                        replies: []);
-
-                    setState(() {
-                      respondedComment.replies.add(answerToComment);
-                    });
-
-                    _commentController.clear();
-                    Navigator.of(context).pop();
-                    RepoComment().create(answerToComment);
-                  },
-                ),
-                TextButton(
-                  child: Text('Cancel'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
     }
 
     return MaterialApp(
@@ -126,8 +65,7 @@ class PostDetailed extends StatelessWidget {
       // width: double.infinity,
       height: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 5.0),
-      child: Stack(children[
-      Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Expanded(
@@ -152,67 +90,9 @@ class PostDetailed extends StatelessWidget {
               ],
             ),
           )
-        ]),
-        Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                color: Colors.white,
-                child: ExpansionTile(
-                  title: Text("Comments"),
-                  children: [
-                    Container(
-                      constraints: BoxConstraints(maxHeight: 300),
-                      child: Scaffold(
-                        body: CommentsWidget(
-                          comments: widget.comments,
-                          onReply: _respondComment,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 7.5),
-                      child: TextFormField(
-                        controller: _commentController,
-                        decoration: InputDecoration(
-                            hintText: "Write new comment...",
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.send),
-                              onPressed: () {
-                                setState(() {
-                                  if (_commentController.text.isEmpty) return;
-
-                                  Comment newComment = Comment(
-                                      id: -1,
-                                      responseTo: Comment(
-                                          id: 0,
-                                          comment: "",
-                                          author: "",
-                                          replies: []),
-                                      postId: widget.postId,
-                                      comment: _commentController.text,
-                                      author: UserPreferences.myUser.name,
-                                      replies: []);
-                                  widget.comments.add(newComment);
-                                  RepoComment().create(newComment);
-                                  _commentController.clear();
-                                });
-                              },
-                            )),
-                      ),
-                    )
-                  ],
-                  onExpansionChanged: (bool) {
-                    setState(() {});
-                  },
-                ),
-              )
-            ],
-          )
-      ])
+        ],
       ),
-      backgroundColor: Colors.grey[900],
-    ));
+    );
   }
 }
 

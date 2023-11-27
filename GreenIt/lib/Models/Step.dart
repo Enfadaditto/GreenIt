@@ -1,24 +1,23 @@
 import 'package:my_app/Models/Comment.dart';
 
-class Step {
+class Step{
+
   late int id;
 
   late Step? previousStep;
 
   late String description;
 
-  late int postId;
-
-  late String image;
+  late String? image; //path to img
 
   late List<Comment> comments;
 
-  Step(
-      {required this.id,
-      required this.previousStep,
-      required this.description,
-      required this.image,
-      required this.postId});
+  Step({
+    required this.id,
+    required this.previousStep,
+    required this.description,
+    required this.image
+  });
 
   Step? getPreviousStep() {
     return previousStep;
@@ -26,10 +25,6 @@ class Step {
 
   void setPreviousStep(Step step) {
     previousStep = step;
-  }
-
-  void setPostId(int id) {
-    postId = id;
   }
 
   String getDescription() {
@@ -40,7 +35,7 @@ class Step {
     description = desc;
   }
 
-  String getImage() {
+  String? getImage() {
     return image;
   }
 
@@ -55,4 +50,5 @@ class Step {
   void setComments(List<Comment> commentList) {
     comments = commentList;
   }
+  
 }

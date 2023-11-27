@@ -1,7 +1,8 @@
 import 'package:my_app/Models/Comment.dart';
 import 'package:my_app/Persistance/IGenericRepository.dart';
 
-abstract class IRepoComment implements IGenericRepository<Comment> {
+abstract class IRepoComment implements IGenericRepository<Comment>{
+  
   @override
   void create(Comment t);
 
@@ -12,6 +13,4 @@ abstract class IRepoComment implements IGenericRepository<Comment> {
   void update(Comment t);
 
   void delete(Comment t);
-
-  Future<List<Comment>> getAllCommentsPost(int postId);
 }
