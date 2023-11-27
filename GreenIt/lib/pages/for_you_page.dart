@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:like_button/like_button.dart';
 import 'package:my_app/Decoding.dart';
+import 'package:my_app/Models/Comment.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Persistance/IRepoPost.dart';
+import 'package:my_app/Persistance/RepoComment.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/Persistance/ServerConnect.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
@@ -15,7 +17,6 @@ import 'package:my_app/pages/post_page.dart';
 import 'package:my_app/pages/stepper.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:http/http.dart' as http;
-
 
 void main() {
   runApp(const ForYouPage());
@@ -163,7 +164,7 @@ class _PostDetailState extends State<PostDetail> {
       currentIndex = index;
     });
   }
-
+    
   Future<bool?> onLikeButtonTapped(
       bool isLiked, String username, String postId) async {
     Future.delayed(const Duration(milliseconds: 2000));
