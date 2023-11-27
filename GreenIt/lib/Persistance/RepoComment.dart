@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:ffi';
+
 import 'package:my_app/Models/Comment.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Models/User.dart';
@@ -15,16 +18,29 @@ class RepoComment implements IRepoComment {
           "http://16.170.159.93/comment?prevCommentId=${t.responseTo?.id}" +
               "&text=${t.comment}" +
               "&postid=${t.postId}" +
-              "&creatorName=${t.author}");
+              "&creatorName=f1test"); /*${t.author}*/
     } catch (e) {
       print("An error occurred: $e");
     }
   }
 
   @override
-  Future<Comment> read(String id) {
-    // TODO: implement read
-    throw UnimplementedError();
+  Future<Comment> read(String id) async {
+    Comment c;
+    try {
+      var data =
+          await server.fetchData("http://16.170.159.93/getComments?postid=$id");
+      c = Comment(
+          id: data[0]['id'],
+          comment: data[0]['text'],
+          author: jsonToUser(data[0]['creator']).displayName,
+          replies: []);
+    } catch (e) {
+      print("An error occurred: $e");
+      c = Comment(id: -1, comment: "error", author: "error", replies: []);
+    }
+
+    return c;
   }
 
   @override
@@ -40,14 +56,8 @@ class RepoComment implements IRepoComment {
     List<Comment> comments = [];
     //
     try {
-      var response = await server.fetchData(
-          "http://16.170.159.93/getComments?postid=$postId"); //AQUI MUERE LA EJECUCION
-
-      print(
-          "//////////////////////////////////////////////////////////////////////////////////////////////////////////");
-      print("EJECUTA HASTA AQUI");
-      print(
-          "//////////////////////////////////////////////////////////////////////////////////////////////////////////");
+      var response = await server
+          .fetchData("http://16.170.159.93/getComments?postid=$postId");
 
       List<dynamic> list = response as List;
       comments = list.map((map) {
@@ -55,7 +65,8 @@ class RepoComment implements IRepoComment {
         if (map is Map<String, dynamic>) {
           var p = Comment.fromJson(map);
           p.setAuthor(jsonToUser(map['creator']).displayName);
-          p.setReplies(getReplies(p) as List<Comment>);
+          print("Author: ${p.author}");
+          print("Replies: ${p.replies}");
           return p;
         } else {
           throw Exception(
@@ -66,15 +77,28 @@ class RepoComment implements IRepoComment {
       print('Error fetching comments: $e');
     }
     //
+
+    print("length ${comments.length}: " + comments.toString());
     return comments;
+  }
+
+  void imTired(Future<List<Comment>> futureList) async {
+    List<Comment> wtf = [];
+    wtf = await futureList;
   }
 
   Future<List<Comment>> getReplies(Comment comment) async {
     List<Comment> replies = [];
 
     try {
+      return [];
       var response = await server
           .fetchData("http://16.170.159.93/getReplies?previd=${comment.id}");
+      print(
+          "//////////////////////////////////////////////////////////////////");
+      print("     EJECUTA HASTA AQUI");
+      print(
+          "//////////////////////////////////////////////////////////////////");
 
       List<dynamic> list = response as List;
       replies = list.map((map) {

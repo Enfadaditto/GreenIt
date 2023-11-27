@@ -138,15 +138,6 @@ class PostWidget extends StatelessWidget {
   int currentIndex;
   List<Comment> comments = [];
 
-  void waitComments() async {
-    print(
-        "//////////////////////////////////////////////////////////////////////////////////////////////////////////");
-    print("Aqui esta el fallo");
-    print(
-        "//////////////////////////////////////////////////////////////////////////////////////////////////////////");
-    comments = await RepoComment().getAllCommentsPost(postId);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(

@@ -15,7 +15,7 @@ class PostPage extends StatefulWidget {
 
   final String author;
   final String title;
-  final List<Comment> comments;
+  List<Comment> comments;
   final int postId;
   //final List<String> steps; //Steps
 
@@ -34,25 +34,25 @@ class PostPage extends StatefulWidget {
 }
 
 class PostDetailed extends State<PostPage> {
-  late Future<User> registeredUser;
-  late Future<List<Comment>> comments;
-  @override
-  void initState() {
-    // TODO: implement initState
-    try {
-      registeredUser = RepoUser().read("jrber23");
-      comments = RepoComment().getAllCommentsPost(widget.postId);
-    } catch (e) {
-      print("error");
-    }
-  }
-
   String placeholderIMG =
       'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000';
   //final List<String> steps;
   final _commentController = TextEditingController();
 
   //PostDetailed({required this.steps});
+
+  void getCommentList() async {
+    print(widget.postId);
+    print(
+        "//////////////////////////////////////////////////////////////////////////");
+    widget.comments = await RepoComment().getAllCommentsPost(widget.postId);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCommentList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,6 +179,9 @@ class PostDetailed extends State<PostPage> {
                       ),
                     )
                   ],
+                  onExpansionChanged: (bool) {
+                    setState(() {});
+                  },
                 ),
               )
             ],
