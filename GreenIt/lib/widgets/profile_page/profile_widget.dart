@@ -2,29 +2,33 @@ import 'package:flutter/material.dart';
 
 class ProfileWidget extends StatelessWidget {
   final String imagePath;
+  final bool ownProfile;
   final bool isEdit;
   final VoidCallback onClicked;
 
   const ProfileWidget({
     Key? key,
     required this.imagePath,
-    this.isEdit = false,
+    required this.ownProfile,
+    required this.isEdit,
     required this.onClicked,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.primary;
+    // final color = Theme.of(context).colorScheme.primary;
+    // TODO : themes in the projects
 
     return Center(
       child: Stack(
         children: [
           buildImage(),
-          Positioned(
-            child: buildEditIcon(color),
-            bottom: 0,
-            right: 4,
-          ),
+          if (ownProfile) // build if user is on his own profile page
+            Positioned(
+              child: buildEditIcon(Colors.green),
+              bottom: 0,
+              right: 4,
+            ),
         ],
       ),
     );

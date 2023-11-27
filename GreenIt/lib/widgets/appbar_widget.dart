@@ -1,18 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_app/utils/cache_manager.dart';
 
 AppBar buildAppBar(BuildContext context) {
-  final iconSearch = CupertinoIcons.search;
-  final iconOptions = CupertinoIcons.ellipsis;
+  const iconSearch = CupertinoIcons.search;
+  const iconOptions = CupertinoIcons.ellipsis;
   return AppBar(
       leading: BackButton(),
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.green[700],
       elevation: 0,
       actions: [
         IconButton(
-          icon: Icon(iconSearch),
+          icon: const Icon(iconSearch),
           onPressed: () {},
         ),
-        IconButton(onPressed: () {}, icon: Icon(iconOptions)),
+        PopupMenuButton(
+          itemBuilder: (BuildContext context) {
+            return [
+              PopupMenuItem(
+                child: ListTile(
+                  leading: const Icon(Icons.nightlight_round),
+                  title: const Text('Dark Mode'),
+                  onTap: () async {
+                    bool currentDarkMode = await CacheManager.getDarkMode();
+                    print("State before change $currentDarkMode");
+                    await CacheManager.setDarkMode(!currentDarkMode);
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ];
+          },
+          icon: const Icon(iconOptions),
+        ),
       ]);
 }

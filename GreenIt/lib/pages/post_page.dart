@@ -7,6 +7,7 @@ import 'package:my_app/Persistance/RepoComment.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/for_you_page.dart';
 import 'package:my_app/utils/notuser_preferences.dart';
+import 'package:my_app/pages/stepper.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
 import 'package:my_app/widgets/comment_widget.dart';
 
@@ -106,31 +107,53 @@ class PostDetailed extends State<PostPage> {
     return MaterialApp(
         home: Scaffold(
       appBar: buildAppBar(context),
-      body: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-        child: Stack(children: [
-          Column(
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  const SizedBox(height: 25),
-                  SizedBox(
-                    height: 500,
-                    child: PageView(
-                      scrollDirection: Axis.horizontal,
-                      children: <Widget>[
-                        StepCard('Description Red', placeholderIMG),
-                        StepCard('Description Blue', placeholderIMG),
-                        StepCard('Description Green', placeholderIMG),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Column(
+      body: PostDetailed(),
+      backgroundColor: Colors.grey[900],
+    ));
+  }
+}
+
+class PostDetailed extends StatelessWidget {
+  String placeholderIMG =
+      'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000';
+  //final List<String> steps;
+
+  //PostDetailed({required this.steps});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // width: double.infinity,
+      height: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+      child: Stack(children[
+      Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+              child: Center(
+            child: Container(
+              child: MyStepper(),
+            ),
+          )),
+          //const SizedBox(height: 25),
+          SizedBox(
+            height: 500,
+            child: PageView(
+              scrollDirection: Axis.horizontal,
+              children: <Widget>[
+                //steps.forEach((step) {
+                //  StepCard(step.description, step.image);
+                //})
+
+                StepCard('Description Red', placeholderIMG),
+                StepCard('Description Blue', placeholderIMG),
+                StepCard('Description Green', placeholderIMG),
+              ],
+            ),
+          )
+        ]),
+        Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Container(
@@ -186,7 +209,7 @@ class PostDetailed extends State<PostPage> {
               )
             ],
           )
-        ]),
+      ])
       ),
       backgroundColor: Colors.grey[900],
     ));
