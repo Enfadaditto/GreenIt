@@ -1,8 +1,7 @@
 import 'package:my_app/Models/Step.dart';
 import 'package:my_app/Persistance/IGenericRepository.dart';
 
-abstract class IRepoStep implements IGenericRepository<Step>{
-  
+abstract class IRepoStep implements IGenericRepository<Step> {
   @override
   void create(Step t);
 

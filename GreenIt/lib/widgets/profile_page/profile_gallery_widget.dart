@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/Models/Comment.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/pages/post_page.dart';
@@ -22,10 +23,12 @@ GridView buildProfileGallery(BuildContext context, List<Post> posts) =>
               MaterialPageRoute(
                 builder: (context) =>
                   PostPage(
+                    postId: -1,
                     author: 'Me', // Replace with the actual author
                     id: "15",
                     title:
                       'TITLE', // Replace with the actual title from the Post object
+                    comments: [],
                     currentIndex: index,
                 ),
               ),

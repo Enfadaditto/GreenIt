@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
+import 'package:my_app/Decoding.dart';
+import 'package:my_app/Models/Comment.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Persistance/IRepoPost.dart';
+import 'package:my_app/Persistance/RepoComment.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/Persistance/ServerConnect.dart';
 import 'package:my_app/pages/post_page.dart';
@@ -74,6 +77,7 @@ class _PostDetailState extends State<PostDetail> {
 
         for (int i = 0; i < fetchedPosts.length; i++) {
           Post p = Post(
+              imagenPreview: '',
               originalPoster: RepoPost().jsonToUser(_posts[i]['creator']),
               firstStep: null,
               id: fetchedPosts[i]['id'],
@@ -118,6 +122,7 @@ class _PostDetailState extends State<PostDetail> {
         _posts = json.decode(res.body);
         for (int i = 0; i < _posts.length; i++) {
           Post p = Post(
+              imagenPreview: '',
               originalPoster: RepoPost().jsonToUser(_posts[i]['creator']),
               firstStep: null,
               id: _posts[i]['id'],
@@ -239,6 +244,7 @@ class _PostDetailState extends State<PostDetail> {
                                                     author: "author",
                                                     title: "title",
                                                     id: postsObjects[index].getId().toString(),
+                                                    comments: [],
                                                     currentIndex:
                                                         currentIndex)));
                                       },

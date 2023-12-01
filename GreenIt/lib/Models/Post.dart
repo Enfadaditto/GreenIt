@@ -4,6 +4,8 @@ import 'package:my_app/Models/User.dart';
 class Post {
   User? originalPoster;
   Step? firstStep;
+  String description;
+  String imagenPreview;
   int id;
   String serverName; //server where post is stored
   String description;
@@ -12,6 +14,8 @@ class Post {
   Post(
       {required this.originalPoster,
       required this.firstStep,
+      required this.description,
+      required this.imagenPreview,
       required this.id,
       required this.serverName,
       required this.description,
@@ -64,11 +68,12 @@ class Post {
   void setImage(String newImage) {
     image = newImage;
   }
-
+  
   factory Post.fromJson(Map<String, dynamic> data) {
     return Post(
         originalPoster: null,
         firstStep: null,
+        imagenPreview: data['image'],
         id: data['id'],
         serverName: data['serverName'],
         description: data['description'],
@@ -91,6 +96,7 @@ class Post {
     return Step(
         id: datad['id'],
         previousStep: datad['previousStep'],
+        postId: datad['postid'],
         description: datad['description'],
         image: datad['image']);
   }
