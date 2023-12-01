@@ -8,8 +8,6 @@ class Post {
   String imagenPreview;
   int id;
   String serverName; //server where post is stored
-  String description;
-  String image;
 
   Post(
       {required this.originalPoster,
@@ -17,9 +15,7 @@ class Post {
       required this.description,
       required this.imagenPreview,
       required this.id,
-      required this.serverName,
-      required this.description,
-      required this.image});
+      required this.serverName});
 
   User? getOriginalPoster() {
     return originalPoster;
@@ -61,14 +57,6 @@ class Post {
     description = newDescription;
   }
 
-  String getImage() {
-    return image;
-  }
-
-  void setImage(String newImage) {
-    image = newImage;
-  }
-  
   factory Post.fromJson(Map<String, dynamic> data) {
     return Post(
         originalPoster: null,
@@ -76,8 +64,7 @@ class Post {
         imagenPreview: data['image'],
         id: data['id'],
         serverName: data['serverName'],
-        description: data['description'],
-        image: data['image']);
+        description: data['description']);
   }
 
   static User jsonToUser(Map<String, dynamic> datad) {
@@ -96,7 +83,6 @@ class Post {
     return Step(
         id: datad['id'],
         previousStep: datad['previousStep'],
-        postId: datad['postid'],
         description: datad['description'],
         image: datad['image']);
   }

@@ -28,6 +28,7 @@ class PostPage extends StatefulWidget {
   PostPage({
     super.key,
     required this.author,
+    required this.postId,
     required this.title,
     required this.id,
     required this.comments,
@@ -54,16 +55,15 @@ class PostDetailed extends State<PostPage> {
     widget.comments = await RepoComment().getAllCommentsPost(widget.postId);
   }
   
-  Future<void> fetchSteps() async {
-    setState(() {
-      widget.steps = await RepoPost().getListSteps(id);
-    });
+  void fetchSteps() async {
+    widget.steps = await RepoPost().getListSteps(widget.id);
   }
 
   @override
   void initState() {
     super.initState();
     getCommentList();
+    fetchSteps();
   }
 
   @override
@@ -118,7 +118,7 @@ class PostDetailed extends State<PostPage> {
     return MaterialApp(
         home: Scaffold(
       appBar: buildAppBar(context),
-      body: Container(
+      body:  Container(
           // width: double.infinity,
           height: double.infinity,
           margin: const EdgeInsets.symmetric(horizontal: 5.0),
@@ -209,12 +209,13 @@ class PostDetailed extends State<PostPage> {
               ],
             )
           ])),
+      
       backgroundColor: Colors.grey[900],
     ));
   }
 }
 
-class PostDetailed extends StatelessWidget {
+/* class PostDetailed extends StatelessWidget {
   String placeholderIMG =
       'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000';
   List<MyStep.Step?> steps = [];
@@ -281,7 +282,7 @@ class PostDetailed extends StatelessWidget {
     );
     
   }
-}
+} */
 
 class StepCard extends StatelessWidget {
   String text;

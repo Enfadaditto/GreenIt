@@ -22,7 +22,7 @@ class RepoStep implements IRepoStep {
           "&description=" +
           t.description +
           "&postId=" +
-          "${t.postId}" +
+          "${t.id}" +
           "&image=" +
           t.image);
     } catch (e) {
@@ -38,7 +38,6 @@ class RepoStep implements IRepoStep {
       s = Step(
           id: data['id'],
           previousStep: data['previousStep'],
-          postId: data['postid'],
           description: data['description'],
           image: data['image']);
       return s;
@@ -47,7 +46,6 @@ class RepoStep implements IRepoStep {
       return Step(
           id: 6969696,
           previousStep: null,
-          postId: -1,
           description: 'description',
           image: 'image');
     }

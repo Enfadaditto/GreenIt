@@ -56,7 +56,8 @@ class _PostPreviewState extends State<PostPreview> {
         description: widget.postDescription,
         originalPoster: widget.registeredUser,
         serverName: "",
-        imagenPreview: "");
+        imagenPreview: ""
+    );
 
     postDummy.setFirstStep(widget.steps.first);
 

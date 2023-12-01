@@ -3,11 +3,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
-import 'package:my_app/Decoding.dart';
-import 'package:my_app/Models/Comment.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Persistance/IRepoPost.dart';
-import 'package:my_app/Persistance/RepoComment.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/Persistance/ServerConnect.dart';
 import 'package:my_app/pages/post_page.dart';
@@ -77,13 +74,12 @@ class _PostDetailState extends State<PostDetail> {
 
         for (int i = 0; i < fetchedPosts.length; i++) {
           Post p = Post(
-              imagenPreview: '',
               originalPoster: RepoPost().jsonToUser(_posts[i]['creator']),
               firstStep: null,
               id: fetchedPosts[i]['id'],
               serverName: fetchedPosts[i]['serverName'],
               description: fetchedPosts[i]['description'],
-              image: fetchedPosts[i]['image']);
+              imagenPreview: fetchedPosts[i]['image']);
           setState(() {
             postsObjects.add(p);
           });
@@ -122,13 +118,12 @@ class _PostDetailState extends State<PostDetail> {
         _posts = json.decode(res.body);
         for (int i = 0; i < _posts.length; i++) {
           Post p = Post(
-              imagenPreview: '',
               originalPoster: RepoPost().jsonToUser(_posts[i]['creator']),
               firstStep: null,
               id: _posts[i]['id'],
               serverName: _posts[i]['serverName'],
               description: _posts[i]['description'],
-              image: _posts[i]['image']);
+              imagenPreview: _posts[i]['image']);
 
           setState(() {
             postsObjects.add(p);
@@ -241,6 +236,7 @@ class _PostDetailState extends State<PostDetail> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) => PostPage(
+                                                    postId: 10,
                                                     author: "author",
                                                     title: "title",
                                                     id: postsObjects[index].getId().toString(),
@@ -249,7 +245,7 @@ class _PostDetailState extends State<PostDetail> {
                                                         currentIndex)));
                                       },
                                       child: Image.network(
-                                          postsObjects[index].image)),
+                                          postsObjects[index].imagenPreview)),
                                   Padding(
                                     padding: const EdgeInsets.all(16.0),
                                     child: Row(

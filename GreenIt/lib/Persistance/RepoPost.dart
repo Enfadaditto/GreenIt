@@ -35,21 +35,19 @@ class RepoPost implements IRepoPost {
       p = Post(
           originalPoster: jsonToUser(data[0]['creator']),
           firstStep: jsonToStep(data[0]['firstStep']),
-          imagenPreview: '',
           id: data[0]['id'],
           serverName: data[0]['serverName'],
           description: data[0]['description'],
-          image: data[0]['image']);
+          imagenPreview: data[0]['image']);
     } catch (e) {
       print("An error occurred: $e");
       p = Post(
-          imagenPreview: '',
           originalPoster: null,
           firstStep: null,
           id: 0,
           serverName: "serverName",
           description: "description",
-          image: "image");
+          imagenPreview: "image");
     }
     return p;
   }
@@ -86,7 +84,7 @@ class RepoPost implements IRepoPost {
           id: fetchedPost['id'],
           serverName: fetchedPost['serverName'],
           description: fetchedPost['description'],
-          image: fetchedPost['image']);
+          imagenPreview: fetchedPost['image']);
       steps.add(p.firstStep);
 
       var data = await server.fetchData("http://16.170.159.93/prevstep?previd=${p.getFirstStep()!.id.toString()}");
@@ -114,7 +112,6 @@ class RepoPost implements IRepoPost {
     return Step(
         id: datad['id'],
         previousStep: jsonToStep2(datad['previousStep']),
-        postId: datad['postid'],
         description: datad['description'],
         image: datad['image']);
   }
@@ -124,11 +121,10 @@ class RepoPost implements IRepoPost {
       return null;
     }
     return Step(
-        id: datad?['id'],
+        id: datad['id'],
         previousStep: jsonToStep2(datad?['previousStep']),
-        postId: datad['postid'],
         description: datad?['description'],
-        image: datad?['image']);
+        image: datad['image']);
   }
 
   Future<List<Post>> getAllPostsUser(String displayName) async {
