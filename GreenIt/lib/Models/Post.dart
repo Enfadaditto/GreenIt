@@ -83,7 +83,6 @@ class Post {
     return Step(
         id: datad['id'],
         previousStep: datad['previousStep'],
-        postId: datad['postid'],
         description: datad['description'],
         image: datad['image']);
   }

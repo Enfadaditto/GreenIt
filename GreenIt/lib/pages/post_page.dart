@@ -1,6 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:my_app/Persistance/RepoPost.dart';
+import 'package:my_app/pages/stepper.dart';
+import 'package:my_app/widgets/appbar_widget.dart';
+import 'package:my_app/Models/Step.dart' as MyStep;
 import 'package:my_app/Models/Comment.dart';
 import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/RepoComment.dart';
@@ -13,18 +17,20 @@ import 'package:my_app/widgets/comment_widget.dart';
 
 class PostPage extends StatefulWidget {
   int currentIndex;
-
+  String id;
   final String author;
   final String title;
   List<Comment> comments;
   final int postId;
   //final List<String> steps; //Steps
+  List<MyStep.Step?> steps = [];
 
   PostPage({
     super.key,
-    required this.postId,
     required this.author,
+    required this.postId,
     required this.title,
+    required this.id,
     required this.comments,
     /*required this.steps*/
     required this.currentIndex,
@@ -48,11 +54,16 @@ class PostDetailed extends State<PostPage> {
         "//////////////////////////////////////////////////////////////////////////");
     widget.comments = await RepoComment().getAllCommentsPost(widget.postId);
   }
+  
+  void fetchSteps() async {
+    widget.steps = await RepoPost().getListSteps(widget.id);
+  }
 
   @override
   void initState() {
     super.initState();
     getCommentList();
+    fetchSteps();
   }
 
   @override
@@ -107,7 +118,7 @@ class PostDetailed extends State<PostPage> {
     return MaterialApp(
         home: Scaffold(
       appBar: buildAppBar(context),
-      body: Container(
+      body:  Container(
           // width: double.infinity,
           height: double.infinity,
           margin: const EdgeInsets.symmetric(horizontal: 5.0),
@@ -118,7 +129,7 @@ class PostDetailed extends State<PostPage> {
                   Expanded(
                       child: Center(
                     child: Container(
-                      child: MyStepper(),
+                      child: MyStepper(steps: widget.steps),
                     ),
                   )),
                   //const SizedBox(height: 25),
@@ -126,14 +137,17 @@ class PostDetailed extends State<PostPage> {
                     height: 500,
                     child: PageView(
                       scrollDirection: Axis.horizontal,
-                      children: <Widget>[
+                      children: [
                         //steps.forEach((step) {
                         //  StepCard(step.description, step.image);
                         //})
 
-                        StepCard('Description Red', placeholderIMG),
-                        StepCard('Description Blue', placeholderIMG),
-                        StepCard('Description Green', placeholderIMG),
+                        PageView.builder(
+                          itemCount: widget.steps.length,
+                          itemBuilder: (context, index) {
+                            return StepCard(widget.steps[index]!.getDescription(), widget.steps[index]!.getImage());
+                          },
+                        )
                       ],
                     ),
                   )
@@ -195,14 +209,84 @@ class PostDetailed extends State<PostPage> {
               ],
             )
           ])),
+      
       backgroundColor: Colors.grey[900],
     ));
   }
 }
 
+/* class PostDetailed extends StatelessWidget {
+  String placeholderIMG =
+      'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000';
+  List<MyStep.Step?> steps = [];
+  String id;
+
+  PostDetailed({required this.id});
+
+  Future<void> fetchSteps() async {
+    steps = await RepoPost().getListSteps(id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: fetchSteps(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: const CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          return Text("Ha habido un error");
+        } else {
+          return Container(
+      // width: double.infinity,
+      height: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+              child: Center(
+            child: Container(
+              child: MyStepper(steps: steps),
+            ),
+          )),
+          //const SizedBox(height: 25),
+          SizedBox(
+            height: 500,
+            child: /* PageView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                /* steps.forEach((step) {
+                  StepCard(step!.description, step.image);
+                }) */
+
+                StepCard(steps[0]!.getDescription(), steps[0]!.getImage()),
+                StepCard('Description Blue', placeholderIMG),
+                StepCard('Description Green', placeholderIMG),
+              ],
+            ), */
+            PageView.builder(
+              itemCount: steps.length,
+              itemBuilder: (context, index) {
+                return StepCard(steps[index]!.getDescription(), steps[index]!.getImage());
+              },
+            )
+          )
+        ],
+      ),
+    );
+        }
+      },
+    );
+    
+  }
+} */
+
 class StepCard extends StatelessWidget {
   String text;
-  String imagen;
+  String? imagen;
 
   StepCard(this.text, this.imagen, {super.key});
 
@@ -224,10 +308,11 @@ class StepCard extends StatelessWidget {
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
-              imagen ==
+              /* imagen ==
                       'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000'
-                  ? Image(image: NetworkImage(imagen))
-                  : Image.file(File(imagen))
+                  ? Image(image: NetworkImage(imagen!))
+                  : Image.file(File(imagen!)) */
+              Image.network(imagen!)
             ],
           ),
         ),

@@ -33,10 +33,9 @@ class _NewPostState extends State<NewPost> {
   Widget build(BuildContext context) {
     void _createNewStep() {
       steps.add(mod.Step(
-          id: 1,
+          id: -1,
           description: _stepDescriptionController.text,
           image: stepImage,
-          postId: -1,
           previousStep: null));
 
       print(steps.length);

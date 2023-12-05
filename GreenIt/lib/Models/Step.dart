@@ -7,8 +7,6 @@ class Step {
 
   late String description;
 
-  late int postId;
-
   late String image;
 
   late List<Comment> comments;
@@ -17,8 +15,7 @@ class Step {
       {required this.id,
       required this.previousStep,
       required this.description,
-      required this.image,
-      required this.postId});
+      required this.image});
 
   Step? getPreviousStep() {
     return previousStep;
@@ -29,7 +26,7 @@ class Step {
   }
 
   void setPostId(int id) {
-    postId = id;
+    id = id;
   }
 
   String getDescription() {

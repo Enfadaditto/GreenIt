@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Models/Step.dart';
 import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/IGenericRepository.dart';
 import 'package:my_app/Persistance/IRepoPost.dart';
 import 'package:my_app/Persistance/ServerConnect.dart';
+import 'package:http/http.dart' as http;
 
 class RepoPost implements IRepoPost {
   ServerConnect server = ServerConnect();
@@ -31,20 +34,20 @@ class RepoPost implements IRepoPost {
           await server.fetchData("http://16.170.159.93/post?username=" + id);
       p = Post(
           originalPoster: jsonToUser(data[0]['creator']),
-          firstStep: /* jsonToStep(data[0]['firstStep']) */ null,
-          imagenPreview: '',
+          firstStep: jsonToStep(data[0]['firstStep']),
           id: data[0]['id'],
           serverName: data[0]['serverName'],
-          description: data[0]['description']);
+          description: data[0]['description'],
+          imagenPreview: data[0]['image']);
     } catch (e) {
       print("An error occurred: $e");
       p = Post(
-          imagenPreview: '',
           originalPoster: null,
           firstStep: null,
           id: 0,
           serverName: "serverName",
-          description: "description");
+          description: "description",
+          imagenPreview: "image");
     }
     return p;
   }
@@ -70,11 +73,45 @@ class RepoPost implements IRepoPost {
         imagefield: '');
   }
 
+  Future<List<Step?>> getListSteps(String id) async {
+    List<Step?> steps = [];
+    try {
+      var fetchedPost =
+          await server.fetchData("http://16.170.159.93/postById?id=$id");
+      Post p = Post(
+          originalPoster: jsonToUser(fetchedPost['creator']),
+          firstStep: jsonToStep(fetchedPost['firstStep']),
+          id: fetchedPost['id'],
+          serverName: fetchedPost['serverName'],
+          description: fetchedPost['description'],
+          imagenPreview: fetchedPost['image']);
+      steps.add(p.firstStep);
+
+      var data = await server.fetchData("http://16.170.159.93/prevstep?previd=${p.getFirstStep()!.id.toString()}");
+      while (data.isNotEmpty) {
+        Step? s = Step(
+          id: data[0]['id'], 
+          previousStep: jsonToStep(data[0]['previousStep']), 
+          description: data[0]['description'], 
+          image: data[0]['image']
+        );
+        steps.add(s);
+        data = await server.fetchData("http://16.170.159.93/prevstep?previd=${s.id.toString()}");
+      }
+      
+        
+        print(steps.length);
+      return steps;
+    } catch (e) {
+      print('Error: $e');
+      return [];
+    }
+  }
+
   Step jsonToStep(Map<String, dynamic> datad) {
     return Step(
         id: datad['id'],
         previousStep: jsonToStep2(datad['previousStep']),
-        postId: datad['postid'],
         description: datad['description'],
         image: datad['image']);
   }
@@ -84,11 +121,10 @@ class RepoPost implements IRepoPost {
       return null;
     }
     return Step(
-        id: datad?['id'],
+        id: datad['id'],
         previousStep: jsonToStep2(datad?['previousStep']),
-        postId: datad['postid'],
         description: datad?['description'],
-        image: datad?['image']);
+        image: datad['image']);
   }
 
   Future<List<Post>> getAllPostsUser(String displayName) async {
