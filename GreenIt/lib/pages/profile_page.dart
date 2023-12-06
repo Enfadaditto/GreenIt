@@ -14,8 +14,9 @@ import 'package:my_app/widgets/profile_page/numbers_widget.dart';
 import 'package:my_app/widgets/profile_page/profile_gallery_widget.dart';
 import 'package:my_app/widgets/profile_page/share_profile_widget.dart';
 import '../utils/cache_manager.dart';
-import '../widgets/profile_page/profile_widget.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
+
+// colors - light green: CFF4D2 | dark green: 269A66 | dark blue: 24445A
 
 class ProfilePage extends StatefulWidget {
   final String
@@ -48,11 +49,13 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _handleFollowersChanged() {
-    _loadUserData().then((_) {
-      setState(() {
-        print("Callback function executed after data retrieval");
-        build(context);
-        // Additional logic if needed
+    _loadCacheMemory().then((_) {
+      _loadUserData().then((_) {
+        setState(() {
+          print("Callback function executed after data retrieval");
+          build(context);
+          // Additional logic if needed
+        });
       });
     });
   }
@@ -112,14 +115,15 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green[900],
-        title: const Text(
-          "GreenIt",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.green[900],
+      //   title: const Text(
+      //     "GreenIt",
+      //     style: TextStyle(color: Colors.white),
+      //   ),
+      // ),
       // appBar: buildAppBar(context),
+      // appBar: AppBar(),
       backgroundColor: darkMode ?? false ? Colors.grey : Colors.white,
       body: ListView(
         physics: const BouncingScrollPhysics(),
@@ -130,10 +134,9 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 12),
           FutureBuilder(
             // Wrap NumbersWidget in FutureBuilder
-            future:
-                Future.wait([userPetition, followersSize, followedSize, posts]),
+            future: Future.wait([userPetition, posts]),
             builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-              return buildUserContent(context, snapshot);
+              return buildUserPosts(context, snapshot);
             },
           ),
         ],
@@ -160,30 +163,45 @@ class _ProfilePageState extends State<ProfilePage> {
                 } else {
                   final followerId = snapshot2.data![0];
                   final alreadyFollowedBool = snapshot2.data![1];
+                  final userImage = NetworkImage(user!.image);
+                  final userText = followerId == user.id
+                      ? "Hello, ${user.displayName}"
+                      : "Hi, I'm ${user.displayName}!";
                   return Column(
                     children: [
-                      ProfileWidget(
-                        imagePath: user!.image,
-                        ownProfile: isCurrentUser!,
-                        onClicked: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  EditProfilePage(user: userPetition),
-                            ),
-                          );
-                        },
-                        isEdit: false,
-                      ),
-                      const SizedBox(height: 16),
                       Text(
-                        user.displayName,
+                        userText,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 22,
                         ),
                       ),
+                      const SizedBox(height: 12),
+                      ClipOval(
+                        child: Image(
+                          image: userImage,
+                          width: 144,
+                          height: 144,
+                          fit: BoxFit.cover, // Scale and center the image
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        user.email,
+                        style: const TextStyle(
+                          color: Color(0xFF727272),
+                          fontSize: 16,
+                        ),
+                      ),
                       const SizedBox(height: 16),
+                      FutureBuilder(
+                        future: Future.wait(
+                            [userPetition, followersSize, followedSize]),
+                        builder:
+                            (context, AsyncSnapshot<List<dynamic>> snapshot) {
+                          return buildNumbersWidget(context, snapshot);
+                        },
+                      ),
                       if (user.description.isNotEmpty)
                         buildAbout(context, user.description),
                       const SizedBox(height: 16),
@@ -200,15 +218,13 @@ class _ProfilePageState extends State<ProfilePage> {
         },
       );
 
-  Widget buildUserContent(
+  Widget buildNumbersWidget(
       BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return const CircularProgressIndicator();
     } else {
       final followersSizeToInt = snapshot.data![1];
       final followedSizeToInt = snapshot.data![2];
-
-      // Check if followersSize is not equal to -1 -> delay with fetching data
       if (followersSizeToInt == -1) {
         print("DELAY");
         return FutureBuilder(
@@ -218,20 +234,22 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         );
       }
+      return NumbersWidget(userPetition, followersSizeToInt, followedSizeToInt,
+          repoUser, _handleFollowersChanged);
+    }
+  }
 
-      final posts = snapshot.data![3] as List<Post>;
-
-      return Column(
-        children: [
-          NumbersWidget(userPetition, followersSizeToInt, followedSizeToInt,
-              repoUser, posts.length, _handleFollowersChanged),
-          const SizedBox(height: 12),
-          Container(
-            height: 900,
-            padding: const EdgeInsets.all(10),
-            child: buildProfileGallery(context, posts),
-          ),
-        ],
+  Widget buildUserPosts(
+      BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const CircularProgressIndicator();
+    } else {
+      final posts = snapshot.data![1] as List<Post>;
+      print(posts.length);
+      return Container(
+        height: 900,
+        padding: const EdgeInsets.all(10),
+        child: buildProfileGallery(context, posts),
       );
     }
   }
@@ -244,28 +262,36 @@ class _ProfilePageState extends State<ProfilePage> {
   ) {
     if (followerId != null) {
       if (followerId == user.id) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        return Column(
           children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
-              ),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            EditProfilePage(user: userPetition),
-                      ),
-                    )
-                    .then((value) => setState(() {}));
-              },
-              child: const Text('Edit Profile'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFCFF4D2),
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          20), // Adjust the radius as needed
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                EditProfilePage(user: userPetition),
+                          ),
+                        )
+                        .then((value) => setState(() {}));
+                  },
+                  child: const Text('Edit Profile'),
+                ),
+                const SizedBox(width: 8),
+                buildShareButton(context, user.displayName),
+              ],
             ),
-            const SizedBox(width: 8),
-            buildShareButton(context, user.displayName),
             const SizedBox(width: 8),
             buildSearchForNewUsers(context, user.id, _handleFollowersChanged),
           ],
@@ -280,7 +306,19 @@ class _ProfilePageState extends State<ProfilePage> {
               following: user.id,
               alreadyFollowed: alreadyFollowedBool,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 16),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFCFF4D2),
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(20), // Adjust the radius as needed
+                ),
+              ),
+              onPressed: () {},
+              child: const Text('Message'),
+            ),
           ],
         );
       }
@@ -293,8 +331,12 @@ class _ProfilePageState extends State<ProfilePage> {
       BuildContext context, int userId, VoidCallback onFollowersChanged) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green, // Green color
-        foregroundColor: Colors.white, // White text color
+        backgroundColor: const Color(0xFFCFF4D2),
+        foregroundColor: Colors.black, // White text color
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(20), // Adjust the radius as needed
+        ),
       ), // White text color
       onPressed: () {
         _getList(context, userId, onFollowersChanged);

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/Models/Comment.dart';
 import 'package:my_app/Models/Post.dart';
-import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/pages/post_page.dart';
 
 GridView buildProfileGallery(BuildContext context, List<Post> posts) =>
     GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 5,
       ),
       itemCount: posts.length,
       itemBuilder: (context, index) {
@@ -21,15 +20,14 @@ GridView buildProfileGallery(BuildContext context, List<Post> posts) =>
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) =>
-                  PostPage(
-                    postId: -1,
-                    author: 'Me', // Replace with the actual author
-                    id: "15",
-                    title:
+                builder: (context) => PostPage(
+                  id: "",
+                  postId: -1, //Replace with the post ID
+                  author: 'Me', // Replace with the actual author
+                  title:
                       'TITLE', // Replace with the actual title from the Post object
-                    comments: [],
-                    currentIndex: index,
+                  comments: [],
+                  currentIndex: index,
                 ),
               ),
             );
@@ -37,7 +35,7 @@ GridView buildProfileGallery(BuildContext context, List<Post> posts) =>
           child: Container(
             height: 300,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0),
+              borderRadius: BorderRadius.circular(10.0),
               image: DecorationImage(
                 image: NetworkImage(imageUrl),
                 fit: BoxFit.cover,

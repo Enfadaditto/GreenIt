@@ -3,7 +3,6 @@ import 'package:my_app/widgets/appbar_widget.dart';
 import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/IRepoUser.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
-import 'package:my_app/widgets/profile_page/profile_widget.dart';
 
 class EditProfilePage extends StatefulWidget {
   final Future<User?> user;
@@ -48,7 +47,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             return Text('User data not available');
           } else {
             final User userData = snapshot.data!;
-
+            final userImage = NetworkImage(userData!.image);
             return ListView(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               physics: const BouncingScrollPhysics(),
@@ -86,11 +85,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       },
                     );
                   },
-                  child: ProfileWidget(
-                    imagePath: userData.image,
-                    ownProfile: true,
-                    isEdit: true,
-                    onClicked: () async {},
+                  child: Center(
+                    child: ClipOval(
+                      child: Image(
+                        image: userImage,
+                        width: 128,
+                        height: 128,
+                        fit: BoxFit.cover, // Scale and center the image
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -126,8 +129,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.black,
+                  ),
                   onPressed: () {
                     final updatedUser = userData;
 
