@@ -34,10 +34,16 @@ class RepoComment implements IRepoComment {
           id: data[0]['id'],
           comment: data[0]['text'],
           author: jsonToUser(data[0]['creator']).displayName,
-          replies: []);
+          replies: [],
+          date: DateTime.parse(data[0]['fecha']));
     } catch (e) {
       print("An error occurred: $e");
-      c = Comment(id: -1, comment: "error", author: "error", replies: []);
+      c = Comment(
+          id: -1,
+          comment: "error",
+          author: "error",
+          replies: [],
+          date: DateTime.now());
     }
 
     return c;
@@ -65,8 +71,7 @@ class RepoComment implements IRepoComment {
         if (map is Map<String, dynamic>) {
           var p = Comment.fromJson(map);
           p.setAuthor(jsonToUser(map['creator']).displayName);
-          print("Author: ${p.author}");
-          print("Replies: ${p.replies}");
+          p.setReplies(getReplies(p));
           return p;
         } else {
           throw Exception(
@@ -82,23 +87,12 @@ class RepoComment implements IRepoComment {
     return comments;
   }
 
-  void imTired(Future<List<Comment>> futureList) async {
-    List<Comment> wtf = [];
-    wtf = await futureList;
-  }
-
   Future<List<Comment>> getReplies(Comment comment) async {
     List<Comment> replies = [];
 
     try {
-      return [];
       var response = await server
           .fetchData("http://16.170.159.93/getReplies?previd=${comment.id}");
-      print(
-          "//////////////////////////////////////////////////////////////////");
-      print("     EJECUTA HASTA AQUI");
-      print(
-          "//////////////////////////////////////////////////////////////////");
 
       List<dynamic> list = response as List;
       replies = list.map((map) {
