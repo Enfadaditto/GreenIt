@@ -28,8 +28,8 @@ class Comment {
     return this.author ?? "uknown";
   }
 
-  void setReplies(List<Comment> replies) {
-    this.replies = replies;
+  void setReplies(Future<List<Comment>> replies) async {
+    this.replies = await replies;
   }
 
   factory Comment.fromJson(Map<String, dynamic> datad) {

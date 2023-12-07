@@ -243,9 +243,6 @@ class PostDetailed extends State<PostPage> {
                                     ),
                                   )
                                 ],
-                                onExpansionChanged: (bool) {
-                                  setState(() {});
-                                },
                               );
                             } else if (snapshot.connectionState ==
                                 ConnectionState.waiting) {

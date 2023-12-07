@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/Models/Comment.dart';
+import 'package:my_app/Persistance/RepoUser.dart';
+import 'package:my_app/pages/profile_page.dart';
 
 class CommentsWidget extends StatelessWidget {
   List<Comment>? comments;
@@ -16,9 +18,47 @@ class CommentsWidget extends StatelessWidget {
 
         List<Widget> commentWidgets = [
           ListTile(
-            title: Text(
-              '${comment.author}',
-              style: TextStyle(color: Colors.black),
+            leading: ClipOval(
+                child: RawMaterialButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ProfilePage(data: '${comment.author}', type: "name"),
+                  ),
+                );
+              },
+              shape: CircleBorder(),
+              child: Material(
+                  color: Colors.transparent,
+                  child: FutureBuilder(
+                    future: RepoUser().readName("${comment.author}"),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      }
+                      return Ink.image(
+                        image: NetworkImage(snapshot.data!.image),
+                        fit: BoxFit.cover,
+                        width: 40,
+                        height: 40,
+                      );
+                    },
+                  )),
+            )),
+            title: Row(
+              children: [
+                Text(
+                  '${comment.author}',
+                  style: TextStyle(color: Colors.black),
+                ),
+                SizedBox(width: 10),
+                Text(
+                  "• 22h ago.", //¿?¿¿?¿?¿?¿?
+                  style: TextStyle(fontSize: 12, color: Colors.black38),
+                ),
+              ],
             ),
             subtitle: Text(comment.comment),
             trailing: IconButton(
@@ -29,13 +69,12 @@ class CommentsWidget extends StatelessWidget {
         ];
 
         if (comment.replies.isNotEmpty) {
-          // Add replies as children of the ExpansionTile if they exist
           commentWidgets.add(ExpansionTile(
             title: Text('View Replies'),
             children: comment.replies
                 .map((reply) => ListTile(
-                      title: Text(reply.comment),
-                      subtitle: Text('By ${reply.author}'),
+                      title: Text('By ${reply.author}'),
+                      subtitle: Text(reply.comment),
                     ))
                 .toList(),
           ));
