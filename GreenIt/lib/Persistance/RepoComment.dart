@@ -34,10 +34,16 @@ class RepoComment implements IRepoComment {
           id: data[0]['id'],
           comment: data[0]['text'],
           author: jsonToUser(data[0]['creator']).displayName,
-          replies: []);
+          replies: [],
+          date: DateTime.parse(data[0]['fecha']));
     } catch (e) {
       print("An error occurred: $e");
-      c = Comment(id: -1, comment: "error", author: "error", replies: []);
+      c = Comment(
+          id: -1,
+          comment: "error",
+          author: "error",
+          replies: [],
+          date: DateTime.now());
     }
 
     return c;

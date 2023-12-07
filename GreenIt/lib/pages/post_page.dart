@@ -87,7 +87,8 @@ class PostDetailed extends State<PostPage> {
                         comment: _commentController.text,
                         author: UserPreferences.myUser.name,
                         responseTo: respondedComment,
-                        replies: []);
+                        replies: [],
+                        date: DateTime.now());
 
                     setState(() {
                       respondedComment.replies.add(answerToComment);
@@ -226,13 +227,15 @@ class PostDetailed extends State<PostPage> {
                                                         id: 0,
                                                         comment: "",
                                                         author: "",
-                                                        replies: []),
+                                                        replies: [],
+                                                        date: DateTime.now()),
                                                     postId: widget.postId,
                                                     comment:
                                                         _commentController.text,
                                                     author: UserPreferences
                                                         .myUser.name,
-                                                    replies: []);
+                                                    replies: [],
+                                                    date: DateTime.now());
                                                 widget.comments.add(newComment);
                                                 RepoComment()
                                                     .create(newComment);
