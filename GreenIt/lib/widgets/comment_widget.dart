@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/Models/Comment.dart';
 
 class CommentsWidget extends StatelessWidget {
-  List<Comment> comments;
+  List<Comment>? comments;
   final Function(Comment comment) onReply;
 
   CommentsWidget({required this.comments, required this.onReply});
@@ -10,14 +10,17 @@ class CommentsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: comments.length,
+      itemCount: comments?.length,
       itemBuilder: (context, index) {
-        Comment comment = comments[index];
+        Comment comment = comments![index];
 
         List<Widget> commentWidgets = [
           ListTile(
-            title: Text(comment.comment),
-            subtitle: Text('By ${comment.author}'),
+            title: Text(
+              '${comment.author}',
+              style: TextStyle(color: Colors.black),
+            ),
+            subtitle: Text(comment.comment),
             trailing: IconButton(
               icon: Icon(Icons.reply),
               onPressed: () => onReply(comment),
@@ -39,10 +42,12 @@ class CommentsWidget extends StatelessWidget {
         }
 
         return Card(
+            child: Container(
+          color: Color(0xFFCFF4D2),
           child: Column(
             children: commentWidgets,
           ),
-        );
+        ));
       },
     );
   }

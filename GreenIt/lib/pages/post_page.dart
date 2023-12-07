@@ -45,16 +45,11 @@ class PostDetailed extends State<PostPage> {
       'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000';
   //final List<String> steps;
   final _commentController = TextEditingController();
+  late Future<List<Comment>> commentList =
+      RepoComment().getAllCommentsPost(widget.postId);
 
   //PostDetailed({required this.steps});
 
-  void getCommentList() async {
-    print(widget.postId);
-    print(
-        "//////////////////////////////////////////////////////////////////////////");
-    widget.comments = await RepoComment().getAllCommentsPost(widget.postId);
-  }
-  
   void fetchSteps() async {
     widget.steps = await RepoPost().getListSteps(widget.id);
   }
@@ -62,7 +57,6 @@ class PostDetailed extends State<PostPage> {
   @override
   void initState() {
     super.initState();
-    getCommentList();
     fetchSteps();
   }
 
@@ -118,10 +112,9 @@ class PostDetailed extends State<PostPage> {
     return MaterialApp(
         home: Scaffold(
       appBar: buildAppBar(context),
-      body:  Container(
+      body: Container(
           // width: double.infinity,
           height: double.infinity,
-          margin: const EdgeInsets.symmetric(horizontal: 5.0),
           child: Stack(children: [
             Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -145,7 +138,9 @@ class PostDetailed extends State<PostPage> {
                         PageView.builder(
                           itemCount: widget.steps.length,
                           itemBuilder: (context, index) {
-                            return StepCard(widget.steps[index]!.getDescription(), widget.steps[index]!.getImage());
+                            return StepCard(
+                                widget.steps[index]!.getDescription(),
+                                widget.steps[index]!.getImage());
                           },
                         )
                       ],
@@ -155,61 +150,114 @@ class PostDetailed extends State<PostPage> {
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Container(
-                  color: Colors.white,
-                  child: ExpansionTile(
-                    title: Text("Comments"),
-                    children: [
-                      Container(
-                        constraints: BoxConstraints(maxHeight: 300),
-                        child: Scaffold(
-                          body: CommentsWidget(
-                            comments: widget.comments,
-                            onReply: _respondComment,
-                          ),
-                        ),
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30)),
+                  child: Container(
+                      decoration: ShapeDecoration(
+                        color: Color(0xFFCFF4D2),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(30),
+                                topRight: Radius.circular(30))),
                       ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 7.5),
-                        child: TextFormField(
-                          controller: _commentController,
-                          decoration: InputDecoration(
-                              hintText: "Write new comment...",
-                              suffixIcon: IconButton(
-                                icon: Icon(Icons.send),
-                                onPressed: () {
-                                  setState(() {
-                                    if (_commentController.text.isEmpty) return;
+                      child: FutureBuilder(
+                          future:
+                              RepoComment().getAllCommentsPost(widget.postId),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return ExpansionTile(
+                                title: Row(
+                                  children: [
+                                    Text("Comments",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Helvetica')),
+                                    SizedBox(width: 10),
+                                    Text("${snapshot.data!.length}",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFF686868))),
+                                  ],
+                                ),
+                                children: [
+                                  Container(
+                                    width: 350,
+                                    decoration: ShapeDecoration(
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          width: 1,
+                                          strokeAlign:
+                                              BorderSide.strokeAlignCenter,
+                                          color: Color(0xFF6E6E6E),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                      constraints:
+                                          BoxConstraints(maxHeight: 300),
+                                      child: Scaffold(
+                                        backgroundColor: Color(0xFFCFF4D2),
+                                        body: CommentsWidget(
+                                          comments: snapshot.data,
+                                          onReply: _respondComment,
+                                        ),
+                                      )),
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 7.5),
+                                    child: TextFormField(
+                                      controller: _commentController,
+                                      decoration: InputDecoration(
+                                          hintText: "Write new comment...",
+                                          suffixIcon: IconButton(
+                                            icon: Icon(Icons.send),
+                                            onPressed: () {
+                                              setState(() {
+                                                if (_commentController
+                                                    .text.isEmpty) return;
 
-                                    Comment newComment = Comment(
-                                        id: -1,
-                                        responseTo: Comment(
-                                            id: 0,
-                                            comment: "",
-                                            author: "",
-                                            replies: []),
-                                        postId: widget.postId,
-                                        comment: _commentController.text,
-                                        author: UserPreferences.myUser.name,
-                                        replies: []);
-                                    widget.comments.add(newComment);
-                                    RepoComment().create(newComment);
-                                    _commentController.clear();
-                                  });
+                                                Comment newComment = Comment(
+                                                    id: -1,
+                                                    responseTo: Comment(
+                                                        id: 0,
+                                                        comment: "",
+                                                        author: "",
+                                                        replies: []),
+                                                    postId: widget.postId,
+                                                    comment:
+                                                        _commentController.text,
+                                                    author: UserPreferences
+                                                        .myUser.name,
+                                                    replies: []);
+                                                widget.comments.add(newComment);
+                                                RepoComment()
+                                                    .create(newComment);
+                                                _commentController.clear();
+                                              });
+                                            },
+                                          )),
+                                    ),
+                                  )
+                                ],
+                                onExpansionChanged: (bool) {
+                                  setState(() {});
                                 },
-                              )),
-                        ),
-                      )
-                    ],
-                    onExpansionChanged: (bool) {
-                      setState(() {});
-                    },
-                  ),
-                )
+                              );
+                            } else if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else {
+                              return Text("ERROR");
+                            }
+                          })),
+                ),
               ],
             )
           ])),
-      
       backgroundColor: Colors.grey[900],
     ));
   }

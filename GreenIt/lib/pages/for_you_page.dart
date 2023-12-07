@@ -236,10 +236,13 @@ class _PostDetailState extends State<PostDetail> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) => PostPage(
-                                                    postId: 10,
+                                                    postId: postsObjects[index]
+                                                        .getId(),
                                                     author: "author",
                                                     title: "title",
-                                                    id: postsObjects[index].getId().toString(),
+                                                    id: postsObjects[index]
+                                                        .getId()
+                                                        .toString(),
                                                     comments: [],
                                                     currentIndex:
                                                         currentIndex)));
