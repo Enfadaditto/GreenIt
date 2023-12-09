@@ -55,6 +55,7 @@ class _PostPreviewState extends State<PostPreview> {
         id: -1,
         description: widget.postDescription,
         originalPoster: widget.registeredUser,
+        title: "",
         serverName: "",
         imagenPreview: ""
     );
@@ -86,7 +87,7 @@ class _PostPreviewState extends State<PostPreview> {
             children: List.generate(
               widget.steps.length,
               (index) => StepCard(
-                  widget.steps[index].description, widget.steps[index].image!),
+                  widget.steps[index].description, widget.steps[index].image!, index),
             ),
           )),
       SizedBox(height: 100),

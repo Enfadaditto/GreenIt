@@ -7,6 +7,7 @@ class Post {
   String description;
   String imagenPreview;
   int id;
+  String title;
   String serverName; //server where post is stored
 
   Post(
@@ -14,6 +15,7 @@ class Post {
       required this.firstStep,
       required this.description,
       required this.imagenPreview,
+      required this.title,
       required this.id,
       required this.serverName});
 
@@ -57,12 +59,21 @@ class Post {
     description = newDescription;
   }
 
+  String getTitle() {
+    return title;
+  }
+
+  void setTitle(String newTitle) {
+    title = newTitle;
+  }
+
   factory Post.fromJson(Map<String, dynamic> data) {
     return Post(
         originalPoster: null,
         firstStep: null,
         imagenPreview: data['image'],
         id: data['id'],
+        title: data['title'],
         serverName: data['serverName'],
         description: data['description']);
   }

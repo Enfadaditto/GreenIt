@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_stepindicator/flutter_stepindicator.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/pages/stepper.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
@@ -16,12 +17,12 @@ import 'package:my_app/widgets/appbar_widget.dart';
 import 'package:my_app/widgets/comment_widget.dart';
 
 class PostPage extends StatefulWidget {
-  int currentIndex;
   String id;
   final String author;
-  final String title;
+  String title;
   List<Comment> comments;
   final int postId;
+  String description;
   //final List<String> steps; //Steps
   List<MyStep.Step?> steps = [];
 
@@ -32,8 +33,8 @@ class PostPage extends StatefulWidget {
     required this.title,
     required this.id,
     required this.comments,
+    required this.description,
     /*required this.steps*/
-    required this.currentIndex,
   });
 
   @override
@@ -41,6 +42,11 @@ class PostPage extends StatefulWidget {
 }
 
 class PostDetailed extends State<PostPage> {
+  int _currentPageIndex = 0;
+  int _previousPageIndex = 0;
+
+  int _currentIndexStepper = 0;
+
   String placeholderIMG =
       'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000';
   //final List<String> steps;
@@ -54,7 +60,7 @@ class PostDetailed extends State<PostPage> {
         "//////////////////////////////////////////////////////////////////////////");
     widget.comments = await RepoComment().getAllCommentsPost(widget.postId);
   }
-  
+
   void fetchSteps() async {
     widget.steps = await RepoPost().getListSteps(widget.id);
   }
@@ -70,7 +76,7 @@ class PostDetailed extends State<PostPage> {
   Widget build(BuildContext context) {
     void onTabTapped(int index) {
       setState(() {
-        widget.currentIndex = index;
+        _currentPageIndex = index;
       });
     }
 
@@ -118,45 +124,94 @@ class PostDetailed extends State<PostPage> {
     return MaterialApp(
         home: Scaffold(
       appBar: buildAppBar(context),
-      body:  Container(
+      body: Container(
+          color: Colors.white,
           // width: double.infinity,
           height: double.infinity,
           margin: const EdgeInsets.symmetric(horizontal: 5.0),
           child: Stack(children: [
-            Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                      child: Center(
-                    child: Container(
-                      child: MyStepper(steps: widget.steps),
-                    ),
-                  )),
-                  //const SizedBox(height: 25),
-                  SizedBox(
-                    height: 500,
-                    child: PageView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        //steps.forEach((step) {
-                        //  StepCard(step.description, step.image);
-                        //})
+            Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+              Padding(
+                padding: EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
+                child: Center(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                  widget.title,
+                  style: TextStyle(color: Colors.black, fontSize: 32.0),
+                )),
+              ),
+              Padding(
+                padding: // EdgeInsets.only(top: 10.0, bottom: 40.0),
+                    const EdgeInsets.only(top: 10.0, left: 8.0, right: 8.0),
+                child: Center(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      maxLines: 3,
+                  widget.description,
+                  style: TextStyle(color: Colors.black, fontSize: 12.0),
+                )),
+              ),
+              Expanded(
+                  child: Center(
+                child: Container(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
+                    child: FlutterStepIndicator(
+                      onChange: (index) {},
+                      negativeColor: Colors.grey,
+                      positiveColor: Colors.green[600],
+                      progressColor: const Color.fromARGB(255, 10, 212, 20),
+                      list: widget.steps,
+                      page: _currentIndexStepper,
+                      disableAutoScroll: false,
+                      height: 15,
 
-                        PageView.builder(
-                          itemCount: widget.steps.length,
-                          itemBuilder: (context, index) {
-                            return StepCard(widget.steps[index]!.getDescription(), widget.steps[index]!.getImage());
-                          },
-                        )
-                      ],
                     ),
-                  )
-                ]),
+                  ),
+                ),
+              )),
+              //const SizedBox(height: 25),
+              Padding(
+                padding: EdgeInsets.only(top: 8.0),
+                child: SizedBox(
+                  height: 500,
+                  child: PageView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      //steps.forEach((step) {
+                      //  StepCard(step.description, step.image);
+                      //})
+
+                      PageView.builder(
+                        onPageChanged: (index) {
+                          _previousPageIndex = _currentPageIndex;
+                          setState(() {
+                            _currentPageIndex = index;
+                          });
+
+                          if (_currentPageIndex > _previousPageIndex) {
+                            _currentIndexStepper++;
+                          } else if (_currentPageIndex < _previousPageIndex) {
+                            _currentIndexStepper--;
+                          }
+                        },
+                        itemCount: widget.steps.length,
+                        itemBuilder: (context, index) {
+                          return StepCard(widget.steps[index]!.getDescription(),
+                              widget.steps[index]!.getImage(), index);
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ]),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Container(
-                  color: Colors.white,
+                  color: Colors.grey,
                   child: ExpansionTile(
                     title: Text("Comments"),
                     children: [
@@ -209,7 +264,6 @@ class PostDetailed extends State<PostPage> {
               ],
             )
           ])),
-      
       backgroundColor: Colors.grey[900],
     ));
   }
@@ -287,32 +341,56 @@ class PostDetailed extends State<PostPage> {
 class StepCard extends StatelessWidget {
   String text;
   String? imagen;
+  int index;
 
-  StepCard(this.text, this.imagen, {super.key});
+  StepCard(this.text, this.imagen, this.index, {super.key});
 
   @override
   Widget build(BuildContext context) {
     //TODO: once we can extract images from the server, we need to investigate how to display them here
     return Stack(
       alignment: Alignment.center,
-      children: <Widget>[
+      children: [
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 5.0),
           height: 500,
-          child: Stack(
+          child: Column(
             children: [
+              Image(image: NetworkImage(imagen!)),
               Align(
-                alignment: Alignment.bottomCenter,
-                child: Text(
-                  text,
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
+                alignment: Alignment.topLeft,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 15.0),
+                        child: Center(
+                          child: Text(
+                            "STEP ${index + 1}\n",
+                            textAlign: TextAlign.left,
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 5.0),
+                        child: Center(
+                          child: Text(
+                            text,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 16),
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
               /* imagen ==
                       'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000'
                   ? Image(image: NetworkImage(imagen!))
                   : Image.file(File(imagen!)) */
-              Image.network(imagen!)
             ],
           ),
         ),

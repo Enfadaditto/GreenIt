@@ -37,6 +37,7 @@ class RepoPost implements IRepoPost {
           firstStep: jsonToStep(data[0]['firstStep']),
           id: data[0]['id'],
           serverName: data[0]['serverName'],
+          title: data[0]['title'],
           description: data[0]['description'],
           imagenPreview: data[0]['image']);
     } catch (e) {
@@ -46,6 +47,7 @@ class RepoPost implements IRepoPost {
           firstStep: null,
           id: 0,
           serverName: "serverName",
+          title: "title",
           description: "description",
           imagenPreview: "image");
     }
@@ -83,6 +85,7 @@ class RepoPost implements IRepoPost {
           firstStep: jsonToStep(fetchedPost['firstStep']),
           id: fetchedPost['id'],
           serverName: fetchedPost['serverName'],
+          title: fetchedPost['title'],
           description: fetchedPost['description'],
           imagenPreview: fetchedPost['image']);
       steps.add(p.firstStep);

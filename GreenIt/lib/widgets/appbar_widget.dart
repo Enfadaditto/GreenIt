@@ -6,7 +6,11 @@ AppBar buildAppBar(BuildContext context) {
   const iconSearch = CupertinoIcons.search;
   const iconOptions = CupertinoIcons.ellipsis;
   return AppBar(
-      leading: BackButton(),
+      leading: BackButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
       backgroundColor: Colors.green[700],
       elevation: 0,
       actions: [
