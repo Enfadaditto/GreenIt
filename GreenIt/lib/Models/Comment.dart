@@ -7,6 +7,7 @@ class Comment {
   Comment? responseTo;
   String? author; //User author - Set to String to do testing
   List<Comment> replies;
+  DateTime date;
 
   Comment(
       {required this.id,
@@ -14,7 +15,8 @@ class Comment {
       required this.comment,
       this.responseTo,
       required this.author,
-      required this.replies});
+      required this.replies,
+      required this.date});
 
   String getCommentText() {
     return this.comment;
@@ -28,13 +30,17 @@ class Comment {
     return this.author ?? "uknown";
   }
 
-  void setReplies(List<Comment> replies) {
-    this.replies = replies;
+  void setReplies(Future<List<Comment>> replies) async {
+    this.replies = await replies;
   }
 
   factory Comment.fromJson(Map<String, dynamic> datad) {
     return Comment(
-        id: datad['id'], comment: datad['text'], author: null, replies: []);
+        id: datad['id'],
+        comment: datad['text'],
+        author: null,
+        replies: [],
+        date: DateTime.parse(datad['fecha']));
   }
 
   static Comment cosa(Map<String, dynamic> data) {

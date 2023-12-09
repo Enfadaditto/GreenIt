@@ -241,7 +241,8 @@ class _PostDetailState extends State<PostDetail> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) => PostPage(
-                                                    postId: 10,
+                                                    postId: postsObjects[index]
+                                                        .getId(),
                                                     author: "author",
                                                     title: postsObjects[index].getTitle(),
                                                     description: postsObjects[index].getDescription(),
