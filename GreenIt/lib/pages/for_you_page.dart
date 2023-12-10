@@ -15,7 +15,7 @@ import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
-  runApp(const DirectMessagesPage());
+  runApp(const ForYouPage());
 }
 
 class ForYouPage extends StatelessWidget {
