@@ -29,7 +29,7 @@ GridView buildProfileGallery(BuildContext context, List<Post> posts) =>
                     title:
                       'TITLE', // Replace with the actual title from the Post object
                     comments: [],
-                    currentIndex: index,
+                    description: "description",
                 ),
               ),
             );

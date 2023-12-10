@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_stepindicator/flutter_stepindicator.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/pages/stepper.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
@@ -16,14 +17,14 @@ import 'package:my_app/widgets/appbar_widget.dart';
 import 'package:my_app/widgets/comment_widget.dart';
 
 class PostPage extends StatefulWidget {
-  int currentIndex;
   String id;
   final String author;
-  final String title;
+  String title;
   List<Comment> comments;
   final int postId;
+  String description;
   //final List<String> steps; //Steps
-  List<MyStep.Step?> steps = [];
+  late List<MyStep.Step?> steps = [];
 
   PostPage({
     super.key,
@@ -32,8 +33,8 @@ class PostPage extends StatefulWidget {
     required this.title,
     required this.id,
     required this.comments,
+    required this.description,
     /*required this.steps*/
-    required this.currentIndex,
   });
 
   @override
@@ -41,6 +42,13 @@ class PostPage extends StatefulWidget {
 }
 
 class PostDetailed extends State<PostPage> {
+  int _currentPageIndex = 0;
+  int _previousPageIndex = 0;
+
+  int _currentIndexStepper = 0;
+
+  Future<List<MyStep.Step?>>? steps;
+
   String placeholderIMG =
       'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000';
   //final List<String> steps;
@@ -50,6 +58,17 @@ class PostDetailed extends State<PostPage> {
 
   //PostDetailed({required this.steps});
 
+  void getCommentList() async {
+    print(widget.postId);
+    print(
+        "//////////////////////////////////////////////////////////////////////////");
+    widget.comments = await RepoComment().getAllCommentsPost(widget.postId);
+  }
+
+  Future<List<MyStep.Step?>> getSteps() async {
+    return await RepoPost().getListSteps(widget.id);
+  }
+
   void fetchSteps() async {
     widget.steps = await RepoPost().getListSteps(widget.id);
   }
@@ -57,14 +76,14 @@ class PostDetailed extends State<PostPage> {
   @override
   void initState() {
     super.initState();
-    fetchSteps();
+    steps = getSteps();
   }
 
   @override
   Widget build(BuildContext context) {
     void onTabTapped(int index) {
       setState(() {
-        widget.currentIndex = index;
+        _currentPageIndex = index;
       });
     }
 
@@ -73,13 +92,13 @@ class PostDetailed extends State<PostPage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Text your response'),
+              title: const Text('Text your response'),
               content: TextField(
                 controller: _commentController,
               ),
               actions: [
                 TextButton(
-                  child: Text('OK'),
+                  child: const Text('OK'),
                   onPressed: () {
                     Comment answerToComment = Comment(
                         id: -1,
@@ -100,7 +119,7 @@ class PostDetailed extends State<PostPage> {
                   },
                 ),
                 TextButton(
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -113,151 +132,221 @@ class PostDetailed extends State<PostPage> {
     return MaterialApp(
         home: Scaffold(
       appBar: buildAppBar(context),
-      body: Container(
-          // width: double.infinity,
-          height: double.infinity,
-          child: Stack(children: [
-            Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
+      body: FutureBuilder(
+        future: steps,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return const Text("Something went wrong");
+          } else {
+            return Container(
+                color: Colors.white,
+                // width: double.infinity,
+                height: double.infinity,
+                child: Stack(children: [
+                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 10.0, left: 15.0, right: 15.0),
                       child: Center(
-                    child: Container(
-                      child: MyStepper(steps: widget.steps),
+                          child: Text(
+                        textAlign: TextAlign.center,
+                        widget.title,
+                        style: const TextStyle(
+                            color: Colors.black, fontSize: 32.0),
+                      )),
                     ),
-                  )),
-                  //const SizedBox(height: 25),
-                  SizedBox(
-                    height: 500,
-                    child: PageView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        //steps.forEach((step) {
-                        //  StepCard(step.description, step.image);
-                        //})
-
-                        PageView.builder(
-                          itemCount: widget.steps.length,
-                          itemBuilder: (context, index) {
-                            return StepCard(
-                                widget.steps[index]!.getDescription(),
-                                widget.steps[index]!.getImage());
-                          },
-                        )
-                      ],
+                    Padding(
+                      padding: // EdgeInsets.only(top: 10.0, bottom: 40.0),
+                          const EdgeInsets.only(
+                              top: 10.0, left: 8.0, right: 8.0),
+                      child: Center(
+                          child: Text(
+                        textAlign: TextAlign.center,
+                        maxLines: 3,
+                        widget.description,
+                        style: const TextStyle(
+                            color: Colors.black, fontSize: 12.0),
+                      )),
                     ),
-                  )
-                ]),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30)),
-                  child: Container(
-                      decoration: ShapeDecoration(
-                        color: Color(0xFFCFF4D2),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(30),
-                                topRight: Radius.circular(30))),
+                    Expanded(
+                        child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
+                        child: FlutterStepIndicator(
+                          onChange: (index) {},
+                          negativeColor: Colors.grey,
+                          positiveColor: Colors.green[600],
+                          progressColor: const Color.fromARGB(255, 10, 212, 20),
+                          list: snapshot.requireData,
+                          page: _currentIndexStepper,
+                          disableAutoScroll: false,
+                          height: 15,
+                        ),
                       ),
-                      child: FutureBuilder(
-                          future:
-                              RepoComment().getAllCommentsPost(widget.postId),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return ExpansionTile(
-                                title: Row(
-                                  children: [
-                                    Text("Comments",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Helvetica')),
-                                    SizedBox(width: 10),
-                                    Text("${snapshot.data!.length}",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: Color(0xFF686868))),
-                                  ],
-                                ),
-                                children: [
-                                  Container(
-                                    width: 350,
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          width: 1,
-                                          strokeAlign:
-                                              BorderSide.strokeAlignCenter,
-                                          color: Color(0xFF6E6E6E),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                      constraints:
-                                          BoxConstraints(maxHeight: 300),
-                                      child: Scaffold(
-                                        backgroundColor: Color(0xFFCFF4D2),
-                                        body: CommentsWidget(
-                                          comments: snapshot.data,
-                                          onReply: _respondComment,
-                                        ),
-                                      )),
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 7.5),
-                                    child: TextFormField(
-                                      controller: _commentController,
-                                      decoration: InputDecoration(
-                                          hintText: "Write new comment...",
-                                          suffixIcon: IconButton(
-                                            icon: Icon(Icons.send),
-                                            onPressed: () {
-                                              setState(() {
-                                                if (_commentController
-                                                    .text.isEmpty) return;
+                    )),
+                    //const SizedBox(height: 25),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: SizedBox(
+                        height: 500,
+                        child: PageView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            //steps.forEach((step) {
+                            //  StepCard(step.description, step.image);
+                            //})
 
-                                                Comment newComment = Comment(
-                                                    id: -1,
-                                                    responseTo: Comment(
-                                                        id: 0,
-                                                        comment: "",
-                                                        author: "",
-                                                        replies: [],
-                                                        date: DateTime.now()),
-                                                    postId: widget.postId,
-                                                    comment:
-                                                        _commentController.text,
-                                                    author: UserPreferences
-                                                        .myUser.name,
-                                                    replies: [],
-                                                    date: DateTime.now());
-                                                widget.comments.add(newComment);
-                                                RepoComment()
-                                                    .create(newComment);
-                                                _commentController.clear();
-                                              });
-                                            },
-                                          )),
-                                    ),
-                                  )
-                                ],
-                              );
-                            } else if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(child: CircularProgressIndicator());
-                            } else {
-                              return Text("ERROR");
-                            }
-                          })),
-                ),
-              ],
-            )
-          ])),
+                            PageView.builder(
+                              onPageChanged: (index) {
+                                _previousPageIndex = _currentPageIndex;
+                                setState(() {
+                                  _currentPageIndex = index;
+                                });
+
+                                if (_currentPageIndex > _previousPageIndex) {
+                                  _currentIndexStepper++;
+                                } else if (_currentPageIndex <
+                                    _previousPageIndex) {
+                                  _currentIndexStepper--;
+                                }
+                              },
+                              itemCount: snapshot.requireData.length,
+                              itemBuilder: (context, index) {
+                                return StepCard(snapshot.requireData[index]!.getDescription(),
+                                    snapshot.requireData[index]!.getImage(), index);
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ]),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            topRight: Radius.circular(30)),
+                        child: Container(
+                            decoration: const ShapeDecoration(
+                              color: Color(0xFFCFF4D2),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(30),
+                                      topRight: Radius.circular(30))),
+                            ),
+                            child: FutureBuilder(
+                                future: RepoComment()
+                                    .getAllCommentsPost(widget.postId),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return ExpansionTile(
+                                      title: Row(
+                                        children: [
+                                          const Text("Comments",
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: 'Helvetica')),
+                                          const SizedBox(width: 10),
+                                          Text("${snapshot.data!.length}",
+                                              style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Color(0xFF686868))),
+                                        ],
+                                      ),
+                                      children: [
+                                        Container(
+                                          width: 350,
+                                          decoration: const ShapeDecoration(
+                                            shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                width: 1,
+                                                strokeAlign: BorderSide
+                                                    .strokeAlignCenter,
+                                                color: Color(0xFF6E6E6E),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                            constraints: const BoxConstraints(
+                                                maxHeight: 300),
+                                            child: Scaffold(
+                                              backgroundColor:
+                                                  const Color(0xFFCFF4D2),
+                                              body: CommentsWidget(
+                                                comments: snapshot.data,
+                                                onReply: _respondComment,
+                                              ),
+                                            )),
+                                        Container(
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 7.5),
+                                          child: TextFormField(
+                                            controller: _commentController,
+                                            decoration: InputDecoration(
+                                                hintText:
+                                                    "Write new comment...",
+                                                suffixIcon: IconButton(
+                                                  icon: const Icon(Icons.send),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      if (_commentController
+                                                          .text.isEmpty) return;
+
+                                                      Comment newComment = Comment(
+                                                          id: -1,
+                                                          responseTo: Comment(
+                                                              id: 0,
+                                                              comment: "",
+                                                              author: "",
+                                                              replies: [],
+                                                              date: DateTime
+                                                                  .now()),
+                                                          postId: widget.postId,
+                                                          comment:
+                                                              _commentController
+                                                                  .text,
+                                                          author:
+                                                              UserPreferences
+                                                                  .myUser.name,
+                                                          replies: [],
+                                                          date: DateTime.now());
+                                                      widget.comments
+                                                          .add(newComment);
+                                                      RepoComment()
+                                                          .create(newComment);
+                                                      _commentController
+                                                          .clear();
+                                                    });
+                                                  },
+                                                )),
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  } else if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  } else {
+                                    return const Text("ERROR");
+                                  }
+                                })),
+                      ),
+                    ],
+                  )
+                ]));
+          }
+        },
+      ),
       backgroundColor: Colors.grey[900],
     ));
   }
@@ -335,32 +424,56 @@ class PostDetailed extends State<PostPage> {
 class StepCard extends StatelessWidget {
   String text;
   String? imagen;
+  int index;
 
-  StepCard(this.text, this.imagen, {super.key});
+  StepCard(this.text, this.imagen, this.index, {super.key});
 
   @override
   Widget build(BuildContext context) {
     //TODO: once we can extract images from the server, we need to investigate how to display them here
     return Stack(
       alignment: Alignment.center,
-      children: <Widget>[
+      children: [
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 5.0),
           height: 500,
-          child: Stack(
+          child: Column(
             children: [
+              Image(image: NetworkImage(imagen!)),
               Align(
-                alignment: Alignment.bottomCenter,
-                child: Text(
-                  text,
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
+                  alignment: Alignment.topLeft,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 15.0),
+                        child: Center(
+                          child: Text(
+                            "STEP ${index + 1}\n",
+                            textAlign: TextAlign.left,
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Center(
+                          child: Text(
+                            text,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 16),
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
               /* imagen ==
                       'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000'
                   ? Image(image: NetworkImage(imagen!))
                   : Image.file(File(imagen!)) */
-              Image.network(imagen!)
             ],
           ),
         ),

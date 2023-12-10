@@ -7,6 +7,9 @@ import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Persistance/IRepoPost.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/Persistance/ServerConnect.dart';
+import 'package:my_app/pages/chat_messages_one.dart';
+import 'package:my_app/pages/chat_messages_two.dart';
+import 'package:my_app/pages/direct_messages_page.dart';
 import 'package:my_app/pages/post_page.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:http/http.dart' as http;
@@ -78,6 +81,7 @@ class _PostDetailState extends State<PostDetail> {
               firstStep: null,
               id: fetchedPosts[i]['id'],
               serverName: fetchedPosts[i]['serverName'],
+              title: fetchedPosts[i]['title'],
               description: fetchedPosts[i]['description'],
               imagenPreview: fetchedPosts[i]['image']);
           setState(() {
@@ -122,6 +126,7 @@ class _PostDetailState extends State<PostDetail> {
               firstStep: null,
               id: _posts[i]['id'],
               serverName: _posts[i]['serverName'],
+              title: _posts[i]['title'],
               description: _posts[i]['description'],
               imagenPreview: _posts[i]['image']);
 
@@ -239,13 +244,10 @@ class _PostDetailState extends State<PostDetail> {
                                                     postId: postsObjects[index]
                                                         .getId(),
                                                     author: "author",
-                                                    title: "title",
-                                                    id: postsObjects[index]
-                                                        .getId()
-                                                        .toString(),
-                                                    comments: [],
-                                                    currentIndex:
-                                                        currentIndex)));
+                                                    title: postsObjects[index].getTitle(),
+                                                    description: postsObjects[index].getDescription(),
+                                                    id: postsObjects[index].getId().toString(),
+                                                    comments: [])));
                                       },
                                       child: Image.network(
                                           postsObjects[index].imagenPreview)),
@@ -329,11 +331,13 @@ class _PostDetailState extends State<PostDetail> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(bottom: 24.0),
-                                    child: Text(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Center(
+                                      child: Text(
                                         postsObjects[index].getDescription(),
                                         style: const TextStyle(
-                                            color: Colors.white)),
+                                            color: Colors.white))
+                                    )
                                   )
                                 ],
                               ),
