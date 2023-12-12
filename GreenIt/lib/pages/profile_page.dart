@@ -128,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
       body: ListView(
         physics: const BouncingScrollPhysics(),
         children: [
-          const SizedBox(height: 24),
+          const SizedBox(height: 12),
           buildProfileData(
               userPetition), // Display user data if available// Show a loading indicator while fetching data
           const SizedBox(height: 12),
@@ -193,7 +193,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           fontSize: 16,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
                       FutureBuilder(
                         future: Future.wait(
                             [userPetition, followersSize, followedSize]),
@@ -245,11 +245,44 @@ class _ProfilePageState extends State<ProfilePage> {
       return const CircularProgressIndicator();
     } else {
       final posts = snapshot.data![1] as List<Post>;
-      print(posts.length);
-      return Container(
-        height: 900,
-        padding: const EdgeInsets.all(10),
-        child: buildProfileGallery(context, posts),
+      final copiedPosts =
+          List.generate(3, (_) => posts).expand((post) => post).toList();
+
+      // 300 is changable according to the implementation in profile gallery
+      final galleryHeight = 300 * (copiedPosts.length / 2);
+
+      return DefaultTabController(
+        length: 2,
+        child: Column(
+          children: [
+            TabBar(
+              labelColor: const Color(
+                  0xFF269A66), // Set unselected tabs to be transparent
+              indicatorColor: const Color(0xFF269A66),
+              indicatorSize: TabBarIndicatorSize.label,
+              tabs: [
+                Tab(text: '${posts.length} Posts'),
+                Tab(text: '0 Saved'),
+              ],
+            ),
+            SizedBox(
+              height: galleryHeight, // Adjust the height as needed
+              child: TabBarView(
+                children: [
+                  buildProfileGallery(context, copiedPosts),
+                  DefaultTextStyle(
+                    style: TextStyle(color: const Color(0xFF269A66)),
+                    child: Container(
+                      alignment: Alignment.topCenter,
+                      padding: EdgeInsets.all(20),
+                      child: Text('To Be Done'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       );
     }
   }
