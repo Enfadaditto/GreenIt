@@ -243,7 +243,7 @@ class _PostDetailState extends State<PostDetail> {
                                                 builder: (context) => PostPage(
                                                     postId: postsObjects[index]
                                                         .getId(),
-                                                    author: "author",
+                                                    author: postsObjects[index].getOriginalPoster()!.getDisplayName(),
                                                     title: postsObjects[index].getTitle(),
                                                     description: postsObjects[index].getDescription(),
                                                     id: postsObjects[index].getId().toString(),

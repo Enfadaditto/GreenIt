@@ -155,4 +155,34 @@ class RepoPost implements IRepoPost {
     }
     return posts;
   }
+
+  Future<int?> getNumLikes(String id) async {
+    Future.delayed(const Duration(milliseconds: 2000));
+    final response = await http
+        .get(Uri.parse("http://16.170.159.93/howmanylikes?postid=$id"));
+    return int.parse(response.body);
+  }
+
+  Future<String> postIsLiked(String id) async {
+    Future.delayed(const Duration(milliseconds: 2000));
+    final response = await http.get(Uri.parse(
+        "http://16.170.159.93/ispostalreadyliked?postid=$id&username=jrber23"));
+    return response.body;
+  }
+
+  Future<bool?> onLikeButtonTapped(
+      bool isLiked, String username, String postId) async {
+    Future.delayed(const Duration(milliseconds: 2000));
+    server.insertData(
+        "http://16.170.159.93/like?username=$username&postid=$postId");
+    return !isLiked;
+  }
+
+  Future<bool?> onUnlikeButtonTapped(
+      bool isLiked, String username, String postId) async {
+    Future.delayed(const Duration(milliseconds: 2000));
+    server.insertData(
+        "http://16.170.159.93/unlike?username=$username&postid=$postId");
+    return !isLiked;
+  }
 }

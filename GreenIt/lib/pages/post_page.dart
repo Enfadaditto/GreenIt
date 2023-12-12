@@ -1,8 +1,11 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_stepindicator/flutter_stepindicator.dart';
+import 'package:like_button/like_button.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
+import 'package:my_app/Persistance/ServerConnect.dart';
 import 'package:my_app/pages/stepper.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
 import 'package:my_app/Models/Step.dart' as MyStep;
@@ -49,6 +52,9 @@ class PostDetailed extends State<PostPage> {
 
   Future<List<MyStep.Step?>>? steps;
 
+  late final Future<int?> _numLikes;
+  late final Future<String?> _postIsLiked;
+
   String placeholderIMG =
       'https://img.freepik.com/vector-gratis/ilustracion-icono-dibujos-animados-fruta-manzana-concepto-icono-fruta-alimentos-aislado-estilo-dibujos-animados-plana_138676-2922.jpg?w=2000';
   //final List<String> steps;
@@ -77,6 +83,8 @@ class PostDetailed extends State<PostPage> {
   void initState() {
     super.initState();
     steps = getSteps();
+    _numLikes = RepoPost().getNumLikes(widget.id);
+    _postIsLiked = RepoPost().postIsLiked(widget.id);
   }
 
   @override
@@ -217,14 +225,61 @@ class PostDetailed extends State<PostPage> {
                               },
                               itemCount: snapshot.requireData.length,
                               itemBuilder: (context, index) {
-                                return StepCard(snapshot.requireData[index]!.getDescription(),
-                                    snapshot.requireData[index]!.getImage(), index);
+                                return StepCard(
+                                    snapshot.requireData[index]!
+                                        .getDescription(),
+                                    snapshot.requireData[index]!.getImage(),
+                                    index,
+                                    widget.author,
+                                    widget.id);
                               },
                             )
                           ],
                         ),
                       ),
                     ),
+                    /* FutureBuilder(
+                      future: Future.wait([_numLikes, _postIsLiked]),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              /* child: CircularProgressIndicator() */);
+                        } else if (snapshot.hasError) {
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        } else {
+                          final numLikes = snapshot.requireData[0] as int;
+                          final postIsLiked = snapshot.requireData[1] as String;
+
+                          return LikeButton(
+                              size: 32.0,
+                              isLiked:
+                                  postIsLiked.contains("true") ? true : false,
+                              likeCount: numLikes,
+                              likeBuilder: (isLiked) {
+                                return Icon(Icons.favorite,
+                                    color: isLiked ? Colors.red : Colors.black,
+                                    size: 32.0);
+                              },
+                              countBuilder: (likeCount, isLiked, text) {
+                                return Text(
+                                  text,
+                                  style: const TextStyle(color: Colors.black),
+                                );
+                              },
+                              onTap: (isLiked) {
+                                if (isLiked) {
+                                  return onUnlikeButtonTapped(
+                                      isLiked, widget.author, widget.id);
+                                } else {
+                                  return onLikeButtonTapped(
+                                      isLiked, widget.author, widget.id);
+                                }
+                              });
+                        }
+                      },
+                    ), */
                   ]),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -425,8 +480,19 @@ class StepCard extends StatelessWidget {
   String text;
   String? imagen;
   int index;
+  String author;
+  String id;
 
-  StepCard(this.text, this.imagen, this.index, {super.key});
+  StepCard(this.text, this.imagen, this.index, this.author, this.id, {super.key});
+
+  late Future<int?> _numLikes = RepoPost().getNumLikes(id);
+  late Future<String?> _postIsLiked = RepoPost().postIsLiked(id);
+
+  Future<void> loadLikeButton() async {
+    _numLikes = RepoPost().getNumLikes(id);
+    _postIsLiked = RepoPost().postIsLiked(id);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -440,6 +506,53 @@ class StepCard extends StatelessWidget {
           child: Column(
             children: [
               Image(image: NetworkImage(imagen!)),
+              FutureBuilder(
+                      future: Future.wait([RepoPost().getNumLikes(id), RepoPost().postIsLiked(id)]),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              /* child: CircularProgressIndicator() */);
+                        } else if (snapshot.hasError) {
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        } else {
+                          final numLikes = snapshot.requireData[0] as int;
+                          final postIsLiked = snapshot.requireData[1] as String;
+
+                          return Padding(
+                            padding: EdgeInsets.only(top: 10.0),
+                            child: LikeButton(
+                              size: 32.0,
+                              isLiked:
+                                  postIsLiked.contains("true") ? true : false,
+                              likeCount: numLikes,
+                              likeBuilder: (isLiked) {
+                                return Icon(Icons.favorite,
+                                    color: isLiked ? Colors.red : Colors.black,
+                                    size: 32.0);
+                              },
+                              countBuilder: (likeCount, isLiked, text) {
+                                return Text(
+                                  text,
+                                  style: const TextStyle(color: Colors.black),
+                                );
+                              },
+                              onTap: (isLiked) {
+                                if (isLiked) {
+                                  return RepoPost().onUnlikeButtonTapped(
+                                      isLiked, author, id);
+                                } else {
+                                  return RepoPost().onLikeButtonTapped(
+                                      isLiked, author, id);
+                                }
+                              }),
+                          );
+                          
+                            
+                        }
+                      },
+                    ),
               Align(
                   alignment: Alignment.topLeft,
                   child: Column(
