@@ -87,7 +87,7 @@ class _PostPreviewState extends State<PostPreview> {
             children: List.generate(
               widget.steps.length,
               (index) => StepCard(
-                  widget.steps[index].description, widget.steps[index].image!, index),
+                  widget.steps[index].description, widget.steps[index].image!, index, "", ""),
             ),
           )),
       SizedBox(height: 100),
