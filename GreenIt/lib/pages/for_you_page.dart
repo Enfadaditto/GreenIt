@@ -271,15 +271,25 @@ class _PostDetailState extends State<PostDetail> {
                                                 fit: BoxFit.cover,
                                               ),
                                               Positioned(
-                                                bottom: 10,
-                                                left: 10,
-                                                child: CircleAvatar(
-                                                    radius: 25.0,
-                                                    backgroundImage: NetworkImage(
-                                                        postsObjects[index]
-                                                            .getOriginalPoster()!
-                                                            .image)),
-                                              )
+                                                  bottom: 10,
+                                                  left: 10,
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                            color: Colors.black,
+                                                            width: 2)),
+                                                    child: CircleAvatar(
+                                                        radius: 25.0,
+                                                        backgroundImage:
+                                                            NetworkImage(
+                                                                postsObjects[
+                                                                        index]
+                                                                    .getOriginalPoster()!
+                                                                    .image),
+                                                        foregroundColor:
+                                                            Colors.black),
+                                                  ))
                                             ],
                                           ))),
                                   Padding(
