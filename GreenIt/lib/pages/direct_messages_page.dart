@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/pages/chat_messages_one.dart';
 import 'package:my_app/pages/chat_messages_two.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
+import 'package:my_app/widgets/profile_page/appbar_messages_page.dart';
 
 class DirectMessagesPage extends StatelessWidget {
   const DirectMessagesPage({super.key});
@@ -28,7 +29,7 @@ class DirectMessagesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: buildForYouPageAppBar(context),
+        appBar: buildMessagesPageAppBar(context),
         body: Column(
           children: [
             Row(
