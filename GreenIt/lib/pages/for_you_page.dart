@@ -206,35 +206,38 @@ class _PostDetailState extends State<PostDetail> {
                         itemCount: postsObjects.length,
                         controller: _controller,
                         itemBuilder: (context, index) {
-                          return Container(
-                              child: IntrinsicHeight(
+                          return IntrinsicHeight(
                             child: Card(
-                              color: const Color.fromARGB(255, 0, 0, 175),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0)),
+                              color: const Color.fromARGB(255, 198, 231, 191),
+                              // color: const Color.fromARGB(255, 255, 255, 255),
+                              elevation: 4,
                               child: Column(
                                 children: [
-                                  Row(
-                                    children: [
-                                      Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: CircleAvatar(
-                                              backgroundImage: NetworkImage(
-                                                  postsObjects[index]
-                                                      .getOriginalPoster()!
-                                                      .image))),
-                                      Expanded(
-                                        child: Center(
-                                          child: Text(
-                                            '@${postsObjects[index].getOriginalPoster()?.getDisplayName()}',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 30,
-                                                color: Colors.white),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
+                                  /* Row(
+                                children: [
+                                  Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                              postsObjects[index]
+                                                  .getOriginalPoster()!
+                                                  .image))),
+                                  Expanded(
+                                    child: Center(
+                                      child: Text(
+                                        '@${postsObjects[index].getOriginalPoster()?.getDisplayName()}',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 30,
+                                            color: Colors.white),
+                                        textAlign: TextAlign.center,
                                       ),
-                                    ],
+                                    ),
                                   ),
+                                ],
+                              ), */
                                   GestureDetector(
                                       onTap: () {
                                         Navigator.push(
@@ -243,14 +246,42 @@ class _PostDetailState extends State<PostDetail> {
                                                 builder: (context) => PostPage(
                                                     postId: postsObjects[index]
                                                         .getId(),
-                                                    author: postsObjects[index].getOriginalPoster()!.getDisplayName(),
-                                                    title: postsObjects[index].getTitle(),
-                                                    description: postsObjects[index].getDescription(),
-                                                    id: postsObjects[index].getId().toString(),
+                                                    author: postsObjects[index]
+                                                        .getOriginalPoster()!
+                                                        .getDisplayName(),
+                                                    title: postsObjects[index]
+                                                        .getTitle(),
+                                                    description:
+                                                        postsObjects[index]
+                                                            .getDescription(),
+                                                    id: postsObjects[index]
+                                                        .getId()
+                                                        .toString(),
                                                     comments: [])));
                                       },
-                                      child: Image.network(
-                                          postsObjects[index].imagenPreview)),
+                                      child: ClipRRect(
+                                          borderRadius: const BorderRadius.only(
+                                              topRight: Radius.circular(30.0),
+                                              topLeft: Radius.circular(30.0)),
+                                          child: Stack(
+                                            children: [
+                                              Image.network(
+                                                postsObjects[index]
+                                                    .imagenPreview,
+                                                fit: BoxFit.cover,
+                                              ),
+                                              Positioned(
+                                                bottom: 10,
+                                                left: 10,
+                                                child: CircleAvatar(
+                                                    radius: 25.0,
+                                                    backgroundImage: NetworkImage(
+                                                        postsObjects[index]
+                                                            .getOriginalPoster()!
+                                                            .image)),
+                                              )
+                                            ],
+                                          ))),
                                   Padding(
                                     padding: const EdgeInsets.all(16.0),
                                     child: Row(
@@ -292,7 +323,7 @@ class _PostDetailState extends State<PostDetail> {
                                                     return Icon(Icons.favorite,
                                                         color: isLiked
                                                             ? Colors.red
-                                                            : Colors.white,
+                                                            : Colors.black,
                                                         size: 32.0);
                                                   },
                                                   countBuilder: (likeCount,
@@ -300,7 +331,7 @@ class _PostDetailState extends State<PostDetail> {
                                                     return Text(
                                                       text,
                                                       style: const TextStyle(
-                                                          color: Colors.white),
+                                                          color: Colors.black),
                                                     );
                                                   },
                                                   onTap: (isLiked) {
@@ -331,18 +362,20 @@ class _PostDetailState extends State<PostDetail> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.all(16.0),
-                                    child: Center(
-                                      child: Text(
+                                      padding: EdgeInsets.all(16.0),
+                                      child: Center(
+                                          child: Text(
                                         postsObjects[index].getDescription(),
                                         style: const TextStyle(
-                                            color: Colors.white))
-                                    )
-                                  )
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w400),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      )))
                                 ],
                               ),
                             ),
-                          ));
+                          );
                         }),
                   ),
                   if (_isLoadMoreRunning == true)
