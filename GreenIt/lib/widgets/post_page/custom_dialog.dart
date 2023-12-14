@@ -7,19 +7,20 @@ class StepDialog extends StatelessWidget {
   final Function(String) childFunction;
   final Function() cancelFunction;
   final Function() addStepFunction;
+  final TextEditingController stepDescriptionController;
 
   const StepDialog(
       {required this.child,
       required this.childFunction,
       required this.cancelFunction,
       required this.addStepFunction,
-      required this.stepNumber});
+      required this.stepNumber,
+      required this.stepDescriptionController});
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _stepDescriptionController = TextEditingController();
-
-    return AlertDialog(
+    return SingleChildScrollView(
+        child: AlertDialog(
       title: Column(
         children: [
           Container(
@@ -76,8 +77,9 @@ class StepDialog extends StatelessWidget {
           Container(
             alignment: Alignment.bottomCenter,
             child: TextField(
-              controller: _stepDescriptionController,
-              decoration: InputDecoration(labelText: 'Step description'),
+              controller: stepDescriptionController,
+              decoration: InputDecoration(
+                  labelText: 'Step description', alignLabelWithHint: true),
             ),
           )
         ]),
@@ -121,6 +123,6 @@ class StepDialog extends StatelessWidget {
               backgroundColor: Color(0xFF269A66)),
         ),
       ],
-    );
+    ));
   }
 }

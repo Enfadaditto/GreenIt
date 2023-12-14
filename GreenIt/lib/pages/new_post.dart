@@ -2,7 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_app/Models/Post.dart';
+import 'package:my_app/Models/User.dart';
+import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/post_preview.dart';
+import 'package:my_app/utils/notuser_preferences.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:my_app/widgets/post_page/custom_dialog.dart';
 import 'package:my_app/widgets/post_page/image_selector.dart';
@@ -17,34 +21,139 @@ class NewPost extends StatefulWidget {
 
 class _NewPostState extends State<NewPost> {
   TextEditingController _titleController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
   TextEditingController _stepDescriptionController = TextEditingController();
+
   late String stepImage;
+  late String stepDescription;
+  late String postThumbnail;
 
   List<mod.Step> steps = [];
   List<Widget> stepWidgets = [];
 
   void _createNewPost() {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => PostPreview(
-              steps: steps,
-              postDescription: _titleController.text,
-            )));
+    Post thisPost = Post(
+        originalPoster: null,
+        firstStep: steps.first,
+        description: _descriptionController.text,
+        imagenPreview: postThumbnail,
+        title: _titleController.text,
+        id: -1,
+        serverName: "");
+
+    print("Title: ${thisPost.title}");
+    print("Description: " + thisPost.description);
+    print("Registered user: ${thisPost.originalPoster}");
+    print("First step: " + thisPost.firstStep.toString());
+
+    for (mod.Step step in steps) {
+      print("Image: " + step.image);
+      print("Description: " + step.description);
+      print("Prev. step: " + step.previousStep.toString());
+    }
+  }
+
+  void confirmDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Almost done!"),
+            content: Container(
+              height: 234,
+              child: Column(
+                children: [
+                  Container(
+                    height: 150,
+                    width: 150,
+                    child: Image.file(File(postThumbnail)),
+                    decoration: BoxDecoration(
+                        color: Color(0xFFCFF4D2),
+                        border: Border.all(width: 3, color: Color(0xFF269A66)),
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: _descriptionController,
+                    decoration: InputDecoration(
+                        labelText: 'Post description',
+                        alignLabelWithHint: true),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  _stepDescriptionController.clear();
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'Go back',
+                  style: TextStyle(
+                    color: Color(0xFF269A66),
+                    fontSize: 18,
+                    fontFamily: 'Helvetica',
+                    fontWeight: FontWeight.w700,
+                    height: 0,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                    minimumSize: Size(120, 45),
+                    shape: RoundedRectangleBorder(
+                        side: BorderSide(width: 2, color: Color(0xFF269A66)),
+                        borderRadius: BorderRadius.circular(30.0)),
+                    backgroundColor: Colors.white),
+              ),
+              ElevatedButton(
+                onPressed: _createNewPost,
+                child: Text(
+                  'Upload',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontFamily: 'Helvetica',
+                    fontWeight: FontWeight.w700,
+                    height: 0,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                    minimumSize: Size(100, 45),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0)),
+                    backgroundColor: Color(0xFF269A66)),
+              ),
+            ],
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     void _createNewStep() {
-      steps.add(mod.Step(
-          id: -1,
-          description: _stepDescriptionController.text,
-          image: stepImage,
-          previousStep: null));
+      if (steps.isEmpty) {
+        steps.add(mod.Step(
+            id: -1,
+            description: _stepDescriptionController.text,
+            image: stepImage,
+            previousStep: null));
+      } else {
+        steps.add(mod.Step(
+            id: -1,
+            description: _stepDescriptionController.text,
+            image: stepImage,
+            previousStep: steps.last));
+      }
 
       print(steps.length);
     }
 
     void handleImage(String img) {
       stepImage = img;
+    }
+
+    void handleThumbnail(String img) {
+      postThumbnail = img;
     }
 
     void _addWidget(Widget child) {
@@ -103,6 +212,7 @@ class _NewPostState extends State<NewPost> {
                   },
                   stepNumber: steps.length + 1,
                   childFunction: handleImage,
+                  stepDescriptionController: _stepDescriptionController,
                 );
               });
         },
@@ -156,7 +266,7 @@ class _NewPostState extends State<NewPost> {
               height: 150,
               width: 150,
               child: PickImageDialog(
-                onImageSelected: handleImage,
+                onImageSelected: handleThumbnail,
                 child: Transform(
                   transform: Matrix4.identity()..scale(-1.0, 1.0),
                   alignment: Alignment.center,
@@ -217,6 +327,8 @@ class _NewPostState extends State<NewPost> {
                                 },
                                 stepNumber: steps.length + 1,
                                 childFunction: handleImage,
+                                stepDescriptionController:
+                                    _stepDescriptionController,
                               );
                             });
                       },
@@ -242,10 +354,10 @@ class _NewPostState extends State<NewPost> {
                           return stepWidgets[index];
                         }),
                   ),
-            //Preview Button
+            //Upload Button
             SizedBox(height: 30),
             ElevatedButton(
-              onPressed: _createNewPost,
+              onPressed: confirmDialog,
               child: Text(
                 'Upload',
                 style: TextStyle(
