@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Models/Step.dart';
@@ -15,11 +16,13 @@ class RepoPost implements IRepoPost {
   void create(Post t) {
     try {
       server.insertData("http://16.170.159.93/publish?username=" +
-          "rizna" +
+          t.originalPoster!.displayName +
           "&description=" +
           t.description +
+          "&title=" +
+          t.title +
           "&image=" +
-          t.imagenPreview);
+          encodeToBase64(t.imagenPreview));
     } catch (e) {
       print("An error occurred: $e");
     }
@@ -90,20 +93,20 @@ class RepoPost implements IRepoPost {
           imagenPreview: fetchedPost['image']);
       steps.add(p.firstStep);
 
-      var data = await server.fetchData("http://16.170.159.93/prevstep?previd=${p.getFirstStep()!.id.toString()}");
+      var data = await server.fetchData(
+          "http://16.170.159.93/prevstep?previd=${p.getFirstStep()!.id.toString()}");
       while (data.isNotEmpty) {
         Step? s = Step(
-          id: data[0]['id'], 
-          previousStep: jsonToStep(data[0]['previousStep']), 
-          description: data[0]['description'], 
-          image: data[0]['image']
-        );
+            id: data[0]['id'],
+            previousStep: jsonToStep(data[0]['previousStep']),
+            description: data[0]['description'],
+            image: data[0]['image']);
         steps.add(s);
-        data = await server.fetchData("http://16.170.159.93/prevstep?previd=${s.id.toString()}");
+        data = await server.fetchData(
+            "http://16.170.159.93/prevstep?previd=${s.id.toString()}");
       }
-      
-        
-        print(steps.length);
+
+      print(steps.length);
       return steps;
     } catch (e) {
       print('Error: $e');
@@ -184,5 +187,10 @@ class RepoPost implements IRepoPost {
     server.insertData(
         "http://16.170.159.93/unlike?username=$username&postid=$postId");
     return !isLiked;
+  }
+
+  String encodeToBase64(String imagenPreview) {
+    final bytes = File(imagenPreview).readAsBytesSync();
+    return base64Encode(bytes);
   }
 }

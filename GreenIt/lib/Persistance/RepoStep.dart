@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:my_app/Models/Step.dart';
 import 'package:my_app/Persistance/IGenericRepository.dart';
 import 'package:my_app/Persistance/IRepoStep.dart';
@@ -24,7 +27,7 @@ class RepoStep implements IRepoStep {
           "&postId=" +
           "${t.id}" +
           "&image=" +
-          t.image);
+          encodeToBase64(t.image));
     } catch (e) {
       print("An error occurred: $e");
     }
@@ -58,5 +61,10 @@ class RepoStep implements IRepoStep {
 
   void delete(Step t) {
     // TODO: implement delete
+  }
+
+  String encodeToBase64(String imagenPreview) {
+    final bytes = File(imagenPreview).readAsBytesSync();
+    return base64Encode(bytes);
   }
 }

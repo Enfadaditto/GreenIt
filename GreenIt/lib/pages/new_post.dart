@@ -1,12 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Models/User.dart';
+import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
-import 'package:my_app/pages/post_preview.dart';
-import 'package:my_app/utils/notuser_preferences.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:my_app/widgets/post_page/custom_dialog.dart';
 import 'package:my_app/widgets/post_page/image_selector.dart';
@@ -27,13 +25,23 @@ class _NewPostState extends State<NewPost> {
   late String stepImage;
   late String stepDescription;
   late String postThumbnail;
+  late Future<User> user;
 
   List<mod.Step> steps = [];
   List<Widget> stepWidgets = [];
 
-  void _createNewPost() {
+  bool estaInicializada() {
+    try {
+      var valorTemporal = postThumbnail; // Intenta acceder a la variable
+      return true; // No se lanzó excepción, está inicializada
+    } catch (e) {
+      return false; // Se lanzó excepción, no está inicializada
+    }
+  }
+
+  void _createNewPost(User? originalPoster) {
     Post thisPost = Post(
-        originalPoster: null,
+        originalPoster: originalPoster,
         firstStep: steps.first,
         description: _descriptionController.text,
         imagenPreview: postThumbnail,
@@ -41,9 +49,11 @@ class _NewPostState extends State<NewPost> {
         id: -1,
         serverName: "");
 
+    RepoPost().create(thisPost);
+
     print("Title: ${thisPost.title}");
     print("Description: " + thisPost.description);
-    print("Registered user: ${thisPost.originalPoster}");
+    print("Registered user: ${thisPost.originalPoster?.displayName}");
     print("First step: " + thisPost.firstStep.toString());
 
     for (mod.Step step in steps) {
@@ -57,79 +67,103 @@ class _NewPostState extends State<NewPost> {
     showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            title: Text("Almost done!"),
-            content: Container(
-              height: 234,
-              child: Column(
-                children: [
-                  Container(
-                    height: 150,
-                    width: 150,
-                    child: Image.file(File(postThumbnail)),
-                    decoration: BoxDecoration(
-                        color: Color(0xFFCFF4D2),
-                        border: Border.all(width: 3, color: Color(0xFF269A66)),
-                        borderRadius: BorderRadius.circular(10)),
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: _descriptionController,
-                    decoration: InputDecoration(
-                        labelText: 'Post description',
-                        alignLabelWithHint: true),
-                  ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  _stepDescriptionController.clear();
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  'Go back',
-                  style: TextStyle(
-                    color: Color(0xFF269A66),
-                    fontSize: 18,
-                    fontFamily: 'Helvetica',
-                    fontWeight: FontWeight.w700,
-                    height: 0,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                    minimumSize: Size(120, 45),
-                    shape: RoundedRectangleBorder(
-                        side: BorderSide(width: 2, color: Color(0xFF269A66)),
-                        borderRadius: BorderRadius.circular(30.0)),
-                    backgroundColor: Colors.white),
-              ),
-              ElevatedButton(
-                onPressed: _createNewPost,
-                child: Text(
-                  'Upload',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontFamily: 'Helvetica',
-                    fontWeight: FontWeight.w700,
-                    height: 0,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                    minimumSize: Size(100, 45),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0)),
-                    backgroundColor: Color(0xFF269A66)),
-              ),
-            ],
-          );
+          return FutureBuilder(
+              future: user,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return AlertDialog(
+                    title: Text("Almost done!"),
+                    content: Container(
+                      height: 234,
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 150,
+                            width: 150,
+                            child: Image.file(File(postThumbnail)),
+                            decoration: BoxDecoration(
+                                color: Color(0xFFCFF4D2),
+                                border: Border.all(
+                                    width: 3, color: Color(0xFF269A66)),
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                          SizedBox(height: 20),
+                          TextField(
+                            controller: _descriptionController,
+                            decoration: InputDecoration(
+                                labelText: 'Post description',
+                                alignLabelWithHint: true),
+                          ),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      ElevatedButton(
+                        onPressed: () {
+                          _stepDescriptionController.clear();
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Go back',
+                          style: TextStyle(
+                            color: Color(0xFF269A66),
+                            fontSize: 18,
+                            fontFamily: 'Helvetica',
+                            fontWeight: FontWeight.w700,
+                            height: 0,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: Size(120, 45),
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    width: 2, color: Color(0xFF269A66)),
+                                borderRadius: BorderRadius.circular(30.0)),
+                            backgroundColor: Colors.white),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _createNewPost(snapshot.data);
+                        },
+                        child: Text(
+                          'Upload',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontFamily: 'Helvetica',
+                            fontWeight: FontWeight.w700,
+                            height: 0,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: Size(100, 45),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0)),
+                            backgroundColor: Color(0xFF269A66)),
+                      ),
+                    ],
+                  );
+                  ;
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              });
         });
+  }
+
+  Future<void> loadUser() async {
+    try {
+      user = RepoUser().readName('jrber23');
+    } catch (e) {}
   }
 
   @override
   Widget build(BuildContext context) {
+    _titleController.addListener(() {
+      setState(() {});
+    });
+
     void _createNewStep() {
       if (steps.isEmpty) {
         steps.add(mod.Step(
@@ -154,6 +188,7 @@ class _NewPostState extends State<NewPost> {
 
     void handleThumbnail(String img) {
       postThumbnail = img;
+      setState(() {});
     }
 
     void _addWidget(Widget child) {
@@ -179,6 +214,7 @@ class _NewPostState extends State<NewPost> {
     }
 
     void doOnce() {
+      loadUser();
       stepWidgets.add(ElevatedButton(
         onPressed: () {
           showDialog(
@@ -356,23 +392,28 @@ class _NewPostState extends State<NewPost> {
                   ),
             //Upload Button
             SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: confirmDialog,
-              child: Text(
-                'Upload',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontFamily: 'Helvetica',
-                  fontWeight: FontWeight.w700,
-                  height: 0,
+            Visibility(
+              child: ElevatedButton(
+                onPressed: confirmDialog,
+                child: Text(
+                  'Upload',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontFamily: 'Helvetica',
+                    fontWeight: FontWeight.w700,
+                    height: 0,
+                  ),
                 ),
+                style: ElevatedButton.styleFrom(
+                    minimumSize: Size(150, 45),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0)),
+                    backgroundColor: Colors.white30),
               ),
-              style: ElevatedButton.styleFrom(
-                  minimumSize: Size(150, 45),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0)),
-                  backgroundColor: Colors.white30),
+              visible: steps.length != 0 &&
+                  _titleController.text.isNotEmpty &&
+                  estaInicializada(),
             )
           ],
         ),
