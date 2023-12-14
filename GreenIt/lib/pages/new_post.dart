@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_app/pages/post_preview.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
+import 'package:my_app/widgets/post_page/custom_dialog.dart';
 import 'package:my_app/widgets/post_page/image_selector.dart';
 import 'package:my_app/Models/Step.dart' as mod;
 
@@ -20,6 +21,7 @@ class _NewPostState extends State<NewPost> {
   late String stepImage;
 
   List<mod.Step> steps = [];
+  List<Widget> stepWidgets = [];
 
   void _createNewPost() {
     Navigator.of(context).push(MaterialPageRoute(
@@ -43,6 +45,74 @@ class _NewPostState extends State<NewPost> {
 
     void handleImage(String img) {
       stepImage = img;
+    }
+
+    void _addWidget(Widget child) {
+      if (stepWidgets.length > 6) return;
+      if (stepWidgets.length == 6) {
+        stepWidgets.removeLast();
+        stepWidgets.add(Container(
+            child: Image.file(File(steps.last.image)),
+            decoration: BoxDecoration(
+                color: Color(0xFFCFF4D2),
+                border: Border.all(width: 3, color: Color(0xFF269A66)),
+                borderRadius: BorderRadius.circular(10))));
+      } else {
+        stepWidgets.insert(
+            stepWidgets.length - 1,
+            Container(
+                child: Image.file(File(steps.last.image)),
+                decoration: BoxDecoration(
+                    color: Color(0xFFCFF4D2),
+                    border: Border.all(width: 3, color: Color(0xFF269A66)),
+                    borderRadius: BorderRadius.circular(10))));
+      }
+    }
+
+    void doOnce() {
+      stepWidgets.add(ElevatedButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return StepDialog(
+                  child: PickImageDialog(
+                    onImageSelected: handleImage,
+                    child: Text(
+                      'Select image',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontFamily: 'Helvetica',
+                        fontWeight: FontWeight.w400,
+                        height: 0,
+                      ),
+                    ),
+                  ),
+                  cancelFunction: () {
+                    _stepDescriptionController.clear();
+                    Navigator.of(context).pop();
+                  },
+                  addStepFunction: () {
+                    _createNewStep();
+                    _stepDescriptionController.clear();
+                    Navigator.of(context).pop();
+                    setState(() {
+                      _addWidget(Image.file(File(steps.last.image)));
+                    });
+                  },
+                  stepNumber: steps.length + 1,
+                  childFunction: handleImage,
+                );
+              });
+        },
+        child: Icon(Icons.add, color: Colors.black, size: 30),
+        style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+                side: BorderSide(width: 3, color: Color(0xFF269A66)),
+                borderRadius: BorderRadius.circular(20.0)),
+            backgroundColor: Color(0xFFCFF4D2)),
+      ));
     }
 
     return Scaffold(
@@ -70,7 +140,7 @@ class _NewPostState extends State<NewPost> {
                   decoration: InputDecoration(labelText: "Your diary title")),
             ),
             //Thumbnail
-            SizedBox(height: 40),
+            SizedBox(height: 20),
             Text(
               "Thumbnail",
               style: TextStyle(
@@ -83,92 +153,20 @@ class _NewPostState extends State<NewPost> {
             ),
             SizedBox(height: 10),
             SizedBox(
-                height: 150,
-                width: 150,
-                child: PickImageDialog(
-                  onImageSelected: handleImage,
-                  child: Transform(
-                    transform: Matrix4.identity()..scale(-1.0, 1.0),
-                    alignment: Alignment.center,
-                    child: Icon(Icons.add_a_photo_outlined,
-                        color: Colors.black, size: 30),
-                  ),
-                )
-
-                /*
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text('New Step'),
-                          content: Container(
-                            height: 100,
-                            width: 100,
-                            child: Column(children: [
-                              PickImageDialog(
-                                onImageSelected: handleImage,
-                              ),
-                              SizedBox(height: 10),
-                              Container(
-                                alignment: Alignment.bottomCenter,
-                                child: TextField(
-                                  controller: _stepDescriptionController,
-                                  decoration: InputDecoration(
-                                      labelText: 'Step description'),
-                                ),
-                              )
-                            ]),
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              child: Text('Close'),
-                              onPressed: () {
-                                _stepDescriptionController.clear();
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            TextButton(
-                              child: Text('New Step'),
-                              onPressed: () {
-                                _createNewStep();
-                                _stepDescriptionController.clear();
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      });
-                },
+              height: 150,
+              width: 150,
+              child: PickImageDialog(
+                onImageSelected: handleImage,
                 child: Transform(
                   transform: Matrix4.identity()..scale(-1.0, 1.0),
                   alignment: Alignment.center,
                   child: Icon(Icons.add_a_photo_outlined,
                       color: Colors.black, size: 30),
                 ),
-                style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0)),
-                    backgroundColor: Color(0xFFCFF4D2)),
               ),
-
-
-
-              Text(
-                  'Select image',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontFamily: 'Helvetica',
-                    fontWeight: FontWeight.w400,
-                    height: 0,
-                  ),
-                ),
-              */
-                ),
+            ),
             //New step
-            SizedBox(height: 30),
+            SizedBox(height: 20),
             Text(
               "Steps",
               style: TextStyle(
@@ -180,139 +178,72 @@ class _NewPostState extends State<NewPost> {
               ),
             ),
             SizedBox(height: 10),
-            SizedBox(
-              height: 150,
-              width: 150,
-              child: ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Column(
-                            children: [
-                              Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color(0xFF269A66),
-                                ),
-                                width: 25,
-                                height: 25,
-                                child: Text(
-                                  '${steps.length + 1}',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontFamily: 'Helvetica',
-                                    fontWeight: FontWeight.w700,
-                                    height: 0,
+            steps.length == 0
+                ? SizedBox(
+                    height: 150,
+                    width: 150,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        doOnce();
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return StepDialog(
+                                child: PickImageDialog(
+                                  onImageSelected: handleImage,
+                                  child: Text(
+                                    'Select image',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontFamily: 'Helvetica',
+                                      fontWeight: FontWeight.w400,
+                                      height: 0,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 20),
-                              Text(
-                                'Step ${steps.length + 1}',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontFamily: 'Helvetica',
-                                  fontWeight: FontWeight.w700,
-                                  height: 0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          content: Container(
-                            height: 324,
-                            child: Column(children: [
-                              PickImageDialog(
-                                onImageSelected: handleImage,
-                                child: Text(
-                                  'Select image',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontFamily: 'Helvetica',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Container(
-                                alignment: Alignment.bottomCenter,
-                                child: TextField(
-                                  controller: _stepDescriptionController,
-                                  decoration: InputDecoration(
-                                      labelText: 'Step description'),
-                                ),
-                              )
-                            ]),
-                          ),
-                          actions: <Widget>[
-                            ElevatedButton(
-                              onPressed: () {
-                                _stepDescriptionController.clear();
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(
-                                'Close',
-                                style: TextStyle(
-                                  color: Color(0xFF269A66),
-                                  fontSize: 18,
-                                  fontFamily: 'Helvetica',
-                                  fontWeight: FontWeight.w700,
-                                  height: 0,
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                  minimumSize: Size(120, 45),
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          width: 2, color: Color(0xFF269A66)),
-                                      borderRadius:
-                                          BorderRadius.circular(30.0)),
-                                  backgroundColor: Colors.white),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                _createNewStep();
-                                _stepDescriptionController.clear();
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(
-                                'Add Step',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontFamily: 'Helvetica',
-                                  fontWeight: FontWeight.w700,
-                                  height: 0,
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                  minimumSize: Size(100, 45),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(30.0)),
-                                  backgroundColor: Color(0xFF269A66)),
-                            ),
-                          ],
-                        );
-                      });
-                },
-                child: Icon(Icons.add, color: Colors.black, size: 30),
-                style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0)),
-                    backgroundColor: Color(0xFFCFF4D2)),
-              ),
-            ),
+                                cancelFunction: () {
+                                  _stepDescriptionController.clear();
+                                  Navigator.of(context).pop();
+                                },
+                                addStepFunction: () {
+                                  _createNewStep();
+                                  _stepDescriptionController.clear();
+                                  Navigator.of(context).pop();
+                                  setState(() {
+                                    _addWidget(
+                                        Image.file(File(steps.last.image)));
+                                  });
+                                },
+                                stepNumber: steps.length + 1,
+                                childFunction: handleImage,
+                              );
+                            });
+                      },
+                      child: Icon(Icons.add, color: Colors.black, size: 30),
+                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                  width: 3, color: Color(0xFF269A66)),
+                              borderRadius: BorderRadius.circular(20.0)),
+                          backgroundColor: Color(0xFFCFF4D2)),
+                    ),
+                  )
+                : Container(
+                    height: 200,
+                    width: 300,
+                    child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 4,
+                            mainAxisSpacing: 4),
+                        itemCount: stepWidgets.length,
+                        itemBuilder: (context, index) {
+                          return stepWidgets[index];
+                        }),
+                  ),
             //Preview Button
-            SizedBox(height: 50),
+            SizedBox(height: 30),
             ElevatedButton(
               onPressed: _createNewPost,
               child: Text(

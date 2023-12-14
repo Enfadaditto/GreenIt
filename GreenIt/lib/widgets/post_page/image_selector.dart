@@ -34,7 +34,14 @@ class _PickImageState extends State<PickImageDialog> {
         height: 250,
         width: 250,
         child: _userSelectedImage != null
-            ? Image.file(_userSelectedImage!, width: 150, height: 150)
+            ? ElevatedButton(
+                onPressed: _selectImage,
+                child: Image.file(_userSelectedImage!, width: 150, height: 150),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFCFF4D2),
+                    shape: RoundedRectangleBorder(
+                        side: BorderSide(width: 3, color: Color(0xFF269A66)),
+                        borderRadius: BorderRadius.circular(10.0))))
             : ElevatedButton(
                 onPressed: _selectImage,
                 child: widget.child,
