@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/Models/Comment.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/pages/post_page.dart';
 
 SingleChildScrollView buildProfileGallery(
     BuildContext context, List<Post> posts) {
   List<Widget> postWidgets = [];
-  Widget lastWidget;
 
   for (int index = 0; index < posts.length; index += 2) {
     Post post1 = posts[index];
@@ -40,7 +38,6 @@ SingleChildScrollView buildProfileGallery(
     } else {
       // Add a single post if there is no second post in the row
       postWidgets.add(postWidget1);
-      lastWidget = postWidget1;
     }
   }
 
@@ -75,7 +72,7 @@ Widget buildPostWidget(
     },
     child: Container(
       width: postWidth,
-      height: 265,
+      height: 250,
       padding: const EdgeInsets.all(5.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

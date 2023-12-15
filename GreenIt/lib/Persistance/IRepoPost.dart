@@ -14,4 +14,6 @@ abstract class IRepoPost implements IGenericRepository<Post> {
   void delete(Post t);
 
   Future<List<Post>> getAllPostsUser(String displayName);
+
+  Future<List<Post>> getAllLikedPosts(String displayName);
 }

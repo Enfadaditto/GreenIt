@@ -37,6 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late Future<bool> alreadyFollowed = Future.value(false);
   late Future<User> userPetition;
   late Future<List<Post>> posts = Future.value([]);
+  late Future<List<Post>> likedPosts = Future.value([]);
   final IRepoUser repoUser = RepoUser();
   final IRepoPost repoPost = RepoPost();
 
@@ -85,6 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
       }
       User temp = await userPetition;
       int currentUserId = await CacheManager.getUserId() as int;
+      print("CURRENT USER ID PROFILE PAGE: $currentUserId");
       alreadyFollowed = repoUser.checkFollows(currentUserId, temp.id);
       followersSize = repoUser.getCountFollowers(temp.id);
       followedSize = repoUser.getCountFollowed(temp.id);
@@ -104,6 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
         user = await repoUser.read(widget.data);
       }
       posts = repoPost.getAllPostsUser(user.displayName);
+      likedPosts = repoPost.getAllLikedPosts(user.displayName);
     } catch (e) {
       print('Error fetching followers: $e');
     }
@@ -134,7 +137,7 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 12),
           FutureBuilder(
             // Wrap NumbersWidget in FutureBuilder
-            future: Future.wait([userPetition, posts]),
+            future: Future.wait([userPetition, posts, likedPosts]),
             builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
               return buildUserPosts(context, snapshot);
             },
@@ -245,11 +248,10 @@ class _ProfilePageState extends State<ProfilePage> {
       return const CircularProgressIndicator();
     } else {
       final posts = snapshot.data![1] as List<Post>;
-      final copiedPosts =
-          List.generate(3, (_) => posts).expand((post) => post).toList();
+      final likedPosts = snapshot.data![2] as List<Post>;
 
-      // 300 is changable according to the implementation in profile gallery
-      final galleryHeight = 300 * (copiedPosts.length / 2);
+      // 261 is changable according to the implementation in profile gallery
+      final galleryHeight = (261 * (posts.length / 2).ceil()).toDouble();
 
       return DefaultTabController(
         length: 2,
@@ -262,22 +264,15 @@ class _ProfilePageState extends State<ProfilePage> {
               indicatorSize: TabBarIndicatorSize.label,
               tabs: [
                 Tab(text: '${posts.length} Posts'),
-                Tab(text: '0 Saved'),
+                Tab(text: '${likedPosts.length} Liked'),
               ],
             ),
             SizedBox(
               height: galleryHeight, // Adjust the height as needed
               child: TabBarView(
                 children: [
-                  buildProfileGallery(context, copiedPosts),
-                  DefaultTextStyle(
-                    style: TextStyle(color: const Color(0xFF269A66)),
-                    child: Container(
-                      alignment: Alignment.topCenter,
-                      padding: EdgeInsets.all(20),
-                      child: Text('To Be Done'),
-                    ),
-                  ),
+                  buildProfileGallery(context, posts),
+                  buildProfileGallery(context, likedPosts),
                 ],
               ),
             ),
@@ -378,7 +373,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // get list of users that are followed by users that are followed by current user
+// get list of users that are followed by users that are followed by current user
 // aka mutual friends - we want max 20 users overally
 // and max 10 users from one user (differentiation of propositions)
   Future<void> _getList(

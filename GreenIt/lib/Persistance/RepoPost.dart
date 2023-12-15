@@ -87,20 +87,20 @@ class RepoPost implements IRepoPost {
           imagenPreview: fetchedPost['image']);
       steps.add(p.firstStep);
 
-      var data = await server.fetchData("http://16.170.159.93/prevstep?previd=${p.getFirstStep()!.id.toString()}");
+      var data = await server.fetchData(
+          "http://16.170.159.93/prevstep?previd=${p.getFirstStep()!.id.toString()}");
       while (data.isNotEmpty) {
         Step? s = Step(
-          id: data[0]['id'], 
-          previousStep: jsonToStep(data[0]['previousStep']), 
-          description: data[0]['description'], 
-          image: data[0]['image']
-        );
+            id: data[0]['id'],
+            previousStep: jsonToStep(data[0]['previousStep']),
+            description: data[0]['description'],
+            image: data[0]['image']);
         steps.add(s);
-        data = await server.fetchData("http://16.170.159.93/prevstep?previd=${s.id.toString()}");
+        data = await server.fetchData(
+            "http://16.170.159.93/prevstep?previd=${s.id.toString()}");
       }
-      
-        
-        print(steps.length);
+
+      print(steps.length);
       return steps;
     } catch (e) {
       print('Error: $e');
@@ -149,6 +149,33 @@ class RepoPost implements IRepoPost {
       }).toList();
     } catch (e) {
       print('Error fetching posts: $e');
+    }
+    return posts;
+  }
+
+  // http://16.170.159.93/postSavedByUser?username=jrber23
+  Future<List<Post>> getAllLikedPosts(String displayName) async {
+    List<Post> posts = [];
+    try {
+      var response = await server.fetchData(
+          "http://16.170.159.93/postSavedByUser?username=" + displayName);
+
+      List<dynamic> list = response as List;
+      posts = list.map((map) {
+        // Ensure that each element in the list is actually a Map.
+        if (map is Map<String, dynamic>) {
+          var p = Post.fromJson(map);
+          p.setOriginalPoster(jsonToUser(map['creator']));
+          //if(map['firstStep'][0]==null){}
+          p.setFirstStep(jsonToStep2(map['firstStep']));
+          return p;
+        } else {
+          throw Exception(
+              'Expected each element in list to be a Map<String, dynamic>');
+        }
+      }).toList();
+    } catch (e) {
+      print('Error fetching liked posts: $e');
     }
     return posts;
   }
