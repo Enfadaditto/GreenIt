@@ -164,7 +164,9 @@ class PostDetailed extends State<PostPage> {
                         textAlign: TextAlign.center,
                         widget.title,
                         style: const TextStyle(
-                            color: Colors.black, fontSize: 32.0),
+                            color: Colors.black,
+                            fontSize: 32.0,
+                            fontFamily: 'Helvetica'),
                       )),
                     ),
                     Padding(
@@ -177,7 +179,9 @@ class PostDetailed extends State<PostPage> {
                         maxLines: 3,
                         widget.description,
                         style: const TextStyle(
-                            color: Colors.black, fontSize: 12.0),
+                            color: Colors.black,
+                            fontSize: 12.0,
+                            fontFamily: 'Helvetica'),
                       )),
                     ),
                     Expanded(
@@ -188,7 +192,8 @@ class PostDetailed extends State<PostPage> {
                         child: FlutterStepIndicator(
                           onChange: (index) {},
                           negativeColor: Colors.grey,
-                          positiveColor: Colors.green[600],
+                          positiveColor:
+                              const Color.fromARGB(255, 38, 154, 102),
                           progressColor: const Color.fromARGB(255, 10, 212, 20),
                           list: snapshot.requireData,
                           page: _currentIndexStepper,
@@ -313,7 +318,8 @@ class PostDetailed extends State<PostPage> {
                                           Text("${snapshot.data!.length}",
                                               style: const TextStyle(
                                                   fontSize: 14,
-                                                  color: Color(0xFF686868))),
+                                                  color: Color(0xFF686868),
+                                                  fontFamily: 'Helvetica')),
                                         ],
                                       ),
                                       children: [
@@ -483,7 +489,8 @@ class StepCard extends StatelessWidget {
   String author;
   String id;
 
-  StepCard(this.text, this.imagen, this.index, this.author, this.id, {super.key});
+  StepCard(this.text, this.imagen, this.index, this.author, this.id,
+      {super.key});
 
   late Future<int?> _numLikes = RepoPost().getNumLikes(id);
   late Future<String?> _postIsLiked = RepoPost().postIsLiked(id);
@@ -492,7 +499,6 @@ class StepCard extends StatelessWidget {
     _numLikes = RepoPost().getNumLikes(id);
     _postIsLiked = RepoPost().postIsLiked(id);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -507,52 +513,49 @@ class StepCard extends StatelessWidget {
             children: [
               Image(image: NetworkImage(imagen!)),
               FutureBuilder(
-                      future: Future.wait([RepoPost().getNumLikes(id), RepoPost().postIsLiked(id)]),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              /* child: CircularProgressIndicator() */);
-                        } else if (snapshot.hasError) {
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        } else {
-                          final numLikes = snapshot.requireData[0] as int;
-                          final postIsLiked = snapshot.requireData[1] as String;
+                future: Future.wait(
+                    [RepoPost().getNumLikes(id), RepoPost().postIsLiked(id)]),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                        /* child: CircularProgressIndicator() */);
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    final numLikes = snapshot.requireData[0] as int;
+                    final postIsLiked = snapshot.requireData[1] as String;
 
-                          return Padding(
-                            padding: EdgeInsets.only(top: 10.0),
-                            child: LikeButton(
-                              size: 32.0,
-                              isLiked:
-                                  postIsLiked.contains("true") ? true : false,
-                              likeCount: numLikes,
-                              likeBuilder: (isLiked) {
-                                return Icon(Icons.favorite,
-                                    color: isLiked ? Colors.red : Colors.black,
-                                    size: 32.0);
-                              },
-                              countBuilder: (likeCount, isLiked, text) {
-                                return Text(
-                                  text,
-                                  style: const TextStyle(color: Colors.black),
-                                );
-                              },
-                              onTap: (isLiked) {
-                                if (isLiked) {
-                                  return RepoPost().onUnlikeButtonTapped(
-                                      isLiked, author, id);
-                                } else {
-                                  return RepoPost().onLikeButtonTapped(
-                                      isLiked, author, id);
-                                }
-                              }),
-                          );
-                          
-                            
-                        }
-                      },
-                    ),
+                    return Padding(
+                      padding: EdgeInsets.only(top: 10.0),
+                      child: LikeButton(
+                          size: 32.0,
+                          isLiked: postIsLiked.contains("true") ? true : false,
+                          likeCount: numLikes,
+                          likeBuilder: (isLiked) {
+                            return Icon(Icons.favorite,
+                                color: isLiked ? Colors.red : Colors.black,
+                                size: 32.0);
+                          },
+                          countBuilder: (likeCount, isLiked, text) {
+                            return Text(
+                              text,
+                              style: const TextStyle(
+                                  color: Colors.black, fontFamily: 'Helvetica'),
+                            );
+                          },
+                          onTap: (isLiked) {
+                            if (isLiked) {
+                              return RepoPost()
+                                  .onUnlikeButtonTapped(isLiked, author, id);
+                            } else {
+                              return RepoPost()
+                                  .onLikeButtonTapped(isLiked, author, id);
+                            }
+                          }),
+                    );
+                  }
+                },
+              ),
               Align(
                   alignment: Alignment.topLeft,
                   child: Column(
@@ -566,7 +569,8 @@ class StepCard extends StatelessWidget {
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Helvetica'),
                           ),
                         ),
                       ),
@@ -577,7 +581,9 @@ class StepCard extends StatelessWidget {
                             text,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
-                                color: Colors.black, fontSize: 16),
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Helvetica'),
                           ),
                         ),
                       )

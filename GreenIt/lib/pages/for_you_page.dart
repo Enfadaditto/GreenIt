@@ -277,7 +277,9 @@ class _PostDetailState extends State<PostDetail> {
                                                     decoration: BoxDecoration(
                                                         shape: BoxShape.circle,
                                                         border: Border.all(
-                                                            color: Colors.black,
+                                                            color: const Color
+                                                                .fromARGB(255,
+                                                                38, 154, 102),
                                                             width: 2)),
                                                     child: CircleAvatar(
                                                         radius: 25.0,
@@ -398,7 +400,9 @@ class _PostDetailState extends State<PostDetail> {
                                                                   Colors.black,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .w400),
+                                                                      .w400,
+                                                              fontFamily:
+                                                                  'Helvetica'),
                                                           maxLines: 2,
                                                           overflow: TextOverflow
                                                               .ellipsis,
