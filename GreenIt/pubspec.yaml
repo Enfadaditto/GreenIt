@@ -41,6 +41,9 @@ dependencies:
   timelines: ^0.1.0
   shared_preferences: ^2.0.8
   flutter_stepindicator: ^0.0.2
+  shimmer: ^2.0.0
+  flutter_svg: ^0.22.0
+  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +71,12 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+  assets:
+    - lib/assets/register/pantallacarga-1.png
+    - lib/assets/register/register_1.jpg
+    - lib/assets/register/register_2.jpg
+    - lib/assets/register/log_in.jpg
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

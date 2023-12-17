@@ -34,6 +34,10 @@ class _FollowButtonState extends State<FollowButton> {
       style: ElevatedButton.styleFrom(
         backgroundColor: isFollowed ? Colors.red[100] : Colors.green,
         foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(20), // Adjust the radius as needed
+        ),
       ),
       onPressed: () async {
         try {

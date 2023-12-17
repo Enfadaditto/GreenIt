@@ -15,7 +15,7 @@ class CacheManager {
   // Save user preferences: username
   static Future<void> setUsername(String username) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(usernameKey, username);
+    prefs.setString(usernameKey, username);
   }
 
   // Read user preferences: email address
@@ -27,13 +27,13 @@ class CacheManager {
   // Save user preferences: email address
   static Future<void> setEmail(String email) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(emailKey, email);
+    prefs.setString(emailKey, email);
   }
 
   // Save user ID in cache
   static Future<void> setUserId(int userId) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(userIdKey, userId);
+    prefs.setInt(userIdKey, userId);
   }
 
   // Get user ID from cache
@@ -51,6 +51,6 @@ class CacheManager {
   // Save user preferences: dark mode
   static Future<void> setDarkMode(bool darkMode) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(darkModeKey, darkMode);
+    prefs.setBool(darkModeKey, darkMode);
   }
 }

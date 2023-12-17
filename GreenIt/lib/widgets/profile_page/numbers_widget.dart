@@ -9,11 +9,10 @@ class NumbersWidget extends StatelessWidget {
   final int followers;
   final int followed;
   final IRepoUser repoUser;
-  final int numberPosts;
   final VoidCallback onFollowersChanged;
 
   const NumbersWidget(this.user, this.followers, this.followed, this.repoUser,
-      this.numberPosts, this.onFollowersChanged);
+      this.onFollowersChanged);
 
   @override
   Widget build(BuildContext context) => IntrinsicHeight(
@@ -30,10 +29,8 @@ class NumbersWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   buildButton(context, followers, 'Followers', user, repoUser),
-                  buildDivider(),
+                  // buildDivider(),
                   buildButton(context, followed, 'Followed', user, repoUser),
-                  buildDivider(),
-                  buildButton(context, numberPosts, 'Posts', user, repoUser),
                 ],
               );
             }
@@ -65,7 +62,7 @@ class NumbersWidget extends StatelessWidget {
               Text(
                 value.toString(),
                 style:
-                    const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+                    const TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
               ),
               const SizedBox(height: 2),
               Text(

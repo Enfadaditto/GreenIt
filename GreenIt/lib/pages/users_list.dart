@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/Models/ReducedUser.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
-import 'package:my_app/pages/profile_page.dart'; // Import the user profile page
+import 'package:my_app/pages/profile_page.dart';
+import 'package:my_app/widgets/bottom_navigation_bar_widget.dart'; // Import the user profile page
 
 class UsersList extends StatefulWidget {
   final List<ReducedUser> users;
