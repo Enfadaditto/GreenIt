@@ -40,13 +40,25 @@ class _ProfilePageState extends State<ProfilePage> {
   late Future<List<Post>> likedPosts = Future.value([]);
   final IRepoUser repoUser = RepoUser();
   final IRepoPost repoPost = RepoPost();
+  late bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
     _loadCacheMemory();
     _loadUserData();
     _loadUserPosts();
+
+    // Simulate a delay of 0.5 seconds
+    await Future.delayed(const Duration(milliseconds: 700));
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _handleFollowersChanged() {
@@ -117,6 +129,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return _buildLoadingScreen();
+    }
     return Scaffold(
       // appBar: AppBar(
       //   backgroundColor: Colors.green[900],
@@ -151,7 +166,8 @@ class _ProfilePageState extends State<ProfilePage> {
         future: user,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const CircularProgressIndicator(
+                color: Color(0xFF24445A), backgroundColor: Color(0xFFCFF4D2));
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
@@ -162,7 +178,9 @@ class _ProfilePageState extends State<ProfilePage> {
               future: Future.wait([CacheManager.getUserId(), alreadyFollowed]),
               builder: (context, AsyncSnapshot<List<dynamic>> snapshot2) {
                 if (snapshot2.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
+                  return const CircularProgressIndicator(
+                      color: Color(0xFF24445A),
+                      backgroundColor: Color(0xFFCFF4D2));
                 } else {
                   final followerId = snapshot2.data![0];
                   final alreadyFollowedBool = snapshot2.data![1];
@@ -205,9 +223,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           return buildNumbersWidget(context, snapshot);
                         },
                       ),
+                      const SizedBox(height: 4.0),
                       if (user.description.isNotEmpty)
                         buildAbout(context, user.description),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 4.0),
                       Center(
                         child: buildProfileButtons(
                             context, followerId, alreadyFollowedBool, user),
@@ -224,12 +243,14 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildNumbersWidget(
       BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
-      return const CircularProgressIndicator();
+      return const CircularProgressIndicator(
+        color: Color(0xFF24445A),
+        backgroundColor: Color(0xFFCFF4D2),
+      );
     } else {
       final followersSizeToInt = snapshot.data![1];
       final followedSizeToInt = snapshot.data![2];
       if (followersSizeToInt == -1) {
-        print("DELAY");
         return FutureBuilder(
           future: Future.delayed(const Duration(milliseconds: 200)),
           builder: (context, snapshot) {
@@ -245,7 +266,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildUserPosts(
       BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
-      return const CircularProgressIndicator();
+      return const SizedBox(
+          width: 30, height: 30, child: CircularProgressIndicator());
     } else {
       final posts = snapshot.data![1] as List<Post>;
       final likedPosts = snapshot.data![2] as List<Post>;
@@ -351,7 +373,10 @@ class _ProfilePageState extends State<ProfilePage> {
         );
       }
     } else {
-      return const CircularProgressIndicator();
+      return const CircularProgressIndicator(
+        color: Color(0xFF24445A),
+        backgroundColor: Color(0xFFCFF4D2),
+      );
     }
   }
 
@@ -412,5 +437,12 @@ class _ProfilePageState extends State<ProfilePage> {
       print('Error fetching users list for : $e');
       // Handle the error, show a message, or take any other appropriate action
     }
+  }
+
+  Widget _buildLoadingScreen() {
+    return const Center(
+      child: CircularProgressIndicator(
+          color: Color(0xFF24445A), backgroundColor: Color(0xFFCFF4D2)),
+    );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/pages/register/create_account_1_page.dart';
-// import 'package:my_app/pages/register/create_account_page.dart';
 import 'package:my_app/pages/register/log_in_page.dart';
+import 'package:my_app/utils/cache_manager.dart';
 
 class WelcomePage extends StatelessWidget {
   @override

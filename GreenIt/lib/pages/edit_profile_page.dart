@@ -130,7 +130,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 const SizedBox(height: 24),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: const Color(0xFFCFF4D2),
                     foregroundColor: Colors.black,
                   ),
                   onPressed: () {
@@ -204,7 +204,7 @@ void showUpdateSuccessDialog(BuildContext context) {
               const SizedBox(height: 24),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green, // Green color
+                  backgroundColor: const Color(0xFFCFF4D2),
                   foregroundColor: Colors.white, // White text color
                 ),
                 onPressed: () {

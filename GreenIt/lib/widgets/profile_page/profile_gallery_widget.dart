@@ -13,7 +13,7 @@ SingleChildScrollView buildProfileGallery(
     String description1 = post1.description;
 
     Widget postWidget1 =
-        buildPostWidget(context, index, imageUrl1, description1);
+        buildPostWidget(context, index, imageUrl1, description1, post1);
 
     // Check if there is a second post in the row
     if (index + 1 < posts.length) {
@@ -23,7 +23,7 @@ SingleChildScrollView buildProfileGallery(
       String description2 = post2.description;
 
       Widget postWidget2 =
-          buildPostWidget(context, index + 1, imageUrl2, description2);
+          buildPostWidget(context, index + 1, imageUrl2, description2, post2);
 
       // Add a row with two posts
       postWidgets.add(
@@ -49,8 +49,8 @@ SingleChildScrollView buildProfileGallery(
   );
 }
 
-Widget buildPostWidget(
-    BuildContext context, int index, String imageUrl, String description) {
+Widget buildPostWidget(BuildContext context, int index, String imageUrl,
+    String description, Post post) {
   double screenWidth = MediaQuery.of(context).size.width;
   double postWidth = screenWidth / 2 - 15;
 

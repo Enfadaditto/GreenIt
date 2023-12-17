@@ -26,11 +26,12 @@ class _CreateAccountPage2State extends State<CreateAccountPage2> {
       bool created = await repoUser.create(user);
 
       if (created) {
-        await CacheManager.setUsername(user.displayName);
-        await CacheManager.setEmail(user.email);
-        await CacheManager.setDarkMode(false);
+        CacheManager.setUsername(user.displayName);
+        CacheManager.setEmail(user.email);
+        CacheManager.setDarkMode(false);
         User userServer = await repoUser.read(user.email);
         await CacheManager.setUserId(userServer.id);
+
         // User created successfully, navigate to the next screen
         Navigator.pushReplacement(
           context,

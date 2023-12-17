@@ -20,6 +20,8 @@ class _LoginPageState extends State<LogInPage> {
     try {
       userPetition = repoUser.read(email);
       User user = await userPetition;
+      String usernameCache = await CacheManager.getUsername();
+      print("Cache manager Username: $usernameCache");
       int currentUserId = user.id;
       String userPassword = user.password;
       String userEmail = user.email;
@@ -29,10 +31,11 @@ class _LoginPageState extends State<LogInPage> {
       print("PASSWORD TYPED: ${password} ACTUAL: ${userPassword}");
       // Now you can compare the entered email and password with loaded user data
       if (email == userEmail && password == userPassword) {
-        await CacheManager.setUsername(username);
-        await CacheManager.setEmail(userEmail);
-        await CacheManager.setDarkMode(false);
-        await CacheManager.setUserId(currentUserId);
+        CacheManager.setUsername(username);
+        CacheManager.setEmail(userEmail);
+        CacheManager.setDarkMode(false);
+        CacheManager.setUserId(currentUserId);
+
         // Login successful, navigate to the next screen
 
         Navigator.pushAndRemoveUntil(
@@ -48,14 +51,14 @@ class _LoginPageState extends State<LogInPage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Incorrect Data'),
-              content: Text('Please check your email and password.'),
+              title: const Text('Incorrect Data'),
+              content: const Text('Please check your email and password.'),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('OK'),
+                  child: const Text('OK'),
                 ),
               ],
             );
@@ -85,7 +88,7 @@ class _LoginPageState extends State<LogInPage> {
               ),
               const SizedBox(height: 16.0),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 10.0),
+                margin: const EdgeInsets.symmetric(vertical: 10.0),
                 height: 1.0,
                 width: MediaQuery.of(context).size.width * 0.9,
                 color: Colors.black,
@@ -103,15 +106,15 @@ class _LoginPageState extends State<LogInPage> {
               const SizedBox(height: 16.0),
               TextField(
                 controller: emailController,
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Email'),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextField(
                 controller: passwordController,
                 obscureText: true,
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: const InputDecoration(labelText: 'Password'),
               ),
-              SizedBox(height: 32.0),
+              const SizedBox(height: 32.0),
               ElevatedButton(
                 onPressed: () {
                   _loadUserData(emailController.text, passwordController.text);
@@ -125,7 +128,7 @@ class _LoginPageState extends State<LogInPage> {
                 child: Container(
                   width: 80.0,
                   height: 30.0,
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'Send!',
                       style: TextStyle(
