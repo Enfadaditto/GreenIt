@@ -59,13 +59,12 @@ Widget buildPostWidget(BuildContext context, int index, String imageUrl,
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => PostPage(
-            id: "",
-            postId: -1, //Replace with the post ID
-            author: 'Me', // Replace with the actual author
-            title:
-                'TITLE', // Replace with the actual title from the Post object
-            comments: [],
-            currentIndex: index,
+            id: post.id.toString(),
+            postId: post.id,
+            author: post.originalPoster!.displayName,
+            title: post.title,
+            comments: const [],
+            description: post.description,
           ),
         ),
       );

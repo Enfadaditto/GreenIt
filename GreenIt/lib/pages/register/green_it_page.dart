@@ -17,10 +17,10 @@ class GreenItPage extends StatelessWidget {
               );
             },
             child: Container(
-              color: Color(0xFFCFF4D2),
+              color: const Color(0xFFCFF4D2),
               child: Center(
                 child: Image.asset(
-                  'lib/assets/register/pantallacarga-1.png',
+                  'lib/assets/register/green_it_logo.png',
                   width: 350, // Adjust the width as needed
                   height: 342, // Adjust the height as needed
                   fit: BoxFit.cover,

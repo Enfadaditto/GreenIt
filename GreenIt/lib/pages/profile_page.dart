@@ -273,7 +273,8 @@ class _ProfilePageState extends State<ProfilePage> {
       final likedPosts = snapshot.data![2] as List<Post>;
 
       // 261 is changable according to the implementation in profile gallery
-      final galleryHeight = (261 * (posts.length / 2).ceil()).toDouble();
+      // 60 for floating bottom navigation bar
+      final galleryHeight = (261 * (posts.length / 2).ceil()).toDouble() + 60;
 
       return DefaultTabController(
         length: 2,

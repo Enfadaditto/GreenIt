@@ -46,8 +46,26 @@ class _MyAppState extends State<MyApp> {
         dividerColor: Colors.black,
       ),
       home: Scaffold(
-        body: pages[currentIndex],
-        bottomNavigationBar: bottomNavigationBar(currentIndex, onTabTapped),
+        body: Stack(
+          children: [
+            pages[currentIndex],
+            Positioned(
+              bottom: 10, // Adjust the distance from the bottom as needed
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  child: Container(
+                    color: const Color(0xFFAAAAAA),
+                    child: bottomNavigationBar(currentIndex, onTabTapped),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_app/pages/register/welcome_page.dart';
 import 'package:my_app/utils/cache_manager.dart';
 
+// ! app bar for edit profile
 AppBar buildAppBar(BuildContext context) {
   const iconSearch = CupertinoIcons.search;
   const iconOptions = CupertinoIcons.ellipsis;
@@ -33,9 +35,32 @@ AppBar buildAppBar(BuildContext context) {
                   },
                 ),
               ),
+              PopupMenuItem(
+                child: ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Log Off'),
+                  onTap: () {
+                    _logOff(context);
+                  },
+                ),
+              ),
             ];
           },
           icon: const Icon(iconOptions),
         ),
       ]);
+}
+
+void _logOff(BuildContext context) async {
+  // Clear all values in CacheManager
+  await CacheManager.setUsername('');
+  await CacheManager.setEmail('');
+  await CacheManager.setUserId(-1);
+  await CacheManager.setDarkMode(false);
+
+  // Navigate to the log-in or home screen (replace with your desired destination)
+  Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => WelcomePage())); // Replace with your route name
 }

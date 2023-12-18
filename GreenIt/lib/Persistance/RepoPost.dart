@@ -184,6 +184,7 @@ class RepoPost implements IRepoPost {
     server.insertData(
         "http://16.170.159.93/unlike?username=$username&postid=$postId");
     return !isLiked;
+  }
 
   // http://16.170.159.93/postSavedByUser?username=jrber23
   Future<List<Post>> getAllLikedPosts(String displayName) async {

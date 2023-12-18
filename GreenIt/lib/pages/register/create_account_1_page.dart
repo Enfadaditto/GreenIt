@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/Models/User.dart';
-import 'package:my_app/Persistance/IRepoUser.dart';
-import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/register/create_account_2_page.dart';
 
 class CreateAccountPage1 extends StatefulWidget {
@@ -18,8 +16,6 @@ class _CreateAcountPage1State extends State<CreateAccountPage1> {
 
   Future<void> _registerUser(
       String displayName, String email, String password) async {
-    final IRepoUser repoUser = RepoUser();
-
     User user = User(
         id: -1,
         displayName: displayName,

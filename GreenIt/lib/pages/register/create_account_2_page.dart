@@ -29,17 +29,31 @@ class _CreateAccountPage2State extends State<CreateAccountPage2> {
         CacheManager.setUsername(user.displayName);
         CacheManager.setEmail(user.email);
         CacheManager.setDarkMode(false);
+
+        // Introduce a delay before fetching userServer
+        await Future.delayed(const Duration(seconds: 1));
+
         User userServer = await repoUser.read(user.email);
-        await CacheManager.setUserId(userServer.id);
+
+        // Introduce a delay after fetching userServer
+        await Future.delayed(const Duration(seconds: 1));
+
+        CacheManager.setUserId(userServer.id);
 
         // User created successfully, navigate to the next screen
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                MyApp(username: user.displayName, type: 'name'),
-          ),
-        );
+        // Check if userServer.id is not equal to 69696969
+        if (userServer.id != 69696969) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  MyApp(username: user.displayName, type: 'name'),
+            ),
+          );
+        } else {
+          showDialogError(
+              "User created, but condition not met for navigation.");
+        }
       } else {
         // Display error message for failed user creation
         showDialogError("User creation failed. Please try again.");

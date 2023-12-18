@@ -82,17 +82,11 @@ class _LoginPageState extends State<LogInPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 24.0),
+              const SizedBox(height: 50.0),
               Image.asset(
                 'lib/assets/register/log_in.png',
               ),
               const SizedBox(height: 16.0),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 10.0),
-                height: 1.0,
-                width: MediaQuery.of(context).size.width * 0.9,
-                color: Colors.black,
-              ),
               const Text(
                 'Log In!',
                 textAlign: TextAlign.center,

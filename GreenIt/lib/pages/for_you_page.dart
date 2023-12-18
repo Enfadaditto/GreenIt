@@ -11,6 +11,7 @@ import 'package:my_app/pages/chat_messages_one.dart';
 import 'package:my_app/pages/chat_messages_two.dart';
 import 'package:my_app/pages/direct_messages_page.dart';
 import 'package:my_app/pages/post_page.dart';
+import 'package:my_app/widgets/app_bar_main.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:http/http.dart' as http;
 
@@ -194,7 +195,7 @@ class _PostDetailState extends State<PostDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: buildForYouPageAppBar(context),
+        appBar: MainAppBar(),
         body: _isFirstLoadRunning
             ? const Center(
                 child: CircularProgressIndicator(),
@@ -445,13 +446,27 @@ class _PostDetailState extends State<PostDetail> {
                       ),
                     ),
                   if (_hasNextPage == false)
-                    Container(
-                      padding: const EdgeInsets.only(top: 30, bottom: 40),
-                      color: Colors.amber,
-                      child: const Center(
-                        child: Text("You have fetched all of the content"),
-                      ),
+                    Column(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context)
+                              .size
+                              .width, // Set width to screen width
+                          color: const Color(0xFFCFF4D2),
+                          child: const Column(
+                            children: [
+                              SizedBox(height: 5),
+                              Text("You have fetched all of the content"),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 78,
+                        ),
+                      ],
                     )
+
+//  floating bottom navigation bar
                 ],
               ));
   }

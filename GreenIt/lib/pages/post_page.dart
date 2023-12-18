@@ -14,7 +14,6 @@ import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/RepoComment.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/for_you_page.dart';
-import 'package:my_app/utils/notuser_preferences.dart';
 import 'package:my_app/pages/stepper.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
 import 'package:my_app/widgets/comment_widget.dart';
@@ -112,7 +111,7 @@ class PostDetailed extends State<PostPage> {
                         id: -1,
                         postId: widget.postId,
                         comment: _commentController.text,
-                        author: UserPreferences.myUser.name,
+                        author: 'jrber23',
                         responseTo: respondedComment,
                         replies: [],
                         date: DateTime.now());
@@ -375,9 +374,7 @@ class PostDetailed extends State<PostPage> {
                                                           comment:
                                                               _commentController
                                                                   .text,
-                                                          author:
-                                                              UserPreferences
-                                                                  .myUser.name,
+                                                          author: 'jrber23',
                                                           replies: [],
                                                           date: DateTime.now());
                                                       widget.comments
