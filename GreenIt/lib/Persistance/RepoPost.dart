@@ -5,16 +5,20 @@ import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Models/Step.dart';
 import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/IGenericRepository.dart';
+
 import 'package:my_app/Persistance/IRepoPost.dart';
 import 'package:my_app/Persistance/ServerConnect.dart';
 import 'package:http/http.dart' as http;
 
 class RepoPost implements IRepoPost {
   ServerConnect server = ServerConnect();
+  String ImgBBAPIKey = "be456d9c6eba33f5b654f4ed7f1ad177";
 
   @override
-  void create(Post t) {
+  void create(Post t) async {
     try {
+      String imgURL = await getImgURL(t.imagenPreview);
+
       server.insertData("http://16.170.159.93/publish?username=" +
           t.originalPoster!.displayName +
           "&description=" +
@@ -22,7 +26,7 @@ class RepoPost implements IRepoPost {
           "&title=" +
           t.title +
           "&image=" +
-          encodeToBase64(t.imagenPreview));
+          imgURL);
     } catch (e) {
       print("An error occurred: $e");
     }
@@ -189,8 +193,31 @@ class RepoPost implements IRepoPost {
     return !isLiked;
   }
 
-  String encodeToBase64(String imagenPreview) {
-    final bytes = File(imagenPreview).readAsBytesSync();
-    return base64Encode(bytes);
+  Future<String> getImgURL(String imagePreview) async {
+    File imageFile = File(imagePreview);
+
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://api.imgbb.com/1/upload?key=$ImgBBAPIKey'));
+
+    request.files.add(await http.MultipartFile.fromPath(
+      'image',
+      imageFile.path,
+    ));
+
+    try {
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        String responseData = await response.stream.bytesToString();
+        var decodedResponse = json.decode(responseData);
+        return decodedResponse['data']['url'];
+      } else {
+        print("error");
+        return "";
+      }
+    } catch (e) {
+      print("Error: $e");
+      return "";
+    }
   }
 }

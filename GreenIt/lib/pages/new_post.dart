@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
+import 'package:my_app/Persistance/RepoStep.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:my_app/widgets/post_page/custom_dialog.dart';
@@ -39,7 +40,16 @@ class _NewPostState extends State<NewPost> {
     }
   }
 
-  void _createNewPost(User? originalPoster) {
+  Future<void> _createNewPost(User? originalPoster) async {
+    //Recoger lista de posts
+    List<Post> primeraLista = await loadUserPosts(originalPoster!.displayName);
+    var i = 1;
+    print("primera lista");
+    for (Post p in primeraLista) {
+      print("Post $i: id - ${p.id}");
+      i++;
+    }
+
     Post thisPost = Post(
         originalPoster: originalPoster,
         firstStep: steps.first,
@@ -51,15 +61,41 @@ class _NewPostState extends State<NewPost> {
 
     RepoPost().create(thisPost);
 
+    //Recoger nueva lista de posts
+    List<Post> segundaLista = await loadUserPosts(originalPoster.displayName);
+    var j = 1;
+    print("segunda lista");
+    for (Post p in segundaLista) {
+      print("Post $j: id - ${p.id}");
+      j++;
+    }
+
+    //Sacar id del post nuevo
+    var nuevoPost = segundaLista.where((item) => !primeraLista.contains(item));
+    var k = 1;
+    print("diferencia");
+    for (Post p in nuevoPost) {
+      print("Post $k: id - ${p.id}");
+      k++;
+    }
+
+    print(
+        "////////////////////////////////////////////////////// ID DEL NUEVO POST: ${nuevoPost.first.id}");
+
     print("Title: ${thisPost.title}");
     print("Description: " + thisPost.description);
     print("Registered user: ${thisPost.originalPoster?.displayName}");
     print("First step: " + thisPost.firstStep.toString());
 
     for (mod.Step step in steps) {
+      //Añadir id al step
+      step.setPostId(nuevoPost.first.id);
+      //Subir step
       print("Image: " + step.image);
       print("Description: " + step.description);
       print("Prev. step: " + step.previousStep.toString());
+
+      RepoStep().create(step);
     }
   }
 
@@ -155,7 +191,13 @@ class _NewPostState extends State<NewPost> {
   Future<void> loadUser() async {
     try {
       user = RepoUser().readName('jrber23');
-    } catch (e) {}
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Future<List<Post>> loadUserPosts(String username) async {
+    return await RepoPost().getAllPostsUser(username);
   }
 
   @override
@@ -165,20 +207,11 @@ class _NewPostState extends State<NewPost> {
     });
 
     void _createNewStep() {
-      if (steps.isEmpty) {
-        steps.add(mod.Step(
-            id: -1,
-            description: _stepDescriptionController.text,
-            image: stepImage,
-            previousStep: null));
-      } else {
-        steps.add(mod.Step(
-            id: -1,
-            description: _stepDescriptionController.text,
-            image: stepImage,
-            previousStep: steps.last));
-      }
-
+      steps.add(mod.Step(
+          id: -1,
+          description: _stepDescriptionController.text,
+          image: stepImage,
+          previousStep: steps.isEmpty ? null : steps.last));
       print(steps.length);
     }
 
