@@ -112,7 +112,7 @@ class PostDetailed extends State<PostPage> {
                         id: -1,
                         postId: widget.postId,
                         comment: _commentController.text,
-                        author: UserPreferences.myUser.name,
+                        author: widget.author,
                         responseTo: respondedComment,
                         replies: [],
                         date: DateTime.now());
@@ -369,9 +369,7 @@ class PostDetailed extends State<PostPage> {
                                                           comment:
                                                               _commentController
                                                                   .text,
-                                                          author:
-                                                              UserPreferences
-                                                                  .myUser.name,
+                                                          author: widget.author,
                                                           replies: [],
                                                           date: DateTime.now());
                                                       widget.comments
@@ -483,7 +481,8 @@ class StepCard extends StatelessWidget {
   String author;
   String id;
 
-  StepCard(this.text, this.imagen, this.index, this.author, this.id, {super.key});
+  StepCard(this.text, this.imagen, this.index, this.author, this.id,
+      {super.key});
 
   late Future<int?> _numLikes = RepoPost().getNumLikes(id);
   late Future<String?> _postIsLiked = RepoPost().postIsLiked(id);
@@ -492,7 +491,6 @@ class StepCard extends StatelessWidget {
     _numLikes = RepoPost().getNumLikes(id);
     _postIsLiked = RepoPost().postIsLiked(id);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -507,52 +505,48 @@ class StepCard extends StatelessWidget {
             children: [
               Image(image: NetworkImage(imagen!)),
               FutureBuilder(
-                      future: Future.wait([RepoPost().getNumLikes(id), RepoPost().postIsLiked(id)]),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              /* child: CircularProgressIndicator() */);
-                        } else if (snapshot.hasError) {
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        } else {
-                          final numLikes = snapshot.requireData[0] as int;
-                          final postIsLiked = snapshot.requireData[1] as String;
+                future: Future.wait(
+                    [RepoPost().getNumLikes(id), RepoPost().postIsLiked(id)]),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                        /* child: CircularProgressIndicator() */);
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    final numLikes = snapshot.requireData[0] as int;
+                    final postIsLiked = snapshot.requireData[1] as String;
 
-                          return Padding(
-                            padding: EdgeInsets.only(top: 10.0),
-                            child: LikeButton(
-                              size: 32.0,
-                              isLiked:
-                                  postIsLiked.contains("true") ? true : false,
-                              likeCount: numLikes,
-                              likeBuilder: (isLiked) {
-                                return Icon(Icons.favorite,
-                                    color: isLiked ? Colors.red : Colors.black,
-                                    size: 32.0);
-                              },
-                              countBuilder: (likeCount, isLiked, text) {
-                                return Text(
-                                  text,
-                                  style: const TextStyle(color: Colors.black),
-                                );
-                              },
-                              onTap: (isLiked) {
-                                if (isLiked) {
-                                  return RepoPost().onUnlikeButtonTapped(
-                                      isLiked, author, id);
-                                } else {
-                                  return RepoPost().onLikeButtonTapped(
-                                      isLiked, author, id);
-                                }
-                              }),
-                          );
-                          
-                            
-                        }
-                      },
-                    ),
+                    return Padding(
+                      padding: EdgeInsets.only(top: 10.0),
+                      child: LikeButton(
+                          size: 32.0,
+                          isLiked: postIsLiked.contains("true") ? true : false,
+                          likeCount: numLikes,
+                          likeBuilder: (isLiked) {
+                            return Icon(Icons.favorite,
+                                color: isLiked ? Colors.red : Colors.black,
+                                size: 32.0);
+                          },
+                          countBuilder: (likeCount, isLiked, text) {
+                            return Text(
+                              text,
+                              style: const TextStyle(color: Colors.black),
+                            );
+                          },
+                          onTap: (isLiked) {
+                            if (isLiked) {
+                              return RepoPost()
+                                  .onUnlikeButtonTapped(isLiked, author, id);
+                            } else {
+                              return RepoPost()
+                                  .onLikeButtonTapped(isLiked, author, id);
+                            }
+                          }),
+                    );
+                  }
+                },
+              ),
               Align(
                   alignment: Alignment.topLeft,
                   child: Column(
