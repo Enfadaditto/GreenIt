@@ -238,7 +238,7 @@ class _PostDetailState extends State<PostDetail> {
                                     ),
                                   ),
                                 ],
-                              ), */
+                                    ), */
                                   GestureDetector(
                                       onTap: () {
                                         Navigator.push(
@@ -445,19 +445,25 @@ class _PostDetailState extends State<PostDetail> {
                         child: CircularProgressIndicator(),
                       ),
                     ),
-                  if (_hasNextPage == false)
-                    AlertDialog(
-                      title: Text("Notification"),
-                      content: Text("You have fetched all of the content"),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text("OK"),
+                  Column(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context)
+                            .size
+                            .width, // Set width to screen width
+                        color: const Color(0xFFCFF4D2),
+                        child: const Column(
+                          children: [
+                            SizedBox(height: 5),
+                            Text("You have fetched all of the content"),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(
+                        height: 78,
+                      ),
+                    ],
+                  ),
 
 //  floating bottom navigation bar
                 ],
