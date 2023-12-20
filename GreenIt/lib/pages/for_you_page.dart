@@ -11,6 +11,7 @@ import 'package:my_app/pages/chat_messages_one.dart';
 import 'package:my_app/pages/chat_messages_two.dart';
 import 'package:my_app/pages/direct_messages_page.dart';
 import 'package:my_app/pages/post_page.dart';
+import 'package:my_app/widgets/app_bar_main.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:http/http.dart' as http;
 
@@ -194,7 +195,7 @@ class _PostDetailState extends State<PostDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: buildForYouPageAppBar(context),
+        appBar: MainAppBar(),
         body: _isFirstLoadRunning
             ? const Center(
                 child: CircularProgressIndicator(),
@@ -237,7 +238,7 @@ class _PostDetailState extends State<PostDetail> {
                                     ),
                                   ),
                                 ],
-                              ), */
+                                    ), */
                                   GestureDetector(
                                       onTap: () {
                                         Navigator.push(
@@ -277,7 +278,9 @@ class _PostDetailState extends State<PostDetail> {
                                                     decoration: BoxDecoration(
                                                         shape: BoxShape.circle,
                                                         border: Border.all(
-                                                            color: Colors.black,
+                                                            color: const Color
+                                                                .fromARGB(255,
+                                                                38, 154, 102),
                                                             width: 2)),
                                                     child: CircleAvatar(
                                                         radius: 25.0,
@@ -298,90 +301,137 @@ class _PostDetailState extends State<PostDetail> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        FutureBuilder(
-                                          future: Future.wait([
-                                            getNumLikes(postsObjects[index]
-                                                .getId()
-                                                .toString()),
-                                            postIsLiked(postsObjects[index]
-                                                .getId()
-                                                .toString())
-                                          ]),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return const Center(
-                                                  child:
-                                                      CircularProgressIndicator());
-                                            } else if (snapshot.hasError) {
-                                              return Center(
-                                                  child: Text(
-                                                      'Error: ${snapshot.error}'));
-                                            } else {
-                                              int numLikes =
-                                                  snapshot.data![0] as int;
-                                              String isLiked =
-                                                  snapshot.data![1] as String;
-                                              return LikeButton(
-                                                  size: 32.0,
-                                                  isLiked:
-                                                      isLiked.contains("true")
+                                        Row(
+                                          children: [
+                                            FutureBuilder(
+                                              future: Future.wait([
+                                                getNumLikes(postsObjects[index]
+                                                    .getId()
+                                                    .toString()),
+                                                postIsLiked(postsObjects[index]
+                                                    .getId()
+                                                    .toString())
+                                              ]),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return const Center(
+                                                      child:
+                                                          CircularProgressIndicator());
+                                                } else if (snapshot.hasError) {
+                                                  return Center(
+                                                      child: Text(
+                                                          'Error: ${snapshot.error}'));
+                                                } else {
+                                                  int numLikes =
+                                                      snapshot.data![0] as int;
+                                                  String isLiked = snapshot
+                                                      .data![1] as String;
+                                                  return LikeButton(
+                                                      size: 32.0,
+                                                      isLiked: isLiked
+                                                              .contains("true")
                                                           ? true
                                                           : false,
-                                                  likeCount: numLikes,
-                                                  likeBuilder: (isLiked) {
-                                                    return Icon(Icons.favorite,
-                                                        color: isLiked
-                                                            ? Colors.red
-                                                            : Colors.black,
-                                                        size: 32.0);
-                                                  },
-                                                  countBuilder: (likeCount,
-                                                      isLiked, text) {
-                                                    return Text(
-                                                      text,
-                                                      style: const TextStyle(
-                                                          color: Colors.black),
-                                                    );
-                                                  },
-                                                  onTap: (isLiked) {
-                                                    if (isLiked) {
-                                                      return onUnlikeButtonTapped(
-                                                          isLiked,
+                                                      likeCount: numLikes,
+                                                      likeBuilder: (isLiked) {
+                                                        return Icon(
+                                                            Icons.favorite,
+                                                            color: isLiked
+                                                                ? Colors.red
+                                                                : Colors.black,
+                                                            size: 32.0);
+                                                      },
+                                                      countBuilder: (likeCount,
+                                                          isLiked, text) {
+                                                        return Text(
+                                                          text,
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                        );
+                                                      },
+                                                      onTap: (isLiked) {
+                                                        if (isLiked) {
+                                                          return onUnlikeButtonTapped(
+                                                              isLiked,
+                                                              postsObjects[
+                                                                      index]
+                                                                  .getOriginalPoster()!
+                                                                  .getDisplayName(),
+                                                              postsObjects[
+                                                                      index]
+                                                                  .getId()
+                                                                  .toString());
+                                                        } else {
+                                                          return onLikeButtonTapped(
+                                                              isLiked,
+                                                              postsObjects[
+                                                                      index]
+                                                                  .getOriginalPoster()!
+                                                                  .getDisplayName(),
+                                                              postsObjects[
+                                                                      index]
+                                                                  .getId()
+                                                                  .toString());
+                                                        }
+                                                      });
+                                                }
+                                              },
+                                            ),
+                                            Container(
+                                              width: 300,
+                                              height: 40,
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                left: 20.0),
+                                                        child: Text(
                                                           postsObjects[index]
-                                                              .getOriginalPoster()!
-                                                              .getDisplayName(),
-                                                          postsObjects[index]
-                                                              .getId()
-                                                              .toString());
-                                                    } else {
-                                                      return onLikeButtonTapped(
-                                                          isLiked,
-                                                          postsObjects[index]
-                                                              .getOriginalPoster()!
-                                                              .getDisplayName(),
-                                                          postsObjects[index]
-                                                              .getId()
-                                                              .toString());
-                                                    }
-                                                  });
-                                            }
-                                          },
+                                                              .getDescription(),
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          style: const TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              fontFamily:
+                                                                  'Helvetica'),
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        )),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                            /* Padding(
+                                                padding: EdgeInsets.all(16.0),
+                                                child: Center(
+                                                    child: Text(
+                                                  postsObjects[index]
+                                                      .getDescription(),
+                                                  textAlign: TextAlign.start,
+                                                  style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                  maxLines: 3,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ))) */
+                                          ],
                                         )
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                      padding: EdgeInsets.all(16.0),
-                                      child: Center(
-                                          child: Text(
-                                        postsObjects[index].getDescription(),
-                                        style: const TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w400),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      )))
                                 ],
                               ),
                             ),
@@ -395,14 +445,27 @@ class _PostDetailState extends State<PostDetail> {
                         child: CircularProgressIndicator(),
                       ),
                     ),
-                  if (_hasNextPage == false)
-                    Container(
-                      padding: const EdgeInsets.only(top: 30, bottom: 40),
-                      color: Colors.amber,
-                      child: const Center(
-                        child: Text("You have fetched all of the content"),
+                  Column(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context)
+                            .size
+                            .width, // Set width to screen width
+                        color: const Color(0xFFCFF4D2),
+                        child: const Column(
+                          children: [
+                            SizedBox(height: 5),
+                            Text("You have fetched all of the content"),
+                          ],
+                        ),
                       ),
-                    )
+                      const SizedBox(
+                        height: 78,
+                      ),
+                    ],
+                  ),
+
+//  floating bottom navigation bar
                 ],
               ));
   }

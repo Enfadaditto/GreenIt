@@ -28,14 +28,15 @@ class ChatMessagesOneWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildChatOneAppBar(context),
-      backgroundColor: const Color.fromARGB(255, 234, 221, 219),
+      backgroundColor: const Color.fromARGB(255, 232, 232, 232),
       body: Column(children: [
         const Padding(
           padding: EdgeInsets.only(top: 10.0),
           child: Center(
               child: Text(
             "4h ago",
-            style: TextStyle(fontSize: 15.0, color: Colors.grey),
+            style: TextStyle(
+                fontSize: 15.0, color: Colors.grey, fontFamily: 'Helvetica'),
           )),
         ),
         Align(
@@ -44,17 +45,22 @@ class ChatMessagesOneWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8.0, top: 10.0),
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 300),
-                  child: const Card(
-                    elevation: 0,
-                    color: Colors.white,
-                    child: Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: Text(
-                        "Hey!! A few days ago you posted a post about how to make a wine rack out of a skateboard?",
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w500),
-                        maxLines: 3,
-                      ),
+                  decoration: const ShapeDecoration(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16),
+                              bottomRight: Radius.circular(16)))),
+                  child: const Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: Text(
+                      "Hey!! A few days ago you posted a post about how to make a wine rack out of a skateboard?",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Helvetica'),
+                      maxLines: 3,
                     ),
                   ),
                 ))),
@@ -64,17 +70,22 @@ class ChatMessagesOneWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8.0, top: 10.0),
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 300),
-                  child: const Card(
-                    elevation: 0,
-                    color: Colors.white,
-                    child: Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: Text(
-                        "so cool!",
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w500),
-                        maxLines: 3,
-                      ),
+                  decoration: const ShapeDecoration(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16),
+                              bottomRight: Radius.circular(16)))),
+                  child: const Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: Text(
+                      "so cool!",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Helvetica'),
+                      maxLines: 3,
                     ),
                   ),
                 ))),
@@ -84,17 +95,23 @@ class ChatMessagesOneWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 8.0, top: 10.0),
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 300),
-                  child: const Card(
-                    elevation: 0,
-                    color: Color.fromARGB(255, 16, 158, 100),
-                    child: Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: Text(
-                        "Yeah! It was me! I love that you like the idea, if you have any questions about how I did it don't be shy, ask! ;)",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w500),
-                        maxLines: 3,
-                      ),
+                  decoration: const ShapeDecoration(
+                      color: Color(0xFF269A66),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16),
+                              bottomLeft: Radius.circular(16)))),
+                  child: const Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: Text(
+                      "Yeah! It was me! I love that you like the idea, if you have any questions about how I did it don't be shy, ask! ;)",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Helvetica'),
+                      maxLines: 3,
                     ),
                   ),
                 )))

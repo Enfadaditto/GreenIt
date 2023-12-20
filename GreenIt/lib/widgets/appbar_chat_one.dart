@@ -34,15 +34,21 @@ AppBar buildChatOneAppBar(BuildContext context) {
                   padding: EdgeInsets.only(top: 2.0, left: 10.0),
                   child: Text(
                     "Dylan",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18.0,
+                        fontFamily: 'Helvetica'),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 8.0, left: 10.0),
                   child: Text(
                     "@letssavetheworld",
-                    style: TextStyle(fontSize: 12.0, color: Colors.grey),
+                    style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.grey,
+                        fontFamily: 'Helvetica',
+                        fontWeight: FontWeight.w400),
                   ),
                 )
               ],
@@ -52,7 +58,10 @@ AppBar buildChatOneAppBar(BuildContext context) {
               child: Text(
                 textAlign: TextAlign.start,
                 "Active 4 hours ago",
-                style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.w400, color: Colors.grey),
+                style: TextStyle(
+                    fontSize: 10.0,
+                    fontWeight: FontWeight.w400,
+                    color: Color.fromARGB(255, 141, 141, 141)),
               ),
             ),
           ],

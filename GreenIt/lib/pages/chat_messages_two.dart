@@ -29,14 +29,15 @@ class ChatMessagesTwoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildChatTwoAppBar(context),
-      backgroundColor: const Color.fromARGB(255, 234, 221, 219),
+      backgroundColor: const Color.fromARGB(255, 232, 232, 232),
       body: Column(children: [
         const Padding(
           padding: EdgeInsets.only(top: 10.0),
           child: Center(
               child: Text(
             "1d ago",
-            style: TextStyle(fontSize: 15.0, color: Colors.grey),
+            style: TextStyle(
+                fontSize: 15.0, color: Colors.grey, fontFamily: 'Helvetica'),
           )),
         ),
         Align(
@@ -45,17 +46,22 @@ class ChatMessagesTwoWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8.0, top: 14.0),
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 300),
-                  child: const Card(
-                    elevation: 0,
-                    color: Colors.white,
-                    child: Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: Text(
-                        "Hello!! I just want to ask you some questions about your last DIY project",
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w500),
-                        maxLines: 3,
-                      ),
+                  decoration: const ShapeDecoration(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16),
+                              bottomRight: Radius.circular(16)))),
+                  child: const Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: Text(
+                      "Hello!! I just want to ask you some questions about your last DIY project",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Helvetica'),
+                      maxLines: 3,
                     ),
                   ),
                 ))),
@@ -65,17 +71,22 @@ class ChatMessagesTwoWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 8.0, top: 14.0),
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 300),
-                  child: const Card(
-                    elevation: 0,
-                    color: Color.fromARGB(255, 16, 158, 100),
-                    child: Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: Text(
-                        "Yeah!! Of course, ask whatever you want",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w500),
-                        maxLines: 3,
-                      ),
+                  decoration: const ShapeDecoration(
+                      color: Color(0xFF269A66),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16),
+                              bottomLeft: Radius.circular(16)))),
+                  child: const Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: Text(
+                      "Yeah!! Of course, ask whatever you want",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Helvetica'),
+                      maxLines: 3,
                     ),
                   ),
                 )))

@@ -194,6 +194,33 @@ class RepoPost implements IRepoPost {
     return !isLiked;
   }
 
+  // http://16.170.159.93/postSavedByUser?username=jrber23
+  Future<List<Post>> getAllLikedPosts(String displayName) async {
+    List<Post> posts = [];
+    try {
+      var response = await server.fetchData(
+          "http://16.170.159.93/postSavedByUser?username=" + displayName);
+
+      List<dynamic> list = response as List;
+      posts = list.map((map) {
+        // Ensure that each element in the list is actually a Map.
+        if (map is Map<String, dynamic>) {
+          var p = Post.fromJson(map);
+          p.setOriginalPoster(jsonToUser(map['creator']));
+          //if(map['firstStep'][0]==null){}
+          p.setFirstStep(jsonToStep2(map['firstStep']));
+          return p;
+        } else {
+          throw Exception(
+              'Expected each element in list to be a Map<String, dynamic>');
+        }
+      }).toList();
+    } catch (e) {
+      print('Error fetching liked posts: $e');
+    }
+    return posts;
+  }
+
   Future<String> getImgURL(String imagePreview) async {
     File imageFile = File(imagePreview);
 

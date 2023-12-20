@@ -14,7 +14,6 @@ import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/RepoComment.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/for_you_page.dart';
-import 'package:my_app/utils/notuser_preferences.dart';
 import 'package:my_app/pages/stepper.dart';
 import 'package:my_app/widgets/appbar_widget.dart';
 import 'package:my_app/widgets/comment_widget.dart';
@@ -164,7 +163,9 @@ class PostDetailed extends State<PostPage> {
                         textAlign: TextAlign.center,
                         widget.title,
                         style: const TextStyle(
-                            color: Colors.black, fontSize: 32.0),
+                            color: Colors.black,
+                            fontSize: 32.0,
+                            fontFamily: 'Helvetica'),
                       )),
                     ),
                     Padding(
@@ -177,7 +178,9 @@ class PostDetailed extends State<PostPage> {
                         maxLines: 3,
                         widget.description,
                         style: const TextStyle(
-                            color: Colors.black, fontSize: 12.0),
+                            color: Colors.black,
+                            fontSize: 12.0,
+                            fontFamily: 'Helvetica'),
                       )),
                     ),
                     Expanded(
@@ -188,7 +191,8 @@ class PostDetailed extends State<PostPage> {
                         child: FlutterStepIndicator(
                           onChange: (index) {},
                           negativeColor: Colors.grey,
-                          positiveColor: Colors.green[600],
+                          positiveColor:
+                              const Color.fromARGB(255, 38, 154, 102),
                           progressColor: const Color.fromARGB(255, 10, 212, 20),
                           list: snapshot.requireData,
                           page: _currentIndexStepper,
@@ -313,7 +317,8 @@ class PostDetailed extends State<PostPage> {
                                           Text("${snapshot.data!.length}",
                                               style: const TextStyle(
                                                   fontSize: 14,
-                                                  color: Color(0xFF686868))),
+                                                  color: Color(0xFF686868),
+                                                  fontFamily: 'Helvetica')),
                                         ],
                                       ),
                                       children: [
@@ -531,7 +536,8 @@ class StepCard extends StatelessWidget {
                           countBuilder: (likeCount, isLiked, text) {
                             return Text(
                               text,
-                              style: const TextStyle(color: Colors.black),
+                              style: const TextStyle(
+                                  color: Colors.black, fontFamily: 'Helvetica'),
                             );
                           },
                           onTap: (isLiked) {
@@ -560,7 +566,8 @@ class StepCard extends StatelessWidget {
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Helvetica'),
                           ),
                         ),
                       ),
@@ -571,7 +578,9 @@ class StepCard extends StatelessWidget {
                             text,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
-                                color: Colors.black, fontSize: 16),
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Helvetica'),
                           ),
                         ),
                       )

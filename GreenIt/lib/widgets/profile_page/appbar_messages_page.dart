@@ -4,7 +4,7 @@ import 'package:my_app/utils/cache_manager.dart';
 
 AppBar buildMessagesPageAppBar(BuildContext context) {
   return AppBar(
-    backgroundColor: Colors.green,
+    backgroundColor: const Color.fromARGB(255, 38, 154, 102),
     elevation: 0,
     title: const Row(
       children: [

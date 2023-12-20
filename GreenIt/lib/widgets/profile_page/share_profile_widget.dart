@@ -4,13 +4,17 @@ import 'package:flutter/services.dart';
 Widget buildShareButton(BuildContext context, String username) =>
     ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green, // Green color
+        backgroundColor: const Color(0xFFCFF4D2),
         foregroundColor: Colors.white, // White text color
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(20), // Adjust the radius as needed
+        ),
       ),
       onPressed: () => showShareDialog(context, username),
       child: const Text(
         'Share profile',
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.black),
       ),
     );
 
@@ -42,8 +46,8 @@ void showShareDialog(BuildContext context, String username) {
               const SizedBox(height: 24),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green, // Green color
-                  foregroundColor: Colors.white, // White text color
+                  backgroundColor: const Color(0xFFCFF4D2),
+                  foregroundColor: Colors.black, // White text color
                 ),
                 onPressed: () {
                   // TODO: Copy the link to the clipboard
