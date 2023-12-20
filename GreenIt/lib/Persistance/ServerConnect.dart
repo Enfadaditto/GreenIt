@@ -36,4 +36,21 @@ class ServerConnect {
       throw Exception('status Code: $err, Error: $e');
     }
   }
+
+Future<dynamic> hectorYoQUeriaDormir(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Parse the JSON response and return it as a formatted string
+        final data = response.body;
+        return data;
+      } else {
+        throw Exception('Failed to connect to the server ' + response.statusCode.toString());
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
 }

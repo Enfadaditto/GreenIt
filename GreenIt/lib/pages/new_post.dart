@@ -23,7 +23,7 @@ class _NewPostState extends State<NewPost> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _stepDescriptionController = TextEditingController();
 
-  late String stepImage;
+  late String stepImage = "";
   late String stepDescription;
   late String postThumbnail;
   late Future<User> user;
@@ -40,62 +40,39 @@ class _NewPostState extends State<NewPost> {
     }
   }
 
-  Future<void> _createNewPost(User? originalPoster) async {
-    //Recoger lista de posts
-    List<Post> primeraLista = await loadUserPosts(originalPoster!.displayName);
-    var i = 1;
-    print("primera lista");
-    for (Post p in primeraLista) {
-      print("Post $i: id - ${p.id}");
-      i++;
-    }
-
+  void _createNewPost(User? originalPoster) async {
     Post thisPost = Post(
         originalPoster: originalPoster,
         firstStep: steps.first,
         description: _descriptionController.text,
-        imagenPreview: postThumbnail,
+        imagenPreview: "", //postThumbnail,
         title: _titleController.text,
         id: -1,
         serverName: "");
 
-    RepoPost().create(thisPost);
-
-    //Recoger nueva lista de posts
-    List<Post> segundaLista = await loadUserPosts(originalPoster.displayName);
-    var j = 1;
-    print("segunda lista");
-    for (Post p in segundaLista) {
-      print("Post $j: id - ${p.id}");
-      j++;
-    }
-
-    //Sacar id del post nuevo
-    var nuevoPost = segundaLista.where((item) => !primeraLista.contains(item));
-    var k = 1;
-    print("diferencia");
-    for (Post p in nuevoPost) {
-      print("Post $k: id - ${p.id}");
-      k++;
-    }
-
-    print(
-        "////////////////////////////////////////////////////// ID DEL NUEVO POST: ${nuevoPost.first.id}");
+    var postId = await RepoPost().create2(thisPost);
+    thisPost.id = postId!;
 
     print("Title: ${thisPost.title}");
     print("Description: " + thisPost.description);
     print("Registered user: ${thisPost.originalPoster?.displayName}");
     print("First step: " + thisPost.firstStep.toString());
 
+    var id = null;
+    var step = steps.removeAt(0);
+    print("Image: " + step.image);
+    print("Description: " + step.description);
+    print("Prev. step: " + step.previousStep.toString());
+
+    id = RepoStep().create2(step);
     for (mod.Step step in steps) {
       //Añadir id al step
-      step.setPostId(nuevoPost.first.id);
       //Subir step
       print("Image: " + step.image);
       print("Description: " + step.description);
       print("Prev. step: " + step.previousStep.toString());
-
-      RepoStep().create(step);
+      step.setPreviousStep(await RepoStep().read(id.toString()));
+      id = RepoStep().create2(step);
     }
   }
 
@@ -194,10 +171,6 @@ class _NewPostState extends State<NewPost> {
     } catch (e) {
       print("Error: $e");
     }
-  }
-
-  Future<List<Post>> loadUserPosts(String username) async {
-    return await RepoPost().getAllPostsUser(username);
   }
 
   @override

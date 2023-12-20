@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:my_app/Models/Post.dart';
@@ -19,7 +20,7 @@ class RepoPost implements IRepoPost {
     try {
       String imgURL = await getImgURL(t.imagenPreview);
 
-      server.insertData("http://16.170.159.93/publish?username=" +
+      var id = server.fetchData("http://16.170.159.93/publish?username=" +
           t.originalPoster!.displayName +
           "&description=" +
           t.description +
@@ -218,6 +219,25 @@ class RepoPost implements IRepoPost {
     } catch (e) {
       print("Error: $e");
       return "";
+    }
+  }
+
+  Future<int?> create2(Post t) async {
+    String imgURL = await getImgURL(t.imagenPreview);
+
+    try {
+      var id = await server.hectorYoQUeriaDormir(
+          "http://16.170.159.93/publish?username=" +
+              t.originalPoster!.displayName +
+              "&description=" +
+              t.description +
+              "&image=" +
+              imgURL +
+              "&title=" +
+              t.title);
+      return int.parse(id);
+    } catch (e) {
+      print("An error occurred: $e");
     }
   }
 }

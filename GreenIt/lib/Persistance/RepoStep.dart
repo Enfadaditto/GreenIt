@@ -94,4 +94,30 @@ class RepoStep implements IRepoStep {
       return "";
     }
   }
+
+  Future<int?> create2(Step t) async {
+    String imgURL = await getImgURL(t.image);
+
+    bool isFirst = true;
+    if (t.previousStep != null) {
+      isFirst = false;
+    }
+
+    try {
+      var id = await server.hectorYoQUeriaDormir(
+          "http://16.170.159.93/commit?prevStepId=" +
+              "${t.previousStep?.id}" +
+              "&isFirst=" +
+              "$isFirst" +
+              "&description=" +
+              t.description +
+              "&postId=" +
+              "${t.id}" +
+              "&image=" +
+              imgURL);
+      return id;
+    } catch (e) {
+      print("An error occurred: $e");
+    }
+  }
 }
