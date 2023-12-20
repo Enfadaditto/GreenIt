@@ -18,7 +18,7 @@ class RepoComment implements IRepoComment {
           "http://16.170.159.93/comment?prevCommentId=${t.responseTo?.id}" +
               "&text=${t.comment}" +
               "&postid=${t.postId}" +
-              "&creatorName=f1test"); /*${t.author}*/
+              "&creatorName=${t.author}"); /*${t.author}*/
     } catch (e) {
       print("An error occurred: $e");
     }

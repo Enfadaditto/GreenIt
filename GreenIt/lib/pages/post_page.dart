@@ -111,7 +111,7 @@ class PostDetailed extends State<PostPage> {
                         id: -1,
                         postId: widget.postId,
                         comment: _commentController.text,
-                        author: 'jrber23',
+                        author: widget.author,
                         responseTo: respondedComment,
                         replies: [],
                         date: DateTime.now());
@@ -374,7 +374,7 @@ class PostDetailed extends State<PostPage> {
                                                           comment:
                                                               _commentController
                                                                   .text,
-                                                          author: 'jrber23',
+                                                          author: widget.author,
                                                           replies: [],
                                                           date: DateTime.now());
                                                       widget.comments
