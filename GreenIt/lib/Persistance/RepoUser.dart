@@ -12,16 +12,35 @@ class RepoUser implements IRepoUser {
   ServerConnect server = ServerConnect();
 
   @override
-  void create(User t) async {
+  Future<bool> create(User t) async {
+    // http://16.170.159.93/register?email=x@gmail.com&password=Password&username=register2
+    // &image=https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/240px-Default_pfp.svg.png
+    // &description=Hey
     try {
       server.insertData("http://16.170.159.93/register?email=" +
           t.email +
           "&password=" +
           t.password +
           "&username=" +
-          t.displayName);
+          t.displayName +
+          "&image=" +
+          t.getImage +
+          "&description=" +
+          t.description);
+      print("http://16.170.159.93/register?email=" +
+          t.email +
+          "&password=" +
+          t.password +
+          "&username=" +
+          t.displayName +
+          "&image=" +
+          t.getImage +
+          "&description=" +
+          t.description);
+      return true;
     } catch (e) {
       print("An error occurred: $e");
+      return false;
     }
   }
 
@@ -49,7 +68,7 @@ class RepoUser implements IRepoUser {
           serverName: "serverName",
           imagefield: '',
           description: '',
-          id: 6969696969,
+          id: 69696969,
           image: '');
     }
 

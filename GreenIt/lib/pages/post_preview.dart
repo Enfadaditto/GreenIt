@@ -7,7 +7,6 @@ import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/pages/post_page.dart';
 import 'package:my_app/Models/Step.dart' as mod;
 import 'package:my_app/pages/users_list.dart';
-import 'package:my_app/utils/notuser_preferences.dart';
 
 class PostPreview extends StatefulWidget {
   PostPreview({required this.steps, required this.postDescription});
@@ -57,8 +56,7 @@ class _PostPreviewState extends State<PostPreview> {
         originalPoster: widget.registeredUser,
         title: "",
         serverName: "",
-        imagenPreview: ""
-    );
+        imagenPreview: "");
 
     postDummy.setFirstStep(widget.steps.first);
 
@@ -86,8 +84,8 @@ class _PostPreviewState extends State<PostPreview> {
             scrollDirection: Axis.horizontal,
             children: List.generate(
               widget.steps.length,
-              (index) => StepCard(
-                  widget.steps[index].description, widget.steps[index].image!, index, "", ""),
+              (index) => StepCard(widget.steps[index].description,
+                  widget.steps[index].image!, index, "", ""),
             ),
           )),
       SizedBox(height: 100),
