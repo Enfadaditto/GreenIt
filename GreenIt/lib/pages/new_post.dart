@@ -45,17 +45,14 @@ class _NewPostState extends State<NewPost> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                children: [
-                  Text("Uploading..."),
-                  SizedBox(),
-                  CircularProgressIndicator()
-                ],
-              ),
-            ),
+          return AlertDialog(
+            title: Text("Uploading"),
+            content: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Container(
+                  height: 234,
+                  child: CircularProgressIndicator(),
+                )),
           );
         });
 
