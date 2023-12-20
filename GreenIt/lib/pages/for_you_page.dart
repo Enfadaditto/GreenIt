@@ -446,25 +446,18 @@ class _PostDetailState extends State<PostDetail> {
                       ),
                     ),
                   if (_hasNextPage == false)
-                    Column(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context)
-                              .size
-                              .width, // Set width to screen width
-                          color: const Color(0xFFCFF4D2),
-                          child: const Column(
-                            children: [
-                              SizedBox(height: 5),
-                              Text("You have fetched all of the content"),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 78,
+                    AlertDialog(
+                      title: Text("Notification"),
+                      content: Text("You have fetched all of the content"),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text("OK"),
                         ),
                       ],
-                    )
+                    ),
 
 //  floating bottom navigation bar
                 ],

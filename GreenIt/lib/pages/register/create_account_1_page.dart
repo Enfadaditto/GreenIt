@@ -232,14 +232,26 @@ class _CreateAcountPage1State extends State<CreateAccountPage1> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Error'),
-          content: Text(errorMessage),
+          backgroundColor:
+              const Color(0xFFCFF4D2), // Light green background color
+          title: Text('Error',
+              style: TextStyle(
+                  color: const Color(0xFF24445A))), // Dark green title color
+          content: Text(errorMessage,
+              style: TextStyle(
+                  color: const Color(0xFF24445A))), // Dark green content color
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text('OK'),
+              style: TextButton.styleFrom(
+                backgroundColor:
+                    const Color(0xFF24445A), // Dark blue button color
+              ),
+              child: Text('OK',
+                  style: TextStyle(
+                      color: Colors.white)), // White button text color
             ),
           ],
         );

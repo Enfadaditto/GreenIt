@@ -100,7 +100,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 TextFormField(
                   controller: displayNameController,
                   decoration: InputDecoration(
-                    labelText: 'Full Name',
+                    labelText: 'Nickname',
                   ),
                   onChanged: (value) {
                     // Handle changes to display name.

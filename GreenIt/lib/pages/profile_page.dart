@@ -13,10 +13,9 @@ import 'package:my_app/widgets/profile_page/about_widget.dart';
 import 'package:my_app/widgets/profile_page/numbers_widget.dart';
 import 'package:my_app/widgets/profile_page/profile_gallery_widget.dart';
 import 'package:my_app/widgets/profile_page/share_profile_widget.dart';
+import 'package:my_app/widgets/profile_page/skeleton_post.dart';
 import '../utils/cache_manager.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
-
-// colors - light green: CFF4D2 | dark green: 269A66 | dark blue: 24445A
 
 class ProfilePage extends StatefulWidget {
   final String
@@ -133,15 +132,6 @@ class _ProfilePageState extends State<ProfilePage> {
       return _buildLoadingScreen();
     }
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.green[900],
-      //   title: const Text(
-      //     "GreenIt",
-      //     style: TextStyle(color: Colors.white),
-      //   ),
-      // ),
-      // appBar: buildAppBar(context),
-      // appBar: AppBar(),
       backgroundColor: darkMode ?? false ? Colors.grey : Colors.white,
       body: ListView(
         physics: const BouncingScrollPhysics(),
@@ -266,8 +256,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildUserPosts(
       BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
-      return const SizedBox(
-          width: 30, height: 30, child: CircularProgressIndicator());
+      return buildPlaceholderGallery(context);
     } else {
       final posts = snapshot.data![1] as List<Post>;
       final likedPosts = snapshot.data![2] as List<Post>;

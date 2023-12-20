@@ -51,14 +51,22 @@ class _LoginPageState extends State<LogInPage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text('Incorrect Data'),
-              content: const Text('Please check your email and password.'),
+              backgroundColor: const Color(0xFFCFF4D2),
+              title: const Text('Incorrect data',
+                  style: TextStyle(color: Color(0xFF24445A))),
+              content: const Text('Please check your email and password.',
+                  style: TextStyle(color: Color(0xFF24445A))),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text('OK'),
+                  style: TextButton.styleFrom(
+                    backgroundColor:
+                        const Color(0xFF24445A), // Dark blue button color
+                  ),
+                  child:
+                      const Text('OK', style: TextStyle(color: Colors.white)),
                 ),
               ],
             );
@@ -124,7 +132,7 @@ class _LoginPageState extends State<LogInPage> {
                   height: 30.0,
                   child: const Center(
                     child: Text(
-                      'Send!',
+                      'Log In!',
                       style: TextStyle(
                         fontFamily: 'Helvetica',
                         fontWeight: FontWeight.w700,
