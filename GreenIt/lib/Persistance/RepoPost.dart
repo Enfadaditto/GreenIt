@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:my_app/Models/Post.dart';
@@ -15,7 +16,7 @@ class RepoPost implements IRepoPost {
   @override
   void create(Post t) {
     try {
-      server.insertData("http://16.170.159.93/publish?username=" +
+      var id = server.fetchData("http://16.170.159.93/publish?username=" +
           t.originalPoster!.displayName +
           "&description=" +
           t.description +
@@ -23,6 +24,7 @@ class RepoPost implements IRepoPost {
           t.title +
           "&image=" +
           encodeToBase64(t.imagenPreview));
+
     } catch (e) {
       print("An error occurred: $e");
     }
@@ -193,4 +195,22 @@ class RepoPost implements IRepoPost {
     final bytes = File(imagenPreview).readAsBytesSync();
     return base64Encode(bytes);
   }
+
+  Future<int?> create2(Post t) async {
+      try {
+        var id = await server.hectorYoQUeriaDormir("http://16.170.159.93/publish?username=" +
+            t.originalPoster!.displayName +
+            "&description=" +
+            t.description +
+            "&image=" +
+            encodeToBase64(t.imagenPreview) +
+            "&title=" +
+            t.title 
+            );
+        return int.parse(id);
+      } catch (e) {
+        print("An error occurred: $e");
+      }
+    }
+
 }

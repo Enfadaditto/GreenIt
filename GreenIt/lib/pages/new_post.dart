@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/Models/Post.dart';
 import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
+import 'package:my_app/Persistance/RepoStep.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:my_app/widgets/post_page/custom_dialog.dart';
@@ -22,7 +23,7 @@ class _NewPostState extends State<NewPost> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _stepDescriptionController = TextEditingController();
 
-  late String stepImage;
+  late String stepImage ="";
   late String stepDescription;
   late String postThumbnail;
   late Future<User> user;
@@ -39,27 +40,37 @@ class _NewPostState extends State<NewPost> {
     }
   }
 
-  void _createNewPost(User? originalPoster) {
+  void _createNewPost(User? originalPoster) async {
     Post thisPost = Post(
         originalPoster: originalPoster,
         firstStep: steps.first,
         description: _descriptionController.text,
-        imagenPreview: postThumbnail,
+        imagenPreview: "",//postThumbnail,
         title: _titleController.text,
         id: -1,
         serverName: "");
 
-    RepoPost().create(thisPost);
+    var postId = await RepoPost().create2(thisPost);
+    thisPost.id = postId!;
 
     print("Title: ${thisPost.title}");
     print("Description: " + thisPost.description);
     print("Registered user: ${thisPost.originalPoster?.displayName}");
     print("First step: " + thisPost.firstStep.toString());
 
+    var id = null;
+    var step = steps.removeAt(0);
+    print("Image: " + step.image);
+      print("Description: " + step.description);
+      print("Prev. step: " + step.previousStep.toString());
+    
+      id = RepoStep().create2(step);
     for (mod.Step step in steps) {
       print("Image: " + step.image);
       print("Description: " + step.description);
       print("Prev. step: " + step.previousStep.toString());
+      step.setPreviousStep( await RepoStep().read(id.toString()));
+      id = RepoStep().create2(step);
     }
   }
 

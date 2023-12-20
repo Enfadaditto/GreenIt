@@ -67,4 +67,27 @@ class RepoStep implements IRepoStep {
     final bytes = File(imagenPreview).readAsBytesSync();
     return base64Encode(bytes);
   }
+
+  Future<int?> create2(Step t) async {
+    bool isFirst = true;
+    if (t.previousStep != null) {
+      isFirst = false;
+    }
+
+    try {
+      var id = await server.hectorYoQUeriaDormir("http://16.170.159.93/commit?prevStepId=" +
+          "${t.previousStep?.id}" +
+          "&isFirst=" +
+          "$isFirst" +
+          "&description=" +
+          t.description +
+          "&postId=" +
+          "${t.id}" +
+          "&image=" +
+          encodeToBase64(t.image));
+      return id;
+    } catch (e) {
+      print("An error occurred: $e");
+    }
+  }
 }
