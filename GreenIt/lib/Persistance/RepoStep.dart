@@ -28,7 +28,7 @@ class RepoStep implements IRepoStep {
           "$isFirst" +
           "&description=" +
           t.description +
-          "&postId=" +
+          "&postid=" +
           "${t.id}" +
           "&image=" +
           imgURL);
@@ -41,7 +41,7 @@ class RepoStep implements IRepoStep {
   Future<Step> read(String id) async {
     Step s;
     try {
-      var data = await server.fetchData("http://16.170.159.93/step?id" + id);
+      var data = await server.fetchData("http://16.170.159.93/step?id=" + id);
       s = Step(
           id: data['id'],
           previousStep: data['previousStep'],
@@ -95,29 +95,32 @@ class RepoStep implements IRepoStep {
     }
   }
 
-  Future<int?> create2(Step t) async {
+  Future<int> create2(Step t) async {
     String imgURL = await getImgURL(t.image);
 
     bool isFirst = true;
-    if (t.previousStep != null) {
+    if (t.previousStep?.id != 0) {
       isFirst = false;
     }
 
     try {
-      var id = await server.hectorYoQUeriaDormir(
+      var id;
+      id = await server.hectorYoQUeriaDormir(
           "http://16.170.159.93/commit?prevStepId=" +
               "${t.previousStep?.id}" +
               "&isFirst=" +
               "$isFirst" +
               "&description=" +
               t.description +
-              "&postId=" +
+              "&postid=" +
               "${t.id}" +
               "&image=" +
               imgURL);
+      id = int.parse(id);
       return id;
     } catch (e) {
       print("An error occurred: $e");
     }
+    return 0;
   }
 }

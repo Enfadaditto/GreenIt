@@ -6,6 +6,7 @@ import 'package:my_app/Models/User.dart';
 import 'package:my_app/Persistance/RepoPost.dart';
 import 'package:my_app/Persistance/RepoStep.dart';
 import 'package:my_app/Persistance/RepoUser.dart';
+import 'package:my_app/pages/for_you_page.dart';
 import 'package:my_app/widgets/appbar_foryoupage.dart';
 import 'package:my_app/widgets/post_page/custom_dialog.dart';
 import 'package:my_app/widgets/post_page/image_selector.dart';
@@ -40,12 +41,36 @@ class _NewPostState extends State<NewPost> {
     }
   }
 
-  void _createNewPost(User? originalPoster) async {
+  void uploadingDialog(User? originalPoster) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                children: [
+                  Text("Uploading..."),
+                  SizedBox(),
+                  CircularProgressIndicator()
+                ],
+              ),
+            ),
+          );
+        });
+
+    await _createNewPost(originalPoster);
+    Navigator.of(context).pop();
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ForYouPage()));
+  }
+
+  Future<void> _createNewPost(User? originalPoster) async {
     Post thisPost = Post(
         originalPoster: originalPoster,
         firstStep: steps.first,
         description: _descriptionController.text,
-        imagenPreview: "", //postThumbnail,
+        imagenPreview: postThumbnail,
         title: _titleController.text,
         id: -1,
         serverName: "");
@@ -58,21 +83,29 @@ class _NewPostState extends State<NewPost> {
     print("Registered user: ${thisPost.originalPoster?.displayName}");
     print("First step: " + thisPost.firstStep.toString());
 
-    var id = null;
-    var step = steps.removeAt(0);
-    print("Image: " + step.image);
-    print("Description: " + step.description);
-    print("Prev. step: " + step.previousStep.toString());
+    int id = 0;
 
-    id = RepoStep().create2(step);
     for (mod.Step step in steps) {
       //Añadir id al step
       //Subir step
+
+      step.id = thisPost.id;
+      if (id != 0) {
+        step.setPreviousStep(
+            mod.Step(id: id, previousStep: null, description: "", image: ""));
+      } else {
+        step.setPreviousStep(
+            mod.Step(description: "", id: 0, image: "", previousStep: null));
+      }
       print("Image: " + step.image);
       print("Description: " + step.description);
-      print("Prev. step: " + step.previousStep.toString());
-      step.setPreviousStep(await RepoStep().read(id.toString()));
-      id = RepoStep().create2(step);
+      print("Prev. step: ${step.previousStep!.id}");
+      print("Post id: ${step.id}");
+
+      id = await RepoStep().create2(step);
+      print(
+          "////////////////////////////////////////////////////////////////////");
+      print("Step anterior id: $id");
     }
   }
 
@@ -136,7 +169,8 @@ class _NewPostState extends State<NewPost> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          _createNewPost(snapshot.data);
+                          Navigator.of(context).pop();
+                          uploadingDialog(snapshot.data);
                         },
                         child: Text(
                           'Upload',
@@ -184,8 +218,7 @@ class _NewPostState extends State<NewPost> {
           id: -1,
           description: _stepDescriptionController.text,
           image: stepImage,
-          previousStep: steps.isEmpty ? null : steps.last));
-      print(steps.length);
+          previousStep: null));
     }
 
     void handleImage(String img) {
