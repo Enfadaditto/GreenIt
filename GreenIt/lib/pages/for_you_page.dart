@@ -445,25 +445,26 @@ class _PostDetailState extends State<PostDetail> {
                         child: CircularProgressIndicator(),
                       ),
                     ),
-                  Column(
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context)
-                            .size
-                            .width, // Set width to screen width
-                        color: const Color(0xFFCFF4D2),
-                        child: const Column(
-                          children: [
-                            SizedBox(height: 5),
-                            Text("You have fetched all of the content"),
-                          ],
+                  if (_hasNextPage == false)
+                    Column(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context)
+                              .size
+                              .width, // Set width to screen width
+                          color: const Color(0xFFCFF4D2),
+                          child: const Column(
+                            children: [
+                              SizedBox(height: 5),
+                              Text("You have fetched all of the content"),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 78,
-                      ),
-                    ],
-                  ),
+                        const SizedBox(
+                          height: 78,
+                        ),
+                      ],
+                    ),
 
 //  floating bottom navigation bar
                 ],

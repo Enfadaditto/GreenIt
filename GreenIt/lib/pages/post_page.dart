@@ -138,7 +138,14 @@ class PostDetailed extends State<PostPage> {
 
     return MaterialApp(
         home: Scaffold(
-      appBar: buildAppBar(context),
+      appBar: AppBar(
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        backgroundColor: Colors.green[700],
+      ),
       body: FutureBuilder(
         future: steps,
         builder: (context, snapshot) {
@@ -153,96 +160,111 @@ class PostDetailed extends State<PostPage> {
                 color: Colors.white,
                 // width: double.infinity,
                 height: double.infinity,
-                child: Stack(children: [
-                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 10.0, left: 15.0, right: 15.0),
-                      child: Center(
-                          child: Text(
-                        textAlign: TextAlign.center,
-                        widget.title,
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 32.0,
-                            fontFamily: 'Helvetica'),
-                      )),
-                    ),
-                    Padding(
-                      padding: // EdgeInsets.only(top: 10.0, bottom: 40.0),
-                          const EdgeInsets.only(
-                              top: 10.0, left: 8.0, right: 8.0),
-                      child: Center(
-                          child: Text(
-                        textAlign: TextAlign.center,
-                        maxLines: 3,
-                        widget.description,
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 12.0,
-                            fontFamily: 'Helvetica'),
-                      )),
-                    ),
-                    Expanded(
-                        child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
-                        child: FlutterStepIndicator(
-                          onChange: (index) {},
-                          negativeColor: Colors.grey,
-                          positiveColor:
-                              const Color.fromARGB(255, 38, 154, 102),
-                          progressColor: const Color.fromARGB(255, 10, 212, 20),
-                          list: snapshot.requireData,
-                          page: _currentIndexStepper,
-                          disableAutoScroll: false,
-                          height: 15,
-                        ),
-                      ),
-                    )),
-                    //const SizedBox(height: 25),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: SizedBox(
-                        height: 500,
-                        child: PageView(
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            //steps.forEach((step) {
-                            //  StepCard(step.description, step.image);
-                            //})
+                child: Stack(
+                  children: [
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 10.0, left: 15.0, right: 15.0),
+                            child: Center(
+                                child: Text(
+                              textAlign: TextAlign.center,
+                              widget.title,
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 32.0,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Helvetica'),
+                            )),
+                          ),
+                          Padding(
+                            padding: // EdgeInsets.only(top: 10.0, bottom: 40.0),
+                                const EdgeInsets.only(
+                                    top: 10.0, left: 8.0, right: 8.0),
+                            child: Center(
+                                child: Text(
+                              textAlign: TextAlign.center,
+                              maxLines: 3,
+                              widget.description,
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20.0,
+                                  fontFamily: 'Helvetica'),
+                            )),
+                          ),
+                          const SizedBox(
+                            height: 24,
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 25.0, right: 25.0),
+                              child: FlutterStepIndicator(
+                                onChange: (index) {},
+                                negativeColor: Colors.grey,
+                                positiveColor:
+                                    const Color.fromARGB(255, 38, 154, 102),
+                                progressColor:
+                                    const Color.fromARGB(255, 10, 212, 20),
+                                list: snapshot.requireData,
+                                page: _currentIndexStepper,
+                                disableAutoScroll: false,
+                                height: 15,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          //const SizedBox(height: 25),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 1.0),
+                            child: SizedBox(
+                              height: 500,
+                              child: PageView(
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  //steps.forEach((step) {
+                                  //  StepCard(step.description, step.image);
+                                  //})
 
-                            PageView.builder(
-                              onPageChanged: (index) {
-                                _previousPageIndex = _currentPageIndex;
-                                setState(() {
-                                  _currentPageIndex = index;
-                                });
+                                  PageView.builder(
+                                    onPageChanged: (index) {
+                                      _previousPageIndex = _currentPageIndex;
+                                      setState(() {
+                                        _currentPageIndex = index;
+                                      });
 
-                                if (_currentPageIndex > _previousPageIndex) {
-                                  _currentIndexStepper++;
-                                } else if (_currentPageIndex <
-                                    _previousPageIndex) {
-                                  _currentIndexStepper--;
-                                }
-                              },
-                              itemCount: snapshot.requireData.length,
-                              itemBuilder: (context, index) {
-                                return StepCard(
-                                    snapshot.requireData[index]!
-                                        .getDescription(),
-                                    snapshot.requireData[index]!.getImage(),
-                                    index,
-                                    widget.author,
-                                    widget.id);
-                              },
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    /* FutureBuilder(
+                                      if (_currentPageIndex >
+                                          _previousPageIndex) {
+                                        _currentIndexStepper++;
+                                      } else if (_currentPageIndex <
+                                          _previousPageIndex) {
+                                        _currentIndexStepper--;
+                                      }
+                                    },
+                                    itemCount: snapshot.requireData.length,
+                                    itemBuilder: (context, index) {
+                                      return StepCard(
+                                          snapshot.requireData[index]!
+                                              .getDescription(),
+                                          snapshot.requireData[index]!
+                                              .getImage(),
+                                          index,
+                                          widget.author,
+                                          widget.id);
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          /* FutureBuilder(
                       future: Future.wait([_numLikes, _postIsLiked]),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
@@ -284,124 +306,133 @@ class PostDetailed extends State<PostPage> {
                         }
                       },
                     ), */
-                  ]),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30)),
-                        child: Container(
-                            decoration: const ShapeDecoration(
-                              color: Color(0xFFCFF4D2),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(30),
-                                      topRight: Radius.circular(30))),
-                            ),
-                            child: FutureBuilder(
-                                future: RepoComment()
-                                    .getAllCommentsPost(widget.postId),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    return ExpansionTile(
-                                      title: Row(
+                        ]),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(30),
+                              topRight: Radius.circular(30)),
+                          child: Container(
+                              decoration: const ShapeDecoration(
+                                color: Color(0xFFCFF4D2),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(30),
+                                        topRight: Radius.circular(30))),
+                              ),
+                              child: FutureBuilder(
+                                  future: RepoComment()
+                                      .getAllCommentsPost(widget.postId),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return ExpansionTile(
+                                        title: Row(
+                                          children: [
+                                            const Text("Comments",
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Helvetica')),
+                                            const SizedBox(width: 10),
+                                            Text("${snapshot.data!.length}",
+                                                style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Color(0xFF686868),
+                                                    fontFamily: 'Helvetica')),
+                                          ],
+                                        ),
                                         children: [
-                                          const Text("Comments",
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily: 'Helvetica')),
-                                          const SizedBox(width: 10),
-                                          Text("${snapshot.data!.length}",
-                                              style: const TextStyle(
-                                                  fontSize: 14,
-                                                  color: Color(0xFF686868),
-                                                  fontFamily: 'Helvetica')),
-                                        ],
-                                      ),
-                                      children: [
-                                        Container(
-                                          width: 350,
-                                          decoration: const ShapeDecoration(
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                width: 1,
-                                                strokeAlign: BorderSide
-                                                    .strokeAlignCenter,
-                                                color: Color(0xFF6E6E6E),
+                                          Container(
+                                            width: 350,
+                                            decoration: const ShapeDecoration(
+                                              shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                  width: 1,
+                                                  strokeAlign: BorderSide
+                                                      .strokeAlignCenter,
+                                                  color: Color(0xFF6E6E6E),
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        Container(
-                                            constraints: const BoxConstraints(
-                                                maxHeight: 300),
-                                            child: Scaffold(
-                                              backgroundColor:
-                                                  const Color(0xFFCFF4D2),
-                                              body: CommentsWidget(
-                                                comments: snapshot.data,
-                                                onReply: _respondComment,
-                                              ),
-                                            )),
-                                        Container(
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 7.5),
-                                          child: TextFormField(
-                                            controller: _commentController,
-                                            decoration: InputDecoration(
-                                                hintText:
-                                                    "Write new comment...",
-                                                suffixIcon: IconButton(
-                                                  icon: const Icon(Icons.send),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      if (_commentController
-                                                          .text.isEmpty) return;
+                                          Container(
+                                              constraints: const BoxConstraints(
+                                                  maxHeight: 300),
+                                              child: Scaffold(
+                                                backgroundColor:
+                                                    const Color(0xFFCFF4D2),
+                                                body: CommentsWidget(
+                                                  comments: snapshot.data,
+                                                  onReply: _respondComment,
+                                                ),
+                                              )),
+                                          Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 7.5),
+                                            child: TextFormField(
+                                              controller: _commentController,
+                                              decoration: InputDecoration(
+                                                  hintText:
+                                                      "Write new comment...",
+                                                  suffixIcon: IconButton(
+                                                    icon:
+                                                        const Icon(Icons.send),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        if (_commentController
+                                                            .text
+                                                            .isEmpty) return;
 
-                                                      Comment newComment = Comment(
-                                                          id: -1,
-                                                          responseTo: Comment(
-                                                              id: 0,
-                                                              comment: "",
-                                                              author: "",
-                                                              replies: [],
-                                                              date: DateTime
-                                                                  .now()),
-                                                          postId: widget.postId,
-                                                          comment:
-                                                              _commentController
-                                                                  .text,
-                                                          author: widget.author,
-                                                          replies: [],
-                                                          date: DateTime.now());
-                                                      widget.comments
-                                                          .add(newComment);
-                                                      RepoComment()
-                                                          .create(newComment);
-                                                      _commentController
-                                                          .clear();
-                                                    });
-                                                  },
-                                                )),
-                                          ),
-                                        )
-                                      ],
-                                    );
-                                  } else if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return const Center(
-                                        child: CircularProgressIndicator());
-                                  } else {
-                                    return const Text("ERROR");
-                                  }
-                                })),
-                      ),
-                    ],
-                  )
-                ]));
+                                                        Comment newComment = Comment(
+                                                            id: -1,
+                                                            responseTo: Comment(
+                                                                id: 0,
+                                                                comment: "",
+                                                                author: "",
+                                                                replies: [],
+                                                                date: DateTime
+                                                                    .now()),
+                                                            postId:
+                                                                widget.postId,
+                                                            comment:
+                                                                _commentController
+                                                                    .text,
+                                                            author:
+                                                                widget.author,
+                                                            replies: [],
+                                                            date:
+                                                                DateTime.now());
+                                                        widget.comments
+                                                            .add(newComment);
+                                                        RepoComment()
+                                                            .create(newComment);
+                                                        _commentController
+                                                            .clear();
+                                                      });
+                                                    },
+                                                  )),
+                                            ),
+                                          )
+                                        ],
+                                      );
+                                    } else if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Center(
+                                          child: CircularProgressIndicator());
+                                    } else {
+                                      return const Text("ERROR");
+                                    }
+                                  })),
+                        ),
+                        const SizedBox(
+                          height: 80,
+                        ),
+                      ],
+                    )
+                  ],
+                ));
           }
         },
       ),
